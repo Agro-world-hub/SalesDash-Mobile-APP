@@ -22,6 +22,7 @@ import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system";
 import axios from "axios";
 import environment from "@/environment/environment";
+import { useTheme } from '../ThemeContext';
 
 import * as MediaLibrary from 'expo-media-library';
 
@@ -63,6 +64,7 @@ const OrderConfirmedScreen: React.FC<OrderConfirmedScreenProps> = ({ navigation,
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+     const { isDarkMode, toggleTheme } = useTheme();
 
 
   const { 
@@ -434,55 +436,127 @@ const OrderConfirmedScreen: React.FC<OrderConfirmedScreenProps> = ({ navigation,
   };
 
 
-  return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      enabled 
-      className="flex-1"
-    >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} 
-        keyboardShouldPersistTaps="handled"
-      >
-        <View className="flex-1 bg-white px-2">
-          <View style={{ paddingHorizontal: wp(6), paddingVertical: hp(1) }} className="flex-1">
-            <View className="px-2">
-              <Text style={{ fontSize: 20 }} className="text-black text-center mt-8 font-bold">
-                Order is Confirmed!
-              </Text>
-              <Text style={{ fontSize: 18 }} className="text-[#3F3F3F] text-center mt-2">
-                Order No: {order?.InvNo}
-              </Text>
-              <Text style={{ fontSize: 16 }} className="text-[#747474] text-center mt-5">
-                Order Confirmation message and Payment Gateway Link has been sent to your Customer
-              </Text>
-            </View>
+//   return (
+//     <KeyboardAvoidingView 
+//       behavior={Platform.OS === "ios" ? "padding" : "height"}
+//       enabled 
+//       className="flex-1"
+//     >
+//       <ScrollView contentContainerStyle={{ flexGrow: 1 }} 
+//         keyboardShouldPersistTaps="handled"
+//       >
+//         <View className="flex-1 bg-white px-2">
+//           <View style={{ paddingHorizontal: wp(6), paddingVertical: hp(1) }} className="flex-1">
+//             <View className="px-2">
+//               <Text style={{ fontSize: 20 }} className="text-black text-center mt-8 font-bold">
+//                 Order is Confirmed!
+//               </Text>
+//               <Text style={{ fontSize: 18 }} className="text-[#3F3F3F] text-center mt-2">
+//                 Order No: {order?.InvNo}
+//               </Text>
+//               <Text style={{ fontSize: 16 }} className="text-[#747474] text-center mt-5">
+//                 Order Confirmation message and Payment Gateway Link has been sent to your Customer
+//               </Text>
+//             </View>
 
-            {/* Illustration */}
-            <View className="flex items-center justify-center mt-5">
-              <Image 
-                source={require("../assets/images/confirmed.png")} 
-                style={{ width: wp(80), height: hp(40) }} 
-                resizeMode="contain" 
-              />
-            </View>
+//             {/* Illustration */}
+//             <View className="flex items-center justify-center mt-5">
+//               <Image 
+//                 source={require("../assets/images/confirmed.png")} 
+//                 style={{ width: wp(80), height: hp(40) }} 
+//                 resizeMode="contain" 
+//               />
+//             </View>
 
 
-<TouchableOpacity 
-  onPress={handleDownloadAndShareInvoice} 
-  style={{ marginHorizontal: wp(20), marginTop: hp(7) }}
->
-  <LinearGradient 
-    colors={["#6839CF", "#874DDB"]} 
-    style={{ paddingVertical: 12, paddingHorizontal: 16, borderRadius: 30, alignItems: "center" }}
+// <TouchableOpacity 
+//   onPress={handleDownloadAndShareInvoice} 
+//   style={{ marginHorizontal: wp(20), marginTop: hp(7) }}
+// >
+//   <LinearGradient 
+//     colors={["#6839CF", "#874DDB"]} 
+//     style={{ paddingVertical: 12, paddingHorizontal: 16, borderRadius: 30, alignItems: "center" }}
+//   >
+//     <Text style={{ color: "white", fontWeight: "bold" }}>Download Invoice</Text>
+//   </LinearGradient>
+// </TouchableOpacity>
+//           </View>
+//         </View>
+//       </ScrollView>
+//     </KeyboardAvoidingView>
+//   );
+return (
+  <KeyboardAvoidingView 
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    enabled 
+    className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}
   >
-    <Text style={{ color: "white", fontWeight: "bold" }}>Download Invoice</Text>
-  </LinearGradient>
-</TouchableOpacity>
+    <ScrollView 
+      contentContainerStyle={{ flexGrow: 1 }} 
+      keyboardShouldPersistTaps="handled"
+    >
+      <View className={`flex-1 px-2 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+        <View style={{ paddingHorizontal: wp(6), paddingVertical: hp(1) }} className="flex-1">
+          <View className="px-2">
+            <Text 
+              style={{ fontSize: 20 }} 
+              className={`text-center mt-8 font-bold ${
+                isDarkMode ? 'text-white' : 'text-black'
+              }`}
+            >
+              Order is Confirmed!
+            </Text>
+            <Text 
+              style={{ fontSize: 18 }} 
+              className={`text-center mt-2 ${
+                isDarkMode ? 'text-gray-300' : 'text-[#3F3F3F]'
+              }`}
+            >
+              Order No: {order?.InvNo}
+            </Text>
+            <Text 
+              style={{ fontSize: 16 }} 
+              className={`text-center mt-5 ${
+                isDarkMode ? 'text-gray-400' : 'text-[#747474]'
+              }`}
+            >
+              Order Confirmation message and Payment Gateway Link has been sent to your Customer
+            </Text>
           </View>
+
+          {/* Illustration */}
+          <View className="flex items-center justify-center mt-5">
+            <Image 
+              source={isDarkMode 
+                ? require("../assets/images/confirmed.png") 
+                : require("../assets/images/confirmed.png")} 
+              style={{ width: wp(80), height: hp(40) }} 
+              resizeMode="contain" 
+            />
+          </View>
+
+          {/* Download Invoice Button */}
+          <TouchableOpacity 
+            onPress={handleDownloadAndShareInvoice} 
+            style={{ marginHorizontal: wp(20), marginTop: hp(7) }}
+          >
+            <LinearGradient 
+              colors={isDarkMode ? ["#7C3AED", "#8B5CF6"] : ["#6839CF", "#874DDB"]} 
+              style={{ 
+                paddingVertical: 12, 
+                paddingHorizontal: 16, 
+                borderRadius: 30, 
+                alignItems: "center" 
+              }}
+            >
+              <Text style={{ color: "white", fontWeight: "bold" }}>Download Invoice</Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
-  );
+      </View>
+    </ScrollView>
+  </KeyboardAvoidingView>
+);
 };
 
 export default OrderConfirmedScreen;

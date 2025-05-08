@@ -17,6 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import environment from "@/environment/environment";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTheme } from '../ThemeContext';
 
 type OrderSummeryScreenNavigationProp = StackNavigationProp<RootStackParamList, "OrderSummeryScreen">;
 type OrderSummeryScreenRouteProp = RouteProp<RootStackParamList, "OrderSummeryScreen">;
@@ -92,7 +93,7 @@ const OrderSummeryScreen: React.FC<OrderSummeryScreenProps> = ({ navigation, rou
   const [customerData, setCustomerData] = useState<CustomerData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  
+  const { isDarkMode, toggleTheme } = useTheme();
 
   const {
     items = [],
@@ -363,168 +364,419 @@ const safeOrderItems = Array.isArray(orderItems) ? orderItems : [];
   
   const customerInfo = getCustomerInfo();
 
-  return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      enabled 
-      className="flex-1 bg-white"
-    >
-      {/* Header */}
-      <View className="flex-row items-center shadow-md px-3 bg-white py-3">
-        <BackButton navigation={navigation} />
-        <Text className="text-lg font-bold text-[#6C3CD1] flex-grow text-center mr-8">
-          Order Summary
-        </Text>
-      </View>
+//   return (
+//     <KeyboardAvoidingView 
+//       behavior={Platform.OS === "ios" ? "padding" : "height"}
+//       enabled 
+//       className="flex-1 bg-white"
+//     >
+//       {/* Header */}
+//       <View className="flex-row items-center shadow-md px-3 bg-white py-3">
+//         <BackButton navigation={navigation} />
+//         <Text className="text-lg font-bold text-[#6C3CD1] flex-grow text-center mr-8">
+//           Order Summary
+//         </Text>
+//       </View>
       
-      <ScrollView 
-        showsVerticalScrollIndicator={true} 
-        contentContainerStyle={{ paddingBottom: 20 }} 
-        className="flex-1 px-4"
-        keyboardShouldPersistTaps="handled"
-      >
-        <View className="px-2">
+//       <ScrollView 
+//         showsVerticalScrollIndicator={true} 
+//         contentContainerStyle={{ paddingBottom: 20 }} 
+//         className="flex-1 px-4"
+//         keyboardShouldPersistTaps="handled"
+//       >
+//         <View className="px-2">
       
-          <View className="bg-white border border-gray-300 rounded-lg p-4 shadow-sm">
-            <View className="flex-row items-center">
+//           <View className="bg-white border border-gray-300 rounded-lg p-4 shadow-sm">
+//             <View className="flex-row items-center">
               
-              <View className="flex-row items-center space-x-2 flex-1">
-                <Image source={require("../assets/images/delivery.png")} className="w-10 h-10" />
+//               <View className="flex-row items-center space-x-2 flex-1">
+//                 <Image source={require("../assets/images/delivery.png")} className="w-10 h-10" />
                 
-                <View>
-                  <View className="flex-row justify-between">
-                    <Text className="text-base font-semibold">Delivery - One Time</Text>
-                    <TouchableOpacity 
-                      onPress={() => navigation.navigate("ScheduleScreen" as any, { 
-                        totalPrice: total,
-                        customerId, 
-                        items,
-                        subtotal,
-                        discount
-                      })}
-                      className="border border-[#6C3CD1] px-3 rounded-full ml-12">
-                      <Text className="text-[#6C3CD1] font-medium">Edit</Text>
-                    </TouchableOpacity>
-                  </View>
-                  <Text className="text-[#808FA2] text-sm">Scheduled to {selectedDate}</Text>
-                  <Text className="text-[#808FA2] text-sm">Within {timeDisplay}</Text>
+//                 <View>
+//                   <View className="flex-row justify-between">
+//                     <Text className="text-base font-semibold">Delivery - One Time</Text>
+//                     <TouchableOpacity 
+//                       onPress={() => navigation.navigate("ScheduleScreen" as any, { 
+//                         totalPrice: total,
+//                         customerId, 
+//                         items,
+//                         subtotal,
+//                         discount
+//                       })}
+//                       className="border border-[#6C3CD1] px-3 rounded-full ml-12">
+//                       <Text className="text-[#6C3CD1] font-medium">Edit</Text>
+//                     </TouchableOpacity>
+//                   </View>
+//                   <Text className="text-[#808FA2] text-sm">Scheduled to {selectedDate}</Text>
+//                   <Text className="text-[#808FA2] text-sm">Within {timeDisplay}</Text>
+//                 </View>
+//               </View>
+//             </View>
+//           </View>
+  
+//           {/* Customer Info */}
+//           <View className="bg-white border border-gray-300 rounded-lg p-4 mt-3 shadow-sm">
+//             <Text className="text-[#808FA2] text-xs">Customer's Name</Text>
+//             <Text className="text-black font-medium">{customerInfo.name}</Text>
+  
+//             <Text className="text-[#808FA2] text-xs mt-2">Customer's Phone Number</Text>
+//             <Text className="text-black font-medium">{customerInfo.phone}</Text>
+  
+//             <Text className="text-[#808FA2] text-xs mt-2">Building Type</Text>
+//             <Text className="text-black font-medium">{customerInfo.buildingType}</Text>
+  
+        
+//             <Text className="text-[#808FA2] text-xs mt-2">Address</Text>
+// {customerData && customerData.buildingDetails ? (
+//   <View>
+//     {customerData.buildingDetails.buildingNo && (
+//       <Text className="text-black font-medium"> {customerData.buildingDetails.buildingNo},</Text>
+//     )}
+//     {customerData.buildingDetails.unitNo && (
+//       <Text className="text-black font-medium"> {customerData.buildingDetails.unitNo},</Text>
+//     )}
+//     {customerData.buildingDetails.buildingName && (
+//       <Text className="text-black font-medium"> {customerData.buildingDetails.buildingName},</Text>
+//     )}
+//     {customerData.buildingDetails.floorNo && (
+//       <Text className="text-black font-medium"> {customerData.buildingDetails.floorNo},</Text>
+//     )}
+//     {customerData.buildingDetails.houseNo && (
+//       <Text className="text-black font-medium"> {customerData.buildingDetails.houseNo},</Text>
+//     )}
+//     {customerData.buildingDetails.streetName && (
+//       <Text className="text-black font-medium"> {customerData.buildingDetails.streetName},</Text>
+//     )}
+//     {customerData.buildingDetails.city && (
+//       <Text className="text-black font-medium"> {customerData.buildingDetails.city}</Text>
+//     )}
+//   </View>
+// ) : (
+//   <Text className="text-black font-medium">Address not available</Text>
+// )}
+//           </View>
+  
+//           {/* Payment Summary */}
+//           <View className="bg-white border border-gray-300 rounded-lg p-4 mt-3 shadow-sm">
+//             <View className="flex-row justify-between">
+//               <Text className="text-black font-medium">Payment Summary</Text>
+//               <TouchableOpacity 
+//                 onPress={() => navigation.navigate("CratScreen" as any, { 
+//                   screen: "OrderScreen",
+//                   params: { customerId ,items } 
+//                 })}
+//                 className="border border-[#6C3CD1] px-3 rounded-full">
+//                 <Text className="text-[#6C3CD1] font-medium">Edit</Text>
+//               </TouchableOpacity>
+//             </View>
+//             <View className="flex-row justify-between">
+//               <Text className="text-[#8492A3] font-medium">Subtotal</Text>
+//               <Text className="text-black font-medium mr-12">
+//                 Rs.{subTotalDeliveryPlus.toFixed(2)}
+//               </Text>
+//             </View>
+//             <View className="flex-row justify-between">
+//               <Text className="text-[#8492A3]">Discount</Text>
+//               <Text className="text-gray-500 mr-12">
+//                 Rs.{discount.toFixed(2)}
+//               </Text>
+//             </View>
+//             <View className="flex-row justify-between mt-2">
+//               <Text className="text-black font-semibold">Grand Total</Text>
+//               <Text className="text-black font-semibold mr-12">
+//                 Rs.{totalDeliveryPlus.toFixed(2)}
+//               </Text>
+//             </View>
+//           </View>
+  
+//           {/* Payment Method */}
+//           <View className="bg-white border border-gray-300 rounded-lg p-4 mt-3 shadow-sm">
+//             <View className="flex-row justify-between">
+//               <Text className="text-black font-medium">Payment Method</Text>
+//               <TouchableOpacity 
+//                 onPress={() => navigation.navigate("SelectPaymentMethod" as any, {
+//                   items,
+//                   subtotal,
+//                   discount, 
+//                   total,
+//                   fullTotal,
+//                   selectedDate,
+//                   selectedTimeSlot,
+//                   customerId 
+//                 })}
+//                 className="border border-[#6C3CD1] px-3 rounded-full">
+//                 <Text className="text-[#6C3CD1] font-medium">Edit</Text>
+//               </TouchableOpacity>
+//             </View>
+//             <Text className="text-[#8492A3] mt-1">{paymentMethod || "Not selected"}</Text>
+//           </View>
+//         </View>
+  
+//         {/* Confirm Button */}
+//         <TouchableOpacity onPress={handleConfirmOrder}>
+//         <LinearGradient 
+//           colors={["#6839CF", "#874DDB"]} 
+//           className="py-3 px-4 rounded-lg items-center mt-[10%] mb-[10%] mr-[25%] ml-[25%] rounded-3xl h-15"
+//         >
+      
+//             <Text className="text-center text-white font-bold">Confirm</Text>
+     
+//         </LinearGradient>
+//         </TouchableOpacity>
+//       </ScrollView>
+//     </KeyboardAvoidingView>
+//   );
+return (
+  <KeyboardAvoidingView 
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    enabled 
+    className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}
+  >
+    {/* Header */}
+    <View className={`flex-row items-center shadow-md px-3 py-3 ${
+      isDarkMode ? 'bg-gray-800' : 'bg-white'
+    }`}>
+      <BackButton navigation={navigation} />
+      <Text className={`text-lg font-bold flex-grow text-center mr-8 ${
+        isDarkMode ? 'text-purple-300' : 'text-[#6C3CD1]'
+      }`}>
+        Order Summary
+      </Text>
+    </View>
+    
+    <ScrollView 
+      showsVerticalScrollIndicator={true} 
+      contentContainerStyle={{ paddingBottom: 20 }} 
+      className="flex-1 px-4"
+      keyboardShouldPersistTaps="handled"
+    >
+      <View className="px-2">
+        {/* Delivery Info Card */}
+        <View className={`border rounded-lg p-4 shadow-sm ${
+          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'
+        }`}>
+          <View className="flex-row items-center">
+            <View className="flex-row items-center space-x-2 flex-1">
+              <Image 
+                source={isDarkMode 
+                  ? require("../assets/images/delivery.png") 
+                  : require("../assets/images/delivery.png")} 
+                className="w-10 h-10" 
+              />
+              
+              <View>
+                <View className="flex-row justify-between">
+                  <Text className={`text-base font-semibold ${
+                    isDarkMode ? 'text-gray-200' : 'text-black'
+                  }`}>
+                    Delivery - One Time
+                  </Text>
+                  <TouchableOpacity 
+                    onPress={() => navigation.navigate("ScheduleScreen" as any, { 
+                      totalPrice: total,
+                      customerId, 
+                      items,
+                      subtotal,
+                      discount
+                    })}
+                    className={`border px-3 rounded-full ml-12 ${
+                      isDarkMode ? 'border-purple-400' : 'border-[#6C3CD1]'
+                    }`}>
+                    <Text className={isDarkMode ? "text-purple-300 font-medium" : "text-[#6C3CD1] font-medium"}>
+                      Edit
+                    </Text>
+                  </TouchableOpacity>
                 </View>
+                <Text className={isDarkMode ? "text-gray-400 text-sm" : "text-[#808FA2] text-sm"}>
+                  Scheduled to {selectedDate}
+                </Text>
+                <Text className={isDarkMode ? "text-gray-400 text-sm" : "text-[#808FA2] text-sm"}>
+                  Within {timeDisplay}
+                </Text>
               </View>
             </View>
           </View>
-  
-          {/* Customer Info */}
-          <View className="bg-white border border-gray-300 rounded-lg p-4 mt-3 shadow-sm">
-            <Text className="text-[#808FA2] text-xs">Customer's Name</Text>
-            <Text className="text-black font-medium">{customerInfo.name}</Text>
-  
-            <Text className="text-[#808FA2] text-xs mt-2">Customer's Phone Number</Text>
-            <Text className="text-black font-medium">{customerInfo.phone}</Text>
-  
-            <Text className="text-[#808FA2] text-xs mt-2">Building Type</Text>
-            <Text className="text-black font-medium">{customerInfo.buildingType}</Text>
-  
-        
-            <Text className="text-[#808FA2] text-xs mt-2">Address</Text>
-{customerData && customerData.buildingDetails ? (
-  <View>
-    {customerData.buildingDetails.buildingNo && (
-      <Text className="text-black font-medium"> {customerData.buildingDetails.buildingNo},</Text>
-    )}
-    {customerData.buildingDetails.unitNo && (
-      <Text className="text-black font-medium"> {customerData.buildingDetails.unitNo},</Text>
-    )}
-    {customerData.buildingDetails.buildingName && (
-      <Text className="text-black font-medium"> {customerData.buildingDetails.buildingName},</Text>
-    )}
-    {customerData.buildingDetails.floorNo && (
-      <Text className="text-black font-medium"> {customerData.buildingDetails.floorNo},</Text>
-    )}
-    {customerData.buildingDetails.houseNo && (
-      <Text className="text-black font-medium"> {customerData.buildingDetails.houseNo},</Text>
-    )}
-    {customerData.buildingDetails.streetName && (
-      <Text className="text-black font-medium"> {customerData.buildingDetails.streetName},</Text>
-    )}
-    {customerData.buildingDetails.city && (
-      <Text className="text-black font-medium"> {customerData.buildingDetails.city}</Text>
-    )}
-  </View>
-) : (
-  <Text className="text-black font-medium">Address not available</Text>
-)}
+        </View>
+
+        {/* Customer Info Card */}
+        <View className={`border rounded-lg p-4 mt-3 shadow-sm ${
+          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'
+        }`}>
+          <Text className={isDarkMode ? "text-gray-400 text-xs" : "text-[#808FA2] text-xs"}>
+            Customer's Name
+          </Text>
+          <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+            {customerInfo.name}
+          </Text>
+
+          <Text className={`text-xs mt-2 ${
+            isDarkMode ? "text-gray-400" : "text-[#808FA2]"
+          }`}>
+            Customer's Phone Number
+          </Text>
+          <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+            {customerInfo.phone}
+          </Text>
+
+          <Text className={`text-xs mt-2 ${
+            isDarkMode ? "text-gray-400" : "text-[#808FA2]"
+          }`}>
+            Building Type
+          </Text>
+          <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+            {customerInfo.buildingType}
+          </Text>
+
+          <Text className={`text-xs mt-2 ${
+            isDarkMode ? "text-gray-400" : "text-[#808FA2]"
+          }`}>
+            Address
+          </Text>
+          {customerData && customerData.buildingDetails ? (
+            <View>
+              {customerData.buildingDetails.buildingNo && (
+                <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+                  {customerData.buildingDetails.buildingNo},
+                </Text>
+              )}
+              {customerData.buildingDetails.unitNo && (
+                <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+                  {customerData.buildingDetails.unitNo},
+                </Text>
+              )}
+              {customerData.buildingDetails.buildingName && (
+                <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+                  {customerData.buildingDetails.buildingName},
+                </Text>
+              )}
+              {customerData.buildingDetails.floorNo && (
+                <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+                  {customerData.buildingDetails.floorNo},
+                </Text>
+              )}
+              {customerData.buildingDetails.houseNo && (
+                <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+                  {customerData.buildingDetails.houseNo},
+                </Text>
+              )}
+              {customerData.buildingDetails.streetName && (
+                <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+                  {customerData.buildingDetails.streetName},
+                </Text>
+              )}
+              {customerData.buildingDetails.city && (
+                <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+                  {customerData.buildingDetails.city}
+                </Text>
+              )}
+            </View>
+          ) : (
+            <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+              Address not available
+            </Text>
+          )}
+        </View>
+
+        {/* Payment Summary Card */}
+        <View className={`border rounded-lg p-4 mt-3 shadow-sm ${
+          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'
+        }`}>
+          <View className="flex-row justify-between">
+            <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+              Payment Summary
+            </Text>
+            <TouchableOpacity 
+              onPress={() => navigation.navigate("CratScreen" as any, { 
+                screen: "OrderScreen",
+                params: { customerId, items } 
+              })}
+              className={`border px-3 rounded-full ${
+                isDarkMode ? 'border-purple-400' : 'border-[#6C3CD1]'
+              }`}>
+              <Text className={isDarkMode ? "text-purple-300 font-medium" : "text-[#6C3CD1] font-medium"}>
+                Edit
+              </Text>
+            </TouchableOpacity>
           </View>
-  
-          {/* Payment Summary */}
-          <View className="bg-white border border-gray-300 rounded-lg p-4 mt-3 shadow-sm">
-            <View className="flex-row justify-between">
-              <Text className="text-black font-medium">Payment Summary</Text>
-              <TouchableOpacity 
-                onPress={() => navigation.navigate("CratScreen" as any, { 
-                  screen: "OrderScreen",
-                  params: { customerId ,items } 
-                })}
-                className="border border-[#6C3CD1] px-3 rounded-full">
-                <Text className="text-[#6C3CD1] font-medium">Edit</Text>
-              </TouchableOpacity>
-            </View>
-            <View className="flex-row justify-between">
-              <Text className="text-[#8492A3] font-medium">Subtotal</Text>
-              <Text className="text-black font-medium mr-12">
-                Rs.{subTotalDeliveryPlus.toFixed(2)}
-              </Text>
-            </View>
-            <View className="flex-row justify-between">
-              <Text className="text-[#8492A3]">Discount</Text>
-              <Text className="text-gray-500 mr-12">
-                Rs.{discount.toFixed(2)}
-              </Text>
-            </View>
-            <View className="flex-row justify-between mt-2">
-              <Text className="text-black font-semibold">Grand Total</Text>
-              <Text className="text-black font-semibold mr-12">
-                Rs.{totalDeliveryPlus.toFixed(2)}
-              </Text>
-            </View>
+          <View className="flex-row justify-between">
+            <Text className={isDarkMode ? "text-gray-400 font-medium" : "text-[#8492A3] font-medium"}>
+              Subtotal
+            </Text>
+            <Text className={`font-medium mr-12 ${
+              isDarkMode ? "text-gray-200" : "text-black"
+            }`}>
+              Rs.{subTotalDeliveryPlus.toFixed(2)}
+            </Text>
           </View>
-  
-          {/* Payment Method */}
-          <View className="bg-white border border-gray-300 rounded-lg p-4 mt-3 shadow-sm">
-            <View className="flex-row justify-between">
-              <Text className="text-black font-medium">Payment Method</Text>
-              <TouchableOpacity 
-                onPress={() => navigation.navigate("SelectPaymentMethod" as any, {
-                  items,
-                  subtotal,
-                  discount, 
-                  total,
-                  fullTotal,
-                  selectedDate,
-                  selectedTimeSlot,
-                  customerId 
-                })}
-                className="border border-[#6C3CD1] px-3 rounded-full">
-                <Text className="text-[#6C3CD1] font-medium">Edit</Text>
-              </TouchableOpacity>
-            </View>
-            <Text className="text-[#8492A3] mt-1">{paymentMethod || "Not selected"}</Text>
+          <View className="flex-row justify-between">
+            <Text className={isDarkMode ? "text-gray-400" : "text-[#8492A3]"}>
+              Discount
+            </Text>
+            <Text className={`mr-12 ${
+              isDarkMode ? "text-gray-400" : "text-gray-500"
+            }`}>
+              Rs.{discount.toFixed(2)}
+            </Text>
+          </View>
+          <View className="flex-row justify-between mt-2">
+            <Text className={isDarkMode ? "text-gray-200 font-semibold" : "text-black font-semibold"}>
+              Grand Total
+            </Text>
+            <Text className={`font-semibold mr-12 ${
+              isDarkMode ? "text-gray-200" : "text-black"
+            }`}>
+              Rs.{totalDeliveryPlus.toFixed(2)}
+            </Text>
           </View>
         </View>
-  
-        {/* Confirm Button */}
-        <TouchableOpacity onPress={handleConfirmOrder}>
+
+        {/* Payment Method Card */}
+        <View className={`border rounded-lg p-4 mt-3 shadow-sm ${
+          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-300'
+        }`}>
+          <View className="flex-row justify-between">
+            <Text className={isDarkMode ? "text-gray-200 font-medium" : "text-black font-medium"}>
+              Payment Method
+            </Text>
+            <TouchableOpacity 
+              onPress={() => navigation.navigate("SelectPaymentMethod" as any, {
+                items,
+                subtotal,
+                discount, 
+                total,
+                fullTotal,
+                selectedDate,
+                selectedTimeSlot,
+                customerId 
+              })}
+              className={`border px-3 rounded-full ${
+                isDarkMode ? 'border-purple-400' : 'border-[#6C3CD1]'
+              }`}>
+              <Text className={isDarkMode ? "text-purple-300 font-medium" : "text-[#6C3CD1] font-medium"}>
+                Edit
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <Text className={`mt-1 ${
+            isDarkMode ? "text-gray-400" : "text-[#8492A3]"
+          }`}>
+            {paymentMethod || "Not selected"}
+          </Text>
+        </View>
+      </View>
+
+      {/* Confirm Button */}
+      <TouchableOpacity onPress={handleConfirmOrder}>
         <LinearGradient 
-          colors={["#6839CF", "#874DDB"]} 
+          colors={isDarkMode ? ["#7C3AED", "#8B5CF6"] : ["#6839CF", "#874DDB"]} 
           className="py-3 px-4 rounded-lg items-center mt-[10%] mb-[10%] mr-[25%] ml-[25%] rounded-3xl h-15"
         >
-      
-            <Text className="text-center text-white font-bold">Confirm</Text>
-     
+          <Text className="text-center text-white font-bold">Confirm</Text>
         </LinearGradient>
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
-  );
+      </TouchableOpacity>
+    </ScrollView>
+  </KeyboardAvoidingView>
+);
 };
 
 export default OrderSummeryScreen;

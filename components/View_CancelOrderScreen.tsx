@@ -21,6 +21,7 @@ import axios from "axios";
 import environment from "@/environment/environment";
 import { Feather } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTheme } from '../ThemeContext';
 
 type View_CancelOrderScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -69,6 +70,8 @@ const View_CancelOrderScreen: React.FC<View_CancelOrderScreenProps> = ({
   const [showStatusMessage, setShowStatusMessage] = useState(false);
   const [cancelModalVisible, setCancelModalVisible] = useState(false);
   const [subtotal, setSubtotal] = useState(0);
+
+  const { isDarkMode, toggleTheme } = useTheme();
 
   console.log(";;;;;;",route.params)
 
@@ -319,303 +322,713 @@ const isTimelineItemActive = (status: string) => {
         setLoading(false);
       }
     };
-  return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 bg-white"
-    >
-      <View className="bg-white flex-1">
-        <View className="flex-row items-center shadow-md px-4 py-3 bg-white">
-          <BackButton navigation={navigation} />
-          <Text className="text-lg font-bold text-[#6C3CD1] flex-grow text-center mr-8">
-            Order Status
+//   return (
+//     <KeyboardAvoidingView
+//       behavior={Platform.OS === "ios" ? "padding" : "height"}
+//       className="flex-1 bg-white"
+//     >
+//       <View className="bg-white flex-1">
+//         <View className="flex-row items-center shadow-md px-4 py-3 bg-white">
+//           <BackButton navigation={navigation} />
+//           <Text className="text-lg font-bold text-[#6C3CD1] flex-grow text-center mr-8">
+//             Order Status
+//           </Text>
+//           <TouchableOpacity onPress={handleGetACall} className="absolute right-4">
+//             <Feather name="phone" size={24} color="#6C3CD1" />
+//           </TouchableOpacity>
+//         </View>
+
+//         {loading ? (
+//           <View className="flex-1 justify-center items-center">
+//             <ActivityIndicator size="large" color="#6C3CD1" />
+//             <Text className="mt-2 text-gray-600">Loading order details...</Text>
+//           </View>
+//         ) : error ? (
+//           <View className="flex-1 justify-center items-center p-5">
+//             <Text className="text-red-500">{error}</Text>
+//             <TouchableOpacity 
+//               onPress={() => navigation.goBack()}
+//               className="mt-4 bg-[#6C3CD1] px-4 py-2 rounded-lg"
+//             >
+//               <Text className="text-white">Go Back</Text>
+//             </TouchableOpacity>
+//           </View>
+//         ) : order ? (
+//           <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+        
+// {/* Order Status Timeline */}
+
+// <View className="p-5 ml-6">
+//   <View className="border-l-2 border-[#D9D9D9] pl-5 relative">
+//     {/* Order Placed */}
+//     <View className="flex-row items-center mb-10">
+//       <View 
+//         className={`w-4 h-4 rounded-full absolute -left-7 ${isTimelineItemActive("Ordered") ? "bg-[#6C3CD1]" : "bg-[#D9D9D9]"}`} 
+//       />
+//       <Text className="text-gray-800 font-medium">
+//         Order Placed {formatDateShort(order.createdAt)}
+//       </Text>
+//     </View>
+
+//     {/* Processing */}
+//     <View className="flex-row items-center mb-10">
+//       <View 
+//         className={`w-4 h-4 rounded-full absolute -left-7 ${isTimelineItemActive("Processing") ? "bg-[#6C3CD1]" : "bg-[#D9D9D9]"}`} 
+//       />
+//       <Text className="text-gray-800 font-medium">
+//         Order is Processing
+//       </Text>
+//     </View>
+
+//     {/* On the way */}
+//     <View className="flex-row items-center mb-10">
+//       <View 
+//         className={`w-4 h-4 rounded-full absolute -left-7 ${isTimelineItemActive("On the way") ? "bg-[#6C3CD1]" : "bg-[#D9D9D9]"}`} 
+//       />
+//       <Text className="text-gray-800 font-medium">
+//         Order is On the way
+//       </Text>
+//     </View>
+
+//     {/* Delivered - Last item in normal flow */}
+//     <View className={`flex-row items-center ${order.orderStatus === "Cancelled" ? "mb-10" : ""}`}>
+//       <View 
+//         className={`w-4 h-4 rounded-full absolute -left-7 ${isTimelineItemActive("Delivered") ? "bg-[#6C3CD1]" : "bg-[#D9D9D9]"}`} 
+//       />
+//       <Text className="text-gray-800 font-medium">
+//         Order is Delivered
+//       </Text>
+//     </View>
+
+//     {/* Order Cancelled - Show ONLY if order is cancelled */}
+//     {order.orderStatus === "Cancelled" && (
+//       <View className="flex-row items-center">
+//         <View 
+//           className="w-4 h-4 rounded-full absolute -left-7 bg-[#6C3CD1]"
+//         />
+//         <Text className="text-red-500 font-medium">
+//           Order is Cancelled
+//         </Text>
+//       </View>
+//     )}
+//   </View>
+// </View>
+
+//             {/* Customer Information */}
+//             <View className="bg-white border border-gray-200 rounded-lg shadow-sm mx-4 p-4 mb-4">
+//               <Text className="text-[#808FA2] font-medium mb-1">Customer's Name</Text>
+//               <Text className="text-black font-medium mb-3">{`${order.firstName} ${order.lastName}`}</Text>
+
+//               <Text className="text-[#808FA2] font-medium mb-1">Customer's Phone Number</Text>
+//               <Text className="text-black font-medium mb-3">{order.phoneNumber}</Text>
+
+//               <Text className="text-[#808FA2] font-medium mb-1">Building Type</Text>
+//               <Text className="text-black font-medium mb-3">{order.buildingType}</Text>
+
+//               <Text className="text-[#808FA2] font-medium mb-1">Address</Text>
+//               <Text className="text-black font-medium">{order.fullAddress}</Text>
+//             </View>
+
+//             {/* Payment Summary */}
+//             {order.fullTotal && (
+//               <View className="bg-white border border-gray-200 rounded-lg shadow-sm mx-4 p-4 mb-4">
+//                 <Text className="text-black font-semibold mb-2">Payment Summary</Text>
+//                 <View className="flex-row justify-between mb-2">
+//   <Text className="text-[#8492A3]">Subtotal</Text>
+//   <Text className="text-black font-medium">
+//     Rs.{(parseFloat(order.fullTotal || "0") - 350 ).toFixed(2)}
+//   </Text>
+// </View>
+//                 {order.fullDiscount && parseFloat(order.fullDiscount) > 0 && (
+//                   <View className="flex-row justify-between mb-2">
+//                     <Text className="text-[#8492A3]">Discount</Text>
+//                     <Text className="text-[#8492A3]">Rs.{parseFloat(order.fullDiscount).toFixed(2)}</Text>
+//                   </View>
+//                 )}
+//                 <View className="flex-row justify-between mb-2">
+//                     <Text className="text-[#8492A3]">Delivery</Text>
+//                     <Text className="text-[#8492A3]">Rs.350.00</Text>
+//                   </View>
+//                 <View className="flex-row justify-between pt-2">
+//                   <Text className="font-semibold text-black">Grand Total</Text>
+//                   <Text className="font-bold text-black">
+//                   Rs.{parseFloat(order.fullSubTotal || "0").toFixed(2)}
+//                   </Text>
+//                 </View>
+//               </View>
+//             )}
+
+//             {/* Payment Method */}
+//             <View className="bg-white border border-gray-200 rounded-lg shadow-sm mx-4 p-4 mb-6">
+//               <Text className="text-black font-semibold mb-1">Payment Method</Text>
+//               <Text className="text-[#8492A3]">
+//                 {order.paymentMethod === "Credit Card" ? "Online Payment" : "Cash on Delivery"}
+//               </Text>
+//             </View>
+            
+
+//             {showStatusMessage && (
+//               <View className="mx-4 mt-2 p-2 rounded-lg">
+//                 <Text className="text-red-500 font-medium text-center">
+//                   {selectedReportOption}
+//                 </Text>
+                
+//               </View>
+//             )}
+//             <Text className="text-red-500 font-medium text-center mb-2">{order.reportStatus}</Text>
+            
+
+//             {/* Report Status Button - Only shown when not Ordered or Cancelled */}
+// { order.orderStatus !== "Cancelled" && (
+//   <TouchableOpacity 
+//     onPress={handleReportStatus}
+//     className="mx-5 mb-3 rounded-full px-8"
+//   >
+//     <LinearGradient
+//       colors={["#6839CF", "#874DDB"]}
+//       start={{ x: 0, y: 0 }}
+//       end={{ x: 1, y: 1 }}
+//       className="py-3 rounded-lg items-center"
+//     >
+//       <Text className="text-white text-center font-semibold">Report Status</Text>
+//     </LinearGradient>
+//   </TouchableOpacity>
+// )}
+
+//             {/* Cancel Order Button */}
+//             <TouchableOpacity 
+//               onPress={handleCancelOrder}
+//               disabled={isCancelDisabled()}
+//               className={`mx-5 mb-5 px-8 rounded-full ${isCancelDisabled() ? "opacity-70" : ""}`}
+//             >
+//               {isCancelDisabled() ? (
+//                 <View className="bg-[#D9D9D9] py-3 rounded-lg items-center">
+//                   <Text className="text-black text-center font-semibold">Cancel Order</Text>
+//                 </View>
+//               ) : (
+//                 <View className="bg-[#000000] py-3 rounded-lg items-center">
+//                   <Text className="text-white text-center font-semibold">Cancel Order</Text>
+//                 </View>
+//               )}
+//             </TouchableOpacity>
+//           </ScrollView>
+//         ) : (
+//           <View className="flex-1 justify-center items-center p-5">
+//             <Text className="text-gray-600">No order information found</Text>
+//           </View>
+//         )}
+//       </View>
+
+//       {/* Report Status Modal */}
+//       <Modal
+//   animationType="slide"
+//   transparent={true}
+//   visible={cancelModalVisible}
+//   onRequestClose={() => setCancelModalVisible(false)}
+// >
+//   <View className="flex-1 justify-center items-center bg-black/50">
+//     <View className="bg-white rounded-lg p-5 w-5/6 max-w-md">
+//       <Text className="text-xl font-bold text-center mb-2">
+//         Are you sure?
+//       </Text>
+      
+//       <Text className="text-center text-gray-600 mb-8">
+//         This will permanently delete the order placed by customer and cannot be undone.
+//       </Text>
+
+//       {/* Confirm Button */}
+//       <TouchableOpacity 
+//         onPress={confirmCancelOrder}
+//         className="mb-3 rounded-lg overflow-hidden"
+//       >
+//         <View className="bg-black py-3 rounded-lg items-center">
+//           <Text className="text-white text-center font-semibold">Confirm</Text>
+//         </View>
+//       </TouchableOpacity>
+
+//       {/* Cancel Button */}
+//       <TouchableOpacity 
+//         onPress={() => setCancelModalVisible(false)}
+//         className="rounded-lg"
+//       >
+//         <View className="bg-gray-200 py-3 rounded-lg items-center">
+//           <Text className="text-black text-center font-semibold">Cancel</Text>
+//         </View>
+//       </TouchableOpacity>
+//     </View>
+//   </View>
+// </Modal>
+
+// <Modal
+//         animationType="slide"
+//         transparent={true}
+//         visible={reportModalVisible}
+//         onRequestClose={() => setReportModalVisible(false)}
+//       >
+//         <View className="flex-1 justify-center items-center bg-black/50">
+//           <View className="bg-white rounded-lg p-5 w-5/6 max-w-md">
+            
+
+//             {/* Status Options */}
+//             <View className="mb-4">
+//               <TouchableOpacity 
+//                 className="flex-row items-center justify-between p-3 mb-2" 
+//                 onPress={() => setSelectedReportOption("Confirmed")}
+//               >
+//                 <Text className="text-black font-medium">Confirmed</Text>
+//                 <View className={`w-6 h-6 border border-gray-400 rounded ${selectedReportOption === "Confirmed" ? "bg-[#6C3CD1]" : "bg-white"}`} />
+//               </TouchableOpacity>
+
+//               <TouchableOpacity 
+//                 className="flex-row items-center justify-between p-3 mb-2" 
+//                 onPress={() => setSelectedReportOption("Not-Confirmed")}
+//               >
+//                 <Text className="text-black font-medium">Not-Confirmed</Text>
+//                 <View className={`w-6 h-6 border border-gray-400 rounded ${selectedReportOption === "Not-Confirmed" ? "bg-[#6C3CD1]" : "bg-white"}`} />
+//               </TouchableOpacity>
+
+//               <TouchableOpacity 
+//                 className="flex-row items-center justify-between p-3 mb-6" 
+//                 onPress={() => setSelectedReportOption("Not-Answered")}
+//               >
+//                 <Text className="text-black font-medium">Not-Answered</Text>
+//                 <View className={`w-6 h-6 border border-gray-400 rounded ${selectedReportOption === "Not-Answered" ? "bg-[#6C3CD1]" : "bg-white"}`} />
+//               </TouchableOpacity>
+//             </View>
+
+//             {/* Buttons */}
+//             <TouchableOpacity 
+//               onPress={handleConfirmReport}
+//               className="mb-3 rounded-lg overflow-hidden"
+//             >
+//               <View className="bg-black py-3 rounded-lg items-center">
+//                 <Text className="text-white text-center font-semibold">Confirm</Text>
+//               </View>
+//             </TouchableOpacity>
+
+//             <TouchableOpacity 
+//               onPress={() => setReportModalVisible(false)}
+//               className="rounded-lg"
+//             >
+//               <View className="bg-gray-200 py-3 rounded-lg items-center">
+//                 <Text className="text-black text-center font-semibold">Cancel</Text>
+//               </View>
+//             </TouchableOpacity>
+//           </View>
+//         </View>
+//       </Modal>
+//     </KeyboardAvoidingView>
+//   );
+
+return (
+  <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}
+  >
+    <View className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+      
+      <View className={`flex-row items-center shadow-md px-4 py-3 ${
+        isDarkMode ? 'bg-gray-800' : 'bg-white'
+      }`}>
+        <BackButton navigation={navigation} />
+        <Text className={`text-lg font-bold flex-grow text-center mr-8 ${
+          isDarkMode ? 'text-purple-300' : 'text-[#6C3CD1]'
+        }`}>
+          Order Status
+        </Text>
+        <TouchableOpacity onPress={handleGetACall} className="absolute right-4">
+          <Feather 
+            name="phone" 
+            size={24} 
+            color={isDarkMode ? '#a67dff' : '#6C3CD1'} 
+          />
+        </TouchableOpacity>
+      </View>
+
+      {loading ? (
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color={isDarkMode ? '#a67dff' : '#6C3CD1'} />
+          <Text className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+            Loading order details...
           </Text>
-          <TouchableOpacity onPress={handleGetACall} className="absolute right-4">
-            <Feather name="phone" size={24} color="#6C3CD1" />
+        </View>
+      ) : error ? (
+        <View className="flex-1 justify-center items-center p-5">
+          <Text className="text-red-500">{error}</Text>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            className={`mt-4 px-4 py-2 rounded-lg ${
+              isDarkMode ? 'bg-purple-700' : 'bg-[#6C3CD1]'
+            }`}
+          >
+            <Text className="text-white">Go Back</Text>
           </TouchableOpacity>
         </View>
-
-        {loading ? (
-          <View className="flex-1 justify-center items-center">
-            <ActivityIndicator size="large" color="#6C3CD1" />
-            <Text className="mt-2 text-gray-600">Loading order details...</Text>
-          </View>
-        ) : error ? (
-          <View className="flex-1 justify-center items-center p-5">
-            <Text className="text-red-500">{error}</Text>
-            <TouchableOpacity 
-              onPress={() => navigation.goBack()}
-              className="mt-4 bg-[#6C3CD1] px-4 py-2 rounded-lg"
-            >
-              <Text className="text-white">Go Back</Text>
-            </TouchableOpacity>
-          </View>
-        ) : order ? (
-          <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+      ) : order ? (
+        <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
         
-{/* Order Status Timeline */}
+          <View className="p-5 ml-6">
+            <View className={`border-l-2 pl-5 relative ${
+              isDarkMode ? 'border-gray-700' : 'border-[#D9D9D9]'
+            }`}>
+          
+              <View className="flex-row items-center mb-10">
+                <View 
+                  className={`w-4 h-4 rounded-full absolute -left-7 ${
+                    isTimelineItemActive("Ordered") 
+                      ? (isDarkMode ? 'bg-purple-500' : 'bg-[#6C3CD1]') 
+                      : (isDarkMode ? 'bg-gray-600' : 'bg-[#D9D9D9]')
+                  }`} 
+                />
+                <Text className={`font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-800'
+                }`}>
+                  Order Placed {formatDateShort(order.createdAt)}
+                </Text>
+              </View>
 
-<View className="p-5 ml-6">
-  <View className="border-l-2 border-[#D9D9D9] pl-5 relative">
-    {/* Order Placed */}
-    <View className="flex-row items-center mb-10">
-      <View 
-        className={`w-4 h-4 rounded-full absolute -left-7 ${isTimelineItemActive("Ordered") ? "bg-[#6C3CD1]" : "bg-[#D9D9D9]"}`} 
-      />
-      <Text className="text-gray-800 font-medium">
-        Order Placed {formatDateShort(order.createdAt)}
-      </Text>
-    </View>
+            
+              <View className="flex-row items-center mb-10">
+                <View 
+                  className={`w-4 h-4 rounded-full absolute -left-7 ${
+                    isTimelineItemActive("Processing") 
+                      ? (isDarkMode ? 'bg-purple-500' : 'bg-[#6C3CD1]') 
+                      : (isDarkMode ? 'bg-gray-600' : 'bg-[#D9D9D9]')
+                  }`} 
+                />
+                <Text className={`font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-800'
+                }`}>
+                  Order is Processing
+                </Text>
+              </View>
 
-    {/* Processing */}
-    <View className="flex-row items-center mb-10">
-      <View 
-        className={`w-4 h-4 rounded-full absolute -left-7 ${isTimelineItemActive("Processing") ? "bg-[#6C3CD1]" : "bg-[#D9D9D9]"}`} 
-      />
-      <Text className="text-gray-800 font-medium">
-        Order is Processing
-      </Text>
-    </View>
+          
+              <View className="flex-row items-center mb-10">
+                <View 
+                  className={`w-4 h-4 rounded-full absolute -left-7 ${
+                    isTimelineItemActive("On the way") 
+                      ? (isDarkMode ? 'bg-purple-500' : 'bg-[#6C3CD1]') 
+                      : (isDarkMode ? 'bg-gray-600' : 'bg-[#D9D9D9]')
+                  }`} 
+                />
+                <Text className={`font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-800'
+                }`}>
+                  Order is On the way
+                </Text>
+              </View>
 
-    {/* On the way */}
-    <View className="flex-row items-center mb-10">
-      <View 
-        className={`w-4 h-4 rounded-full absolute -left-7 ${isTimelineItemActive("On the way") ? "bg-[#6C3CD1]" : "bg-[#D9D9D9]"}`} 
-      />
-      <Text className="text-gray-800 font-medium">
-        Order is On the way
-      </Text>
-    </View>
+            
+              <View className={`flex-row items-center ${
+                order.orderStatus === "Cancelled" ? "mb-10" : ""
+              }`}>
+                <View 
+                  className={`w-4 h-4 rounded-full absolute -left-7 ${
+                    isTimelineItemActive("Delivered") 
+                      ? (isDarkMode ? 'bg-purple-500' : 'bg-[#6C3CD1]') 
+                      : (isDarkMode ? 'bg-gray-600' : 'bg-[#D9D9D9]')
+                  }`} 
+                />
+                <Text className={`font-medium ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-800'
+                }`}>
+                  Order is Delivered
+                </Text>
+              </View>
 
-    {/* Delivered - Last item in normal flow */}
-    <View className={`flex-row items-center ${order.orderStatus === "Cancelled" ? "mb-10" : ""}`}>
-      <View 
-        className={`w-4 h-4 rounded-full absolute -left-7 ${isTimelineItemActive("Delivered") ? "bg-[#6C3CD1]" : "bg-[#D9D9D9]"}`} 
-      />
-      <Text className="text-gray-800 font-medium">
-        Order is Delivered
-      </Text>
-    </View>
-
-    {/* Order Cancelled - Show ONLY if order is cancelled */}
-    {order.orderStatus === "Cancelled" && (
-      <View className="flex-row items-center">
-        <View 
-          className="w-4 h-4 rounded-full absolute -left-7 bg-[#6C3CD1]"
-        />
-        <Text className="text-red-500 font-medium">
-          Order is Cancelled
-        </Text>
-      </View>
-    )}
-  </View>
-</View>
-
-            {/* Customer Information */}
-            <View className="bg-white border border-gray-200 rounded-lg shadow-sm mx-4 p-4 mb-4">
-              <Text className="text-[#808FA2] font-medium mb-1">Customer's Name</Text>
-              <Text className="text-black font-medium mb-3">{`${order.firstName} ${order.lastName}`}</Text>
-
-              <Text className="text-[#808FA2] font-medium mb-1">Customer's Phone Number</Text>
-              <Text className="text-black font-medium mb-3">{order.phoneNumber}</Text>
-
-              <Text className="text-[#808FA2] font-medium mb-1">Building Type</Text>
-              <Text className="text-black font-medium mb-3">{order.buildingType}</Text>
-
-              <Text className="text-[#808FA2] font-medium mb-1">Address</Text>
-              <Text className="text-black font-medium">{order.fullAddress}</Text>
-            </View>
-
-            {/* Payment Summary */}
-            {order.fullTotal && (
-              <View className="bg-white border border-gray-200 rounded-lg shadow-sm mx-4 p-4 mb-4">
-                <Text className="text-black font-semibold mb-2">Payment Summary</Text>
-                <View className="flex-row justify-between mb-2">
-  <Text className="text-[#8492A3]">Subtotal</Text>
-  <Text className="text-black font-medium">
-    Rs.{(parseFloat(order.fullTotal || "0") - 350 ).toFixed(2)}
-  </Text>
-</View>
-                {order.fullDiscount && parseFloat(order.fullDiscount) > 0 && (
-                  <View className="flex-row justify-between mb-2">
-                    <Text className="text-[#8492A3]">Discount</Text>
-                    <Text className="text-[#8492A3]">Rs.{parseFloat(order.fullDiscount).toFixed(2)}</Text>
-                  </View>
-                )}
-                <View className="flex-row justify-between mb-2">
-                    <Text className="text-[#8492A3]">Delivery</Text>
-                    <Text className="text-[#8492A3]">Rs.350.00</Text>
-                  </View>
-                <View className="flex-row justify-between pt-2">
-                  <Text className="font-semibold text-black">Grand Total</Text>
-                  <Text className="font-bold text-black">
-                  Rs.{parseFloat(order.fullSubTotal || "0").toFixed(2)}
+              
+              {order.orderStatus === "Cancelled" && (
+                <View className="flex-row items-center">
+                  <View 
+                    className={`w-4 h-4 rounded-full absolute -left-7 ${
+                      isDarkMode ? 'bg-purple-500' : 'bg-[#6C3CD1]'
+                    }`}
+                  />
+                  <Text className="text-red-500 font-medium">
+                    Order is Cancelled
                   </Text>
                 </View>
-              </View>
-            )}
-
-            {/* Payment Method */}
-            <View className="bg-white border border-gray-200 rounded-lg shadow-sm mx-4 p-4 mb-6">
-              <Text className="text-black font-semibold mb-1">Payment Method</Text>
-              <Text className="text-[#8492A3]">
-                {order.paymentMethod === "Credit Card" ? "Online Payment" : "Cash on Delivery"}
-              </Text>
+              )}
             </View>
-            
+          </View>
 
-            {showStatusMessage && (
-              <View className="mx-4 mt-2 p-2 rounded-lg">
-                <Text className="text-red-500 font-medium text-center">
-                  {selectedReportOption}
+        
+          <View className={`rounded-lg shadow-sm mx-4 p-4 mb-4 ${
+            isDarkMode 
+              ? 'bg-gray-800 border-gray-700' 
+              : 'bg-white border-gray-200'
+          } border`}>
+            <Text className={`font-medium mb-1 ${
+              isDarkMode ? 'text-gray-400' : 'text-[#808FA2]'
+            }`}>Customer's Name</Text>
+            <Text className={`font-medium mb-3 ${
+              isDarkMode ? 'text-white' : 'text-black'
+            }`}>{`${order.firstName} ${order.lastName}`}</Text>
+
+            <Text className={`font-medium mb-1 ${
+              isDarkMode ? 'text-gray-400' : 'text-[#808FA2]'
+            }`}>Customer's Phone Number</Text>
+            <Text className={`font-medium mb-3 ${
+              isDarkMode ? 'text-white' : 'text-black'
+            }`}>{order.phoneNumber}</Text>
+
+            <Text className={`font-medium mb-1 ${
+              isDarkMode ? 'text-gray-400' : 'text-[#808FA2]'
+            }`}>Building Type</Text>
+            <Text className={`font-medium mb-3 ${
+              isDarkMode ? 'text-white' : 'text-black'
+            }`}>{order.buildingType}</Text>
+
+            <Text className={`font-medium mb-1 ${
+              isDarkMode ? 'text-gray-400' : 'text-[#808FA2]'
+            }`}>Address</Text>
+            <Text className={`font-medium ${
+              isDarkMode ? 'text-white' : 'text-black'
+            }`}>{order.fullAddress}</Text>
+          </View>
+
+    
+          {order.fullTotal && (
+            <View className={`rounded-lg shadow-sm mx-4 p-4 mb-4 ${
+              isDarkMode 
+                ? 'bg-gray-800 border-gray-700' 
+                : 'bg-white border-gray-200'
+            } border`}>
+              <Text className={`font-semibold mb-2 ${
+                isDarkMode ? 'text-white' : 'text-black'
+              }`}>Payment Summary</Text>
+              <View className="flex-row justify-between mb-2">
+                <Text className={isDarkMode ? 'text-gray-400' : 'text-[#8492A3]'}>Subtotal</Text>
+                <Text className={isDarkMode ? 'text-white' : 'text-black'}>
+                  Rs.{(parseFloat(order.fullTotal || "0") - 350 ).toFixed(2)}
                 </Text>
-                
               </View>
-            )}
-            <Text className="text-red-500 font-medium text-center mb-2">{order.reportStatus}</Text>
-            
-
-            {/* Report Status Button - Only shown when not Ordered or Cancelled */}
-{ order.orderStatus !== "Cancelled" && (
-  <TouchableOpacity 
-    onPress={handleReportStatus}
-    className="mx-5 mb-3 rounded-full px-8"
-  >
-    <LinearGradient
-      colors={["#6839CF", "#874DDB"]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      className="py-3 rounded-lg items-center"
-    >
-      <Text className="text-white text-center font-semibold">Report Status</Text>
-    </LinearGradient>
-  </TouchableOpacity>
-)}
-
-            {/* Cancel Order Button */}
-            <TouchableOpacity 
-              onPress={handleCancelOrder}
-              disabled={isCancelDisabled()}
-              className={`mx-5 mb-5 px-8 rounded-full ${isCancelDisabled() ? "opacity-70" : ""}`}
-            >
-              {isCancelDisabled() ? (
-                <View className="bg-[#D9D9D9] py-3 rounded-lg items-center">
-                  <Text className="text-black text-center font-semibold">Cancel Order</Text>
-                </View>
-              ) : (
-                <View className="bg-[#000000] py-3 rounded-lg items-center">
-                  <Text className="text-white text-center font-semibold">Cancel Order</Text>
+              {order.fullDiscount && parseFloat(order.fullDiscount) > 0 && (
+                <View className="flex-row justify-between mb-2">
+                  <Text className={isDarkMode ? 'text-gray-400' : 'text-[#8492A3]'}>Discount</Text>
+                  <Text className={isDarkMode ? 'text-gray-400' : 'text-[#8492A3]'}>
+                    Rs.{parseFloat(order.fullDiscount).toFixed(2)}
+                  </Text>
                 </View>
               )}
-            </TouchableOpacity>
-          </ScrollView>
-        ) : (
-          <View className="flex-1 justify-center items-center p-5">
-            <Text className="text-gray-600">No order information found</Text>
-          </View>
-        )}
-      </View>
-
-      {/* Report Status Modal */}
-      <Modal
-  animationType="slide"
-  transparent={true}
-  visible={cancelModalVisible}
-  onRequestClose={() => setCancelModalVisible(false)}
->
-  <View className="flex-1 justify-center items-center bg-black/50">
-    <View className="bg-white rounded-lg p-5 w-5/6 max-w-md">
-      <Text className="text-xl font-bold text-center mb-2">
-        Are you sure?
-      </Text>
-      
-      <Text className="text-center text-gray-600 mb-8">
-        This will permanently delete the order placed by customer and cannot be undone.
-      </Text>
-
-      {/* Confirm Button */}
-      <TouchableOpacity 
-        onPress={confirmCancelOrder}
-        className="mb-3 rounded-lg overflow-hidden"
-      >
-        <View className="bg-black py-3 rounded-lg items-center">
-          <Text className="text-white text-center font-semibold">Confirm</Text>
-        </View>
-      </TouchableOpacity>
-
-      {/* Cancel Button */}
-      <TouchableOpacity 
-        onPress={() => setCancelModalVisible(false)}
-        className="rounded-lg"
-      >
-        <View className="bg-gray-200 py-3 rounded-lg items-center">
-          <Text className="text-black text-center font-semibold">Cancel</Text>
-        </View>
-      </TouchableOpacity>
-    </View>
-  </View>
-</Modal>
-
-<Modal
-        animationType="slide"
-        transparent={true}
-        visible={reportModalVisible}
-        onRequestClose={() => setReportModalVisible(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="bg-white rounded-lg p-5 w-5/6 max-w-md">
-            
-
-            {/* Status Options */}
-            <View className="mb-4">
-              <TouchableOpacity 
-                className="flex-row items-center justify-between p-3 mb-2" 
-                onPress={() => setSelectedReportOption("Confirmed")}
-              >
-                <Text className="text-black font-medium">Confirmed</Text>
-                <View className={`w-6 h-6 border border-gray-400 rounded ${selectedReportOption === "Confirmed" ? "bg-[#6C3CD1]" : "bg-white"}`} />
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                className="flex-row items-center justify-between p-3 mb-2" 
-                onPress={() => setSelectedReportOption("Not-Confirmed")}
-              >
-                <Text className="text-black font-medium">Not-Confirmed</Text>
-                <View className={`w-6 h-6 border border-gray-400 rounded ${selectedReportOption === "Not-Confirmed" ? "bg-[#6C3CD1]" : "bg-white"}`} />
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                className="flex-row items-center justify-between p-3 mb-6" 
-                onPress={() => setSelectedReportOption("Not-Answered")}
-              >
-                <Text className="text-black font-medium">Not-Answered</Text>
-                <View className={`w-6 h-6 border border-gray-400 rounded ${selectedReportOption === "Not-Answered" ? "bg-[#6C3CD1]" : "bg-white"}`} />
-              </TouchableOpacity>
+              <View className="flex-row justify-between mb-2">
+                <Text className={isDarkMode ? 'text-gray-400' : 'text-[#8492A3]'}>Delivery</Text>
+                <Text className={isDarkMode ? 'text-gray-400' : 'text-[#8492A3]'}>Rs.350.00</Text>
+              </View>
+              <View className="flex-row justify-between pt-2">
+                <Text className={`font-semibold ${
+                  isDarkMode ? 'text-white' : 'text-black'
+                }`}>Grand Total</Text>
+                <Text className={`font-bold ${
+                  isDarkMode ? 'text-white' : 'text-black'
+                }`}>
+                  Rs.{parseFloat(order.fullSubTotal || "0").toFixed(2)}
+                </Text>
+              </View>
             </View>
+          )}
 
-            {/* Buttons */}
+
+          <View className={`rounded-lg shadow-sm mx-4 p-4 mb-6 ${
+            isDarkMode 
+              ? 'bg-gray-800 border-gray-700' 
+              : 'bg-white border-gray-200'
+          } border`}>
+            <Text className={`font-semibold mb-1 ${
+              isDarkMode ? 'text-white' : 'text-black'
+            }`}>Payment Method</Text>
+            <Text className={isDarkMode ? 'text-gray-400' : 'text-[#8492A3]'}>
+              {order.paymentMethod === "Credit Card" ? "Online Payment" : "Cash on Delivery"}
+            </Text>
+          </View>
+
+          {showStatusMessage && (
+            <View className={`mx-4 mt-2 p-2 rounded-lg ${
+              isDarkMode ? 'bg-gray-800' : 'bg-white'
+            }`}>
+              <Text className="text-red-500 font-medium text-center">
+                {selectedReportOption}
+              </Text>
+            </View>
+          )}
+          <Text className="text-red-500 font-medium text-center mb-2">
+            {order.reportStatus}
+          </Text>
+
+         
+          {order.orderStatus !== "Cancelled" && (
             <TouchableOpacity 
-              onPress={handleConfirmReport}
-              className="mb-3 rounded-lg overflow-hidden"
+              onPress={handleReportStatus}
+              className="mx-5 mb-3 rounded-full px-8"
             >
-              <View className="bg-black py-3 rounded-lg items-center">
-                <Text className="text-white text-center font-semibold">Confirm</Text>
+              <LinearGradient
+                colors={isDarkMode ? ["#5A2DB2", "#6A3AD0"] : ["#6839CF", "#874DDB"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                className="py-3 rounded-lg items-center"
+              >
+                <Text className="text-white text-center font-semibold">Report Status</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+          )}
+
+          <TouchableOpacity 
+            onPress={handleCancelOrder}
+            disabled={isCancelDisabled()}
+            className={`mx-5 mb-5 px-8 rounded-full ${isCancelDisabled() ? "opacity-70" : ""}`}
+          >
+            {isCancelDisabled() ? (
+              <View className={`py-3 rounded-lg items-center ${
+                isDarkMode ? 'bg-gray-700' : 'bg-[#D9D9D9]'
+              }`}>
+                <Text className={`text-center font-semibold ${
+                  isDarkMode ? 'text-gray-300' : 'text-black'
+                }`}>Cancel Order</Text>
               </View>
+            ) : (
+              <View className="bg-black py-3 rounded-lg items-center">
+                <Text className="text-white text-center font-semibold">Cancel Order</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </ScrollView>
+      ) : (
+        <View className="flex-1 justify-center items-center p-5">
+          <Text className={isDarkMode ? 'text-gray-300' : 'text-gray-600'}>
+            No order information found
+          </Text>
+        </View>
+      )}
+    </View>
+
+
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={reportModalVisible}
+      onRequestClose={() => setReportModalVisible(false)}
+    >
+      <View className="flex-1 justify-center items-center bg-black/50">
+        <View className={`rounded-lg p-5 w-5/6 max-w-md ${
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        }`}>
+          
+          <View className="mb-4">
+            <TouchableOpacity 
+              className="flex-row items-center justify-between p-3 mb-2" 
+              onPress={() => setSelectedReportOption("Confirmed")}
+            >
+              <Text className={isDarkMode ? 'text-white' : 'text-black'}>Confirmed</Text>
+              <View className={`w-6 h-6 rounded ${
+                selectedReportOption === "Confirmed" 
+                  ? (isDarkMode ? 'bg-purple-500' : 'bg-[#6C3CD1]') 
+                  : (isDarkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-400 bg-white')
+              } border`} />
             </TouchableOpacity>
 
             <TouchableOpacity 
-              onPress={() => setReportModalVisible(false)}
-              className="rounded-lg"
+              className="flex-row items-center justify-between p-3 mb-2" 
+              onPress={() => setSelectedReportOption("Not-Confirmed")}
             >
-              <View className="bg-gray-200 py-3 rounded-lg items-center">
-                <Text className="text-black text-center font-semibold">Cancel</Text>
-              </View>
+              <Text className={isDarkMode ? 'text-white' : 'text-black'}>Not-Confirmed</Text>
+              <View className={`w-6 h-6 rounded ${
+                selectedReportOption === "Not-Confirmed" 
+                  ? (isDarkMode ? 'bg-purple-500' : 'bg-[#6C3CD1]') 
+                  : (isDarkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-400 bg-white')
+              } border`} />
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              className="flex-row items-center justify-between p-3 mb-6" 
+              onPress={() => setSelectedReportOption("Not-Answered")}
+            >
+              <Text className={isDarkMode ? 'text-white' : 'text-black'}>Not-Answered</Text>
+              <View className={`w-6 h-6 rounded ${
+                selectedReportOption === "Not-Answered" 
+                  ? (isDarkMode ? 'bg-purple-500' : 'bg-[#6C3CD1]') 
+                  : (isDarkMode ? 'border-gray-600 bg-gray-700' : 'border-gray-400 bg-white')
+              } border`} />
             </TouchableOpacity>
           </View>
+
+         
+          <TouchableOpacity 
+            onPress={handleConfirmReport}
+            className="mb-3 rounded-lg overflow-hidden"
+          >
+            <View className="bg-black py-3 rounded-lg items-center">
+              <Text className="text-white text-center font-semibold">Confirm</Text>
+            </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            onPress={() => setReportModalVisible(false)}
+            className="rounded-lg"
+          >
+            <View className={`py-3 rounded-lg items-center ${
+              isDarkMode ? 'bg-gray-700' : 'bg-gray-200'
+            }`}>
+              <Text className={`text-center font-semibold ${
+                isDarkMode ? 'text-white' : 'text-black'
+              }`}>Cancel</Text>
+            </View>
+          </TouchableOpacity>
         </View>
-      </Modal>
-    </KeyboardAvoidingView>
-  );
+      </View>
+    </Modal>
+
+   
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={cancelModalVisible}
+      onRequestClose={() => setCancelModalVisible(false)}
+    >
+      <View className="flex-1 justify-center items-center bg-black/50">
+        <View className={`rounded-lg p-5 w-5/6 max-w-md ${
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        }`}>
+          <Text className={`text-xl font-bold text-center mb-2 ${
+            isDarkMode ? 'text-white' : 'text-black'
+          }`}>
+            Are you sure?
+          </Text>
+          
+          <Text className={`text-center mb-8 ${
+            isDarkMode ? 'text-gray-300' : 'text-gray-600'
+          }`}>
+            This will permanently delete the order placed by customer and cannot be undone.
+          </Text>
+
+          {/* Confirm Button */}
+          <TouchableOpacity 
+            onPress={confirmCancelOrder}
+            className="mb-3 rounded-lg overflow-hidden"
+          >
+            <View className="bg-black py-3 rounded-lg items-center">
+              <Text className="text-white text-center font-semibold">Confirm</Text>
+            </View>
+          </TouchableOpacity>
+
+
+          <TouchableOpacity 
+            onPress={() => setCancelModalVisible(false)}
+            className="rounded-lg"
+          >
+            <View className={`py-3 rounded-lg items-center ${
+              isDarkMode ? 'bg-gray-700' : 'bg-gray-200'
+            }`}>
+              <Text className={`text-center font-semibold ${
+                isDarkMode ? 'text-white' : 'text-black'
+              }`}>Cancel</Text>
+            </View>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  </KeyboardAvoidingView>
+);
 };
 
 export default View_CancelOrderScreen;

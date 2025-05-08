@@ -31,7 +31,8 @@ import View_CancelOrderScreen from '@/components/View_CancelOrderScreen'
 import NavigationBar from "@/components/Navbar";
 import SelectOrderType from "@/components/SelectOrderType";
 import CreateCustomPackage from "@/components/CreateCustomPackage";
-import CratScreen from "@/components/CratScreen"
+import CratScreen from "@/components/CratScreen";
+import { ThemeProvider } from '@/ThemeContext';
 
 import { RootStackParamList } from '@/components/types';
 
@@ -74,6 +75,7 @@ const index = () => {
     // ScreenCapture.usePreventScreenCapture()
 
   return (
+    <ThemeProvider>
     <LanguageProvider>
     <GestureHandlerRootView >
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -110,6 +112,7 @@ const index = () => {
     </Stack.Navigator>
    </GestureHandlerRootView>
     </LanguageProvider>
+    </ThemeProvider>
   )
 }
 

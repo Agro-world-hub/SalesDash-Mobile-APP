@@ -15,7 +15,7 @@ import { RootStackParamList } from "./types";
 import BackButton from "./BackButton";
 import { LinearGradient } from "expo-linear-gradient";
 import { RouteProp } from "@react-navigation/native";
-
+import { useTheme } from "@/ThemeContext";
 
 type SelectPaymentMethodRouteProp = RouteProp<RootStackParamList, "SelectPaymentMethod">;
 
@@ -90,7 +90,7 @@ const SelectPaymentMethod: React.FC<SelectPaymentMethodProps> = ({ navigation, r
   const { customerid, isCustomPackage, isSelectPackage} = route.params || {};
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [selectedMethod, setSelectedMethod] = useState<"Online Payment" | "Pay By Cash" | null>("Online Payment");
-
+const { isDarkMode, toggleTheme } = useTheme();
  
   
   useEffect(() => {
@@ -141,6 +141,92 @@ const handleProceed = () => {
 
   navigation.navigate("OrderSummeryScreen" as any, navigationData);
 };
+  // return (
+  //   <KeyboardAvoidingView 
+  //     behavior={Platform.OS === "ios" ? "padding" : "height"}
+  //     enabled 
+  //     className="flex-1"
+  //   >
+  //     <ScrollView 
+  //       className="bg-white flex-1"
+  //       keyboardShouldPersistTaps="handled"
+  //     >
+ 
+  //       <View className="flex-row items-center shadow-md px-3 bg-white">
+  //         <BackButton navigation={navigation} />
+  //         <Text className="text-lg font-bold text-[#6C3CD1] flex-grow text-center mr-8">
+  //           Select Payment Method
+  //         </Text>
+  //       </View>
+
+
+  //       <View className="flex items-center justify-center mt-3">
+  //         <Image
+  //           source={require("../assets/images/payment.png")}
+  //           className="w-84 h-60"
+  //           resizeMode="contain"
+  //         />
+  //       </View>
+
+ 
+  //       <View className="flex-1 w-full items-center space-y-5 p-12 mt-[-10]">
+     
+  //         <TouchableOpacity
+  //           onPress={() => setSelectedMethod("Online Payment")}
+  //           className={`w-full py-5 px-5 rounded-lg flex-row items-center justify-between border border-[#5D5D5D] ${
+  //             selectedMethod === "Online Payment" ? "bg-[#6C3CD1] border-[#6C3CD1]" : "bg-white border-[#5D5D5D]"
+  //           }`}
+  //         >
+  //           <Text className={`text-lg ${selectedMethod === "Online Payment" ? "text-white font-bold" : "text-gray-700 font-medium"}`}>
+  //             Online Payment 
+  //           </Text>
+  //           {selectedMethod === "Online Payment" && (
+  //             <View className="w-7 h-7 bg-white rounded-full flex items-center justify-center">
+  //               <Image 
+  //                 source={require("../assets/images/DonePurple.png")} 
+  //                 className="w-5 h-5"
+  //                 resizeMode="contain"
+  //               />
+  //             </View>
+  //           )}
+  //         </TouchableOpacity>
+
+     
+  //         <TouchableOpacity
+  //           onPress={() => setSelectedMethod("Pay By Cash")}
+  //           className={`w-full py-5 px-5 rounded-lg flex-row items-center justify-between border border-[#5D5D5D] ${
+  //             selectedMethod === "Pay By Cash" ? "bg-[#6C3CD1] border-[#6C3CD1]" : "bg-white border-[#5D5D5D]"
+  //           }`}
+  //         >
+  //           <Text className={`text-lg ${selectedMethod === "Pay By Cash" ? "text-white font-bold" : "text-gray-700 font-medium"}`}>
+  //             Pay By Cash
+  //           </Text>
+  //           {selectedMethod === "Pay By Cash" && (
+  //             <View className="w-7 h-7 bg-white rounded-full flex items-center justify-center">
+  //               <Image 
+  //                 source={require("../assets/images/DonePurple.png")} 
+  //                 className="w-5 h-5"
+  //                 resizeMode="contain"
+  //               />
+  //             </View>
+  //           )}
+  //         </TouchableOpacity>
+  //       </View>
+
+
+  //       <TouchableOpacity onPress={handleProceed}>
+  //       <LinearGradient 
+  //         colors={["#6839CF", "#874DDB"]} 
+  //         className="py-3 px-4 rounded-lg items-center mb-[22%] mr-[25%] ml-[25%] rounded-3xl h-15"
+  //       >
+          
+  //           <Text className="text-center text-white font-bold">Proceed</Text>
+      
+  //       </LinearGradient>
+  //       </TouchableOpacity>
+  //     </ScrollView>
+  //   </KeyboardAvoidingView>
+  // );
   return (
     <KeyboardAvoidingView 
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -148,63 +234,95 @@ const handleProceed = () => {
       className="flex-1"
     >
       <ScrollView 
-        className="bg-white flex-1"
+        className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}
         keyboardShouldPersistTaps="handled"
       >
- 
-        <View className="flex-row items-center shadow-md px-3 bg-white">
+        {/* Header */}
+        <View className={`flex-row items-center shadow-md px-3 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
           <BackButton navigation={navigation} />
-          <Text className="text-lg font-bold text-[#6C3CD1] flex-grow text-center mr-8">
+          <Text className={`text-lg font-bold flex-grow text-center mr-8 ${
+            isDarkMode ? 'text-purple-300' : 'text-[#6C3CD1]'
+          }`}>
             Select Payment Method
           </Text>
         </View>
-
-
+  
+        {/* Payment Illustration */}
         <View className="flex items-center justify-center mt-3">
           <Image
-            source={require("../assets/images/payment.png")}
+            source={isDarkMode 
+              ? require("../assets/images/payment.png") 
+              : require("../assets/images/payment.png")}
             className="w-84 h-60"
             resizeMode="contain"
           />
         </View>
-
- 
+  
+        {/* Payment Methods */}
         <View className="flex-1 w-full items-center space-y-5 p-12 mt-[-10]">
-     
+          {/* Online Payment Option */}
           <TouchableOpacity
             onPress={() => setSelectedMethod("Online Payment")}
-            className={`w-full py-5 px-5 rounded-lg flex-row items-center justify-between border border-[#5D5D5D] ${
-              selectedMethod === "Online Payment" ? "bg-[#6C3CD1] border-[#6C3CD1]" : "bg-white border-[#5D5D5D]"
+            className={`w-full py-5 px-5 rounded-lg flex-row items-center justify-between border ${
+              selectedMethod === "Online Payment" 
+                ? `bg-[#6C3CD1] border-[#6C3CD1]`
+                : isDarkMode 
+                  ? "bg-gray-800 border-gray-600" 
+                  : "bg-white border-[#5D5D5D]"
             }`}
           >
-            <Text className={`text-lg ${selectedMethod === "Online Payment" ? "text-white font-bold" : "text-gray-700 font-medium"}`}>
+            <Text className={`text-lg ${
+              selectedMethod === "Online Payment" 
+                ? "text-white font-bold" 
+                : isDarkMode 
+                  ? "text-gray-200 font-medium" 
+                  : "text-gray-700 font-medium"
+            }`}>
               Online Payment 
             </Text>
             {selectedMethod === "Online Payment" && (
-              <View className="w-7 h-7 bg-white rounded-full flex items-center justify-center">
+              <View className={`w-7 h-7 ${
+                isDarkMode ? 'bg-purple-400' : 'bg-white'
+              } rounded-full flex items-center justify-center`}>
                 <Image 
-                  source={require("../assets/images/DonePurple.png")} 
+                  source={isDarkMode 
+                    ? require("../assets/images/DonePurple.png") 
+                    : require("../assets/images/DonePurple.png")} 
                   className="w-5 h-5"
                   resizeMode="contain"
                 />
               </View>
             )}
           </TouchableOpacity>
-
-     
+  
+          {/* Cash Payment Option */}
           <TouchableOpacity
             onPress={() => setSelectedMethod("Pay By Cash")}
-            className={`w-full py-5 px-5 rounded-lg flex-row items-center justify-between border border-[#5D5D5D] ${
-              selectedMethod === "Pay By Cash" ? "bg-[#6C3CD1] border-[#6C3CD1]" : "bg-white border-[#5D5D5D]"
+            className={`w-full py-5 px-5 rounded-lg flex-row items-center justify-between border ${
+              selectedMethod === "Pay By Cash" 
+                ? `bg-[#6C3CD1] border-[#6C3CD1]`
+                : isDarkMode 
+                  ? "bg-gray-800 border-gray-600" 
+                  : "bg-white border-[#5D5D5D]"
             }`}
           >
-            <Text className={`text-lg ${selectedMethod === "Pay By Cash" ? "text-white font-bold" : "text-gray-700 font-medium"}`}>
+            <Text className={`text-lg ${
+              selectedMethod === "Pay By Cash" 
+                ? "text-white font-bold" 
+                : isDarkMode 
+                  ? "text-gray-200 font-medium" 
+                  : "text-gray-700 font-medium"
+            }`}>
               Pay By Cash
             </Text>
             {selectedMethod === "Pay By Cash" && (
-              <View className="w-7 h-7 bg-white rounded-full flex items-center justify-center">
+              <View className={`w-7 h-7 ${
+                isDarkMode ? 'bg-purple-400' : 'bg-white'
+              } rounded-full flex items-center justify-center`}>
                 <Image 
-                  source={require("../assets/images/DonePurple.png")} 
+                  source={isDarkMode 
+                    ? require("../assets/images/DonePurple.png") 
+                    : require("../assets/images/DonePurple.png")} 
                   className="w-5 h-5"
                   resizeMode="contain"
                 />
@@ -212,17 +330,15 @@ const handleProceed = () => {
             )}
           </TouchableOpacity>
         </View>
-
-
+  
+        {/* Proceed Button */}
         <TouchableOpacity onPress={handleProceed}>
-        <LinearGradient 
-          colors={["#6839CF", "#874DDB"]} 
-          className="py-3 px-4 rounded-lg items-center mb-[22%] mr-[25%] ml-[25%] rounded-3xl h-15"
-        >
-          
+          <LinearGradient 
+            colors={isDarkMode ? ["#7C3AED", "#8B5CF6"] : ["#6839CF", "#874DDB"]} 
+            className="py-3 px-4 rounded-lg items-center mb-[22%] mr-[25%] ml-[25%] rounded-3xl h-15"
+          >
             <Text className="text-center text-white font-bold">Proceed</Text>
-      
-        </LinearGradient>
+          </LinearGradient>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>

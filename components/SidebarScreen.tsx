@@ -9,6 +9,7 @@ import axios from "axios";
 import environment from "@/environment/environment";
 import BackButton from "./BackButton";
 import LottieView from "lottie-react-native";
+import { useTheme } from "@/ThemeContext";
 
 
 type SidebarScreenNavigationProp = StackNavigationProp<RootStackParamList, "SidebarScreen">;
@@ -21,6 +22,8 @@ const SidebarScreen: React.FC<SidebarScreenProps> = ({ navigation }) => {
   const [complaintsExpanded, setComplaintsExpanded] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [formData, setFormData] = useState({ firstName: "", lastName:"", empId: "" });
+
+  const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
     getUserProfile();
@@ -60,226 +63,516 @@ const handleLogout = async () => {
 };
 
 
-  return (
+//   return (
 
-    <KeyboardAvoidingView 
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                    enabled 
-                    className="flex-1"
-                    >
-    <View className="flex-1 w-full bg-white">
+//     <KeyboardAvoidingView 
+//                     behavior={Platform.OS === "ios" ? "padding" : "height"}
+//                     enabled 
+//                     className="flex-1"
+//                     >
+//     <View className="flex-1 w-full bg-white">
 
-          {loading ? (
+//           {loading ? (
+//         <View className="flex-1 justify-center items-center">
+//         <LottieView
+//           source={require("../assets/images/loading.json")}
+//           autoPlay
+//           loop
+//           style={{ width: wp(25), height: hp(12) }}
+//         />
+//         <Text className="mt-4 text-lg text-[#693ACF] font-semibold">Logging out...</Text>
+//       </View>
+//     ) : (
+//       <View className=" flex-1 w-full bg-white">
+//     <ScrollView style={{ paddingHorizontal: wp(4) }}
+//     keyboardShouldPersistTaps="handled"
+//     >
+//          <BackButton navigation={navigation} />
+
+//          <View className="flex-row items-center p-5">
+//            <Image source={require("../assets/images/profile.png")} style={{ width: wp(16), height: wp(16), borderRadius: wp(8) }} />
+//            <View style={{ marginLeft: wp(4) }}>
+//              <Text className="text-lg font-bold text-gray-900">{formData.firstName} {formData.lastName}</Text>
+//              <Text className="text-sm text-gray-500 mt-1">{formData.empId}</Text>
+//           </View>
+//        </View>
+
+//         <View className="border-b border-gray-200 my-1 ml-4 mr-4" />
+
+//         <View className="flex-1 p-5">
+//          <TouchableOpacity
+//   style={{ marginBottom: hp(2) }}
+//   className="flex-row items-center"
+//   onPress={() => navigation.navigate("ProfileScreen")}
+// >
+//   {/* Round Icon */}
+//   <View
+//     style={{
+//       width: hp(5), 
+//       height: hp(5), 
+//       borderRadius: hp(2.5),
+//       backgroundColor: "#F4F9FB", 
+//       justifyContent: "center",
+//       alignItems: "center",
+//     }}
+//   >
+//    <Image 
+//   source={require('../assets/images/Account.png')} 
+//   style={{ width: hp(3), height: hp(3), tintColor: '#8F8F8F' }} 
+// />
+//   </View>
+
+//   <Text style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} className="text-gray-800">
+//     Profile
+//   </Text>
+
+//   <Ionicons
+//     name="chevron-forward-outline"
+//     size={hp(2.5)}
+//     color="#8F8F8F"
+//     style={{ marginRight: wp(2) }}
+//   />
+// </TouchableOpacity>
+
+
+
+// <TouchableOpacity 
+//   className="flex-row items-center py-3" 
+//   onPress={() => setComplaintsExpanded(!complaintsExpanded)}
+// >
+// <View
+//     style={{
+//       width: hp(5), 
+//       height: hp(5), 
+//       borderRadius: hp(2.5), 
+//       backgroundColor: "#F4F9FB", 
+//       justifyContent: "center",
+//       alignItems: "center",
+//     }}
+//   >
+//  <Image 
+//   source={require('../assets/images/Help.png')} 
+//   style={{ width: hp(3), height: hp(3), tintColor: '#8F8F8F' }} 
+// />
+//   </View>
+  
+//   <Text 
+//     style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} 
+//     className="text-gray-800"
+//   >
+//     Complaints
+//   </Text>
+  
+//   <Ionicons 
+//     name={complaintsExpanded ? "chevron-down-outline" : "chevron-forward-outline"}  
+//     size={hp(2.5)} 
+//     color="#8F8F8F" 
+//     style={{ marginRight: wp(2) }} 
+//   />
+// </TouchableOpacity>
+
+
+//           {complaintsExpanded && (
+//             <View style={{ paddingLeft: wp(15) }}>
+//               <TouchableOpacity onPress={() => navigation.navigate("AddComplaintScreen")}>
+//                 <Text className="text-sm text-gray-700 font-bold">Report a Complaint</Text>
+//               </TouchableOpacity>
+//               <TouchableOpacity style={{ marginTop: hp(1), marginBottom: hp(1) }} onPress={() => navigation.navigate("Main",{screen:"ViewComplainScreen"})}>
+//   <Text className="text-sm text-gray-700 font-bold">View Complaint History</Text>
+// </TouchableOpacity>
+
+//             </View>
+//           )}
+
+// <TouchableOpacity style={{ marginBottom: hp(2),marginTop: hp(1) }} className="flex-row items-center py-3" onPress={() => navigation.navigate("ChangePasswordScreen")}> 
+// <View
+//     style={{
+//       width: hp(5), 
+//       height: hp(5),
+//       borderRadius: hp(2.5), 
+//       backgroundColor: "#F4F9FB", 
+//       justifyContent: "center",
+//       alignItems: "center",
+//     }}
+//   >
+//   <Image 
+//   source={require('../assets/images/Password.png')} 
+//   style={{ width: hp(3), height: hp(3), tintColor: '#8F8F8F' }} 
+// />
+//     </View>
+
+//   <Text style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} className="text-gray-800">
+//     Change Password
+//   </Text>
+//   <Ionicons name="chevron-forward-outline" size={hp(2.5)} color="#8F8F8F" style={{ marginRight: wp(2) }} />
+// </TouchableOpacity>
+
+// <TouchableOpacity style={{ marginBottom: hp(2) }} className="flex-row items-center py-3"> 
+
+// <View
+//     style={{
+//       width: hp(5),
+//       height: hp(5), 
+//       borderRadius: hp(2.5), 
+//       backgroundColor: "#F4F9FB", 
+//       justifyContent: "center",
+//       alignItems: "center",
+//     }}
+//   >
+//   <Image 
+//   source={require('../assets/images/Privacy.png')}
+//   style={{ width: hp(3), height: hp(3), tintColor: '#8F8F8F' }} 
+// />
+//   </View>
+//   <Text style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} className="text-gray-800">
+//     Privacy & Policy
+//   </Text>
+//   <Ionicons name="chevron-forward-outline" size={hp(2.5)} color="#8F8F8F" style={{ marginRight: wp(2) }} />
+// </TouchableOpacity>
+
+// <TouchableOpacity className="flex-row items-center py-3" onPress={() => console.log("Terms & Conditions Pressed")}> 
+// <View
+//     style={{
+//       width: hp(5),
+//       height: hp(5), 
+//       borderRadius: hp(2.5),
+//       backgroundColor: "#F4F9FB", 
+//       justifyContent: "center",
+//       alignItems: "center",
+//     }}
+//   >
+//   <Image 
+//   source={require('../assets/images/Terms and Conditions.png')} 
+//   style={{ width: hp(3), height: hp(3), tintColor: '#8F8F8F' }} 
+// />
+//   </View>
+//   <Text style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} className="text-gray-800">
+//     Terms & Conditions
+//   </Text>
+//   <Ionicons name="chevron-forward-outline" size={hp(2.5)} color="#8F8F8F" style={{ marginRight: wp(2) }} />
+// </TouchableOpacity>
+
+// <View className="mb-8">
+//           <View className="border-b border-gray-200 my-5" />
+
+//           <TouchableOpacity className="flex-row items-center" onPress={handleLogout}> 
+
+//           <View
+//     style={{
+//       width: hp(5), 
+//       height: hp(5),
+//       borderRadius: hp(2.5), 
+//       backgroundColor: "#FFF2EE",
+//       justifyContent: "center",
+//       alignItems: "center",
+//     }}
+//   >
+//             <Ionicons name="log-out-outline" size={hp(3)} color="#FF3B30" />
+//             </View>
+//             <Text style={{ marginLeft: wp(4), fontSize: hp(2), color: "#FF3B30", fontWeight: "bold" }}>Logout</Text>
+//           </TouchableOpacity>
+//         </View>
+//         </View>
+        
+       
+
+//       </ScrollView>
+//       </View>
+//     )}
+   
+//     </View>
+//     </KeyboardAvoidingView>
+//   );
+return (
+  <KeyboardAvoidingView 
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    enabled 
+    className="flex-1"
+  >
+   
+    <View className={`flex-1 w-full ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+
+      {loading ? (
         <View className="flex-1 justify-center items-center">
-        <LottieView
-          source={require("../assets/images/loading.json")}
-          autoPlay
-          loop
-          style={{ width: wp(25), height: hp(12) }}
-        />
-        <Text className="mt-4 text-lg text-[#693ACF] font-semibold">Logging out...</Text>
-      </View>
-    ) : (
-      <View className=" flex-1 w-full bg-white">
-    <ScrollView style={{ paddingHorizontal: wp(4) }}
-    keyboardShouldPersistTaps="handled"
-    >
-         <BackButton navigation={navigation} />
+          <LottieView
+            source={require("../assets/images/loading.json")}
+            autoPlay
+            loop
+            style={{ width: wp(25), height: hp(12) }}
+          />
+         
+          <Text className={`mt-4 text-lg font-semibold ${isDarkMode ? 'text-purple-300' : 'text-[#693ACF]'}`}>
+            Logging out...
+          </Text>
+        </View>
+      ) : (
+        <View className={`flex-1 w-full ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+          <ScrollView 
+            style={{ paddingHorizontal: wp(4) }}
+            keyboardShouldPersistTaps="handled"
+          >
+            <BackButton navigation={navigation} />
 
-         <View className="flex-row items-center p-5">
-           <Image source={require("../assets/images/profile.png")} style={{ width: wp(16), height: wp(16), borderRadius: wp(8) }} />
-           <View style={{ marginLeft: wp(4) }}>
-             <Text className="text-lg font-bold text-gray-900">{formData.firstName} {formData.lastName}</Text>
-             <Text className="text-sm text-gray-500 mt-1">{formData.empId}</Text>
-          </View>
-       </View>
-
-        <View className="border-b border-gray-200 my-1 ml-4 mr-4" />
-
-        <View className="flex-1 p-5">
-         <TouchableOpacity
-  style={{ marginBottom: hp(2) }}
-  className="flex-row items-center"
-  onPress={() => navigation.navigate("ProfileScreen")}
->
-  {/* Round Icon */}
-  <View
-    style={{
-      width: hp(5), 
-      height: hp(5), 
-      borderRadius: hp(2.5),
-      backgroundColor: "#F4F9FB", 
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-   <Image 
-  source={require('../assets/images/Account.png')} 
-  style={{ width: hp(3), height: hp(3), tintColor: '#8F8F8F' }} 
-/>
-  </View>
-
-  <Text style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} className="text-gray-800">
-    Profile
-  </Text>
-
-  <Ionicons
-    name="chevron-forward-outline"
-    size={hp(2.5)}
-    color="#8F8F8F"
-    style={{ marginRight: wp(2) }}
-  />
-</TouchableOpacity>
-
-
-
-<TouchableOpacity 
-  className="flex-row items-center py-3" 
-  onPress={() => setComplaintsExpanded(!complaintsExpanded)}
->
-<View
-    style={{
-      width: hp(5), 
-      height: hp(5), 
-      borderRadius: hp(2.5), 
-      backgroundColor: "#F4F9FB", 
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
- <Image 
-  source={require('../assets/images/Help.png')} 
-  style={{ width: hp(3), height: hp(3), tintColor: '#8F8F8F' }} 
-/>
-  </View>
-  
-  <Text 
-    style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} 
-    className="text-gray-800"
-  >
-    Complaints
-  </Text>
-  
-  <Ionicons 
-    name={complaintsExpanded ? "chevron-down-outline" : "chevron-forward-outline"}  
-    size={hp(2.5)} 
-    color="#8F8F8F" 
-    style={{ marginRight: wp(2) }} 
-  />
-</TouchableOpacity>
-
-
-          {complaintsExpanded && (
-            <View style={{ paddingLeft: wp(15) }}>
-              <TouchableOpacity onPress={() => navigation.navigate("AddComplaintScreen")}>
-                <Text className="text-sm text-gray-700 font-bold">Report a Complaint</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={{ marginTop: hp(1), marginBottom: hp(1) }} onPress={() => navigation.navigate("Main",{screen:"ViewComplainScreen"})}>
-  <Text className="text-sm text-gray-700 font-bold">View Complaint History</Text>
-</TouchableOpacity>
-
+        
+            <View className="flex-row items-center p-5">
+              <Image 
+                source={require("../assets/images/profile.png")} 
+                style={{ width: wp(16), height: wp(16), borderRadius: wp(8) }} 
+              />
+              <View style={{ marginLeft: wp(4) }}>
+                <Text className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                  {formData.firstName} {formData.lastName}
+                </Text>
+                <Text className={`text-sm mt-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+                  {formData.empId}
+                </Text>
+              </View>
             </View>
-          )}
+
+            
+            <View className={`border-b my-1 ml-4 mr-4 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`} />
+
+            <View className="flex-1 p-5">
+              
+              <TouchableOpacity
+                style={{ marginBottom: hp(2) }}
+                className="flex-row items-center"
+                onPress={toggleTheme}
+              >
+                <View
+                  style={{
+                    width: hp(5),
+                    height: hp(5),
+                    borderRadius: hp(2.5),
+                    backgroundColor: isDarkMode ? '#374151' : '#F4F9FB',
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Ionicons
+                    name={isDarkMode ? "sunny-outline" : "moon-outline"}
+                    size={hp(3)}
+                    color={isDarkMode ? "#a67dff" : "#8F8F8F"}
+                  />
+                </View>
+                <Text style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} 
+                  className={isDarkMode ? 'text-white' : 'text-gray-800'}>
+                  {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+                </Text>
+               
+              </TouchableOpacity>
+
+   
+              <TouchableOpacity
+                style={{ marginBottom: hp(2) }}
+                className="flex-row items-center"
+                onPress={() => navigation.navigate("ProfileScreen")}
+              >
+                <View
+                  style={{
+                    width: hp(5),
+                    height: hp(5),
+                    borderRadius: hp(2.5),
+                    backgroundColor: isDarkMode ? '#374151' : '#F4F9FB',
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image 
+                    source={require('../assets/images/Account.png')} 
+                    style={{ 
+                      width: hp(3), 
+                      height: hp(3), 
+                      tintColor: isDarkMode ? '#a67dff' : '#8F8F8F' 
+                    }} 
+                  />
+                </View>
+                <Text style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} 
+                  className={isDarkMode ? 'text-white' : 'text-gray-800'}>
+                  Profile
+                </Text>
+                <Ionicons
+                  name="chevron-forward-outline"
+                  size={hp(2.5)}
+                  color={isDarkMode ? "#a67dff" : "#8F8F8F"}
+                  style={{ marginRight: wp(2) }}
+                />
+              </TouchableOpacity>
+
+       
+
+         
+              <TouchableOpacity 
+                className="flex-row items-center py-3" 
+                onPress={() => setComplaintsExpanded(!complaintsExpanded)}
+              >
+                <View
+                  style={{
+                    width: hp(5),
+                    height: hp(5),
+                    borderRadius: hp(2.5),
+                    backgroundColor: isDarkMode ? '#374151' : '#F4F9FB',
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image 
+                    source={require('../assets/images/Help.png')} 
+                    style={{ 
+                      width: hp(3), 
+                      height: hp(3), 
+                      tintColor: isDarkMode ? '#a67dff' : '#8F8F8F' 
+                    }} 
+                  />
+                </View>
+                <Text 
+                  style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} 
+                  className={isDarkMode ? 'text-white' : 'text-gray-800'}
+                >
+                  Complaints
+                </Text>
+                <Ionicons 
+                  name={complaintsExpanded ? "chevron-down-outline" : "chevron-forward-outline"}  
+                  size={hp(2.5)} 
+                  color={isDarkMode ? "#a67dff" : "#8F8F8F"} 
+                  style={{ marginRight: wp(2) }} 
+                />
+              </TouchableOpacity>
+
+              {complaintsExpanded && (
+                <View style={{ paddingLeft: wp(15) }}>
+                  <TouchableOpacity onPress={() => navigation.navigate("AddComplaintScreen")}>
+                    <Text className={`text-sm font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Report a Complaint
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ marginTop: hp(1), marginBottom: hp(1) }} 
+                    onPress={() => navigation.navigate("Main", {screen: "ViewComplainScreen"})}>
+                    <Text className={`text-sm font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      View Complaint History
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
 
 <TouchableOpacity style={{ marginBottom: hp(2),marginTop: hp(1) }} className="flex-row items-center py-3" onPress={() => navigation.navigate("ChangePasswordScreen")}> 
 <View
     style={{
-      width: hp(5), 
+      width: hp(5),
       height: hp(5),
-      borderRadius: hp(2.5), 
-      backgroundColor: "#F4F9FB", 
+      borderRadius: hp(2.5),
+      backgroundColor: isDarkMode ? '#374151' : '#F4F9FB',
       justifyContent: "center",
       alignItems: "center",
     }}
   >
   <Image 
   source={require('../assets/images/Password.png')} 
-  style={{ width: hp(3), height: hp(3), tintColor: '#8F8F8F' }} 
+  style={{ 
+    width: hp(3), 
+    height: hp(3), 
+    tintColor: isDarkMode ? '#a67dff' : '#8F8F8F' 
+  }} 
 />
     </View>
 
-  <Text style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} className="text-gray-800">
+    <Text 
+                  style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} 
+                  className={isDarkMode ? 'text-white' : 'text-gray-800'}
+                >
     Change Password
   </Text>
-  <Ionicons name="chevron-forward-outline" size={hp(2.5)} color="#8F8F8F" style={{ marginRight: wp(2) }} />
+  <Ionicons name="chevron-forward-outline" size={hp(2.5)}  color={isDarkMode ? "#a67dff" : "#8F8F8F"}  style={{ marginRight: wp(2) }} />
 </TouchableOpacity>
 
 <TouchableOpacity style={{ marginBottom: hp(2) }} className="flex-row items-center py-3"> 
 
 <View
-    style={{
-      width: hp(5),
-      height: hp(5), 
-      borderRadius: hp(2.5), 
-      backgroundColor: "#F4F9FB", 
-      justifyContent: "center",
-      alignItems: "center",
-    }}
+   style={{
+    width: hp(5),
+    height: hp(5),
+    borderRadius: hp(2.5),
+    backgroundColor: isDarkMode ? '#374151' : '#F4F9FB',
+    justifyContent: "center",
+    alignItems: "center",
+  }}
   >
   <Image 
   source={require('../assets/images/Privacy.png')}
-  style={{ width: hp(3), height: hp(3), tintColor: '#8F8F8F' }} 
+  style={{ 
+    width: hp(3), 
+    height: hp(3), 
+    tintColor: isDarkMode ? '#a67dff' : '#8F8F8F' 
+  }} 
 />
   </View>
-  <Text style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} className="text-gray-800">
+  <Text 
+                  style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} 
+                  className={isDarkMode ? 'text-white' : 'text-gray-800'}
+                >
     Privacy & Policy
   </Text>
-  <Ionicons name="chevron-forward-outline" size={hp(2.5)} color="#8F8F8F" style={{ marginRight: wp(2) }} />
+  <Ionicons name="chevron-forward-outline" size={hp(2.5)}  color={isDarkMode ? "#a67dff" : "#8F8F8F"}  style={{ marginRight: wp(2) }} />
 </TouchableOpacity>
 
 <TouchableOpacity className="flex-row items-center py-3" onPress={() => console.log("Terms & Conditions Pressed")}> 
 <View
     style={{
       width: hp(5),
-      height: hp(5), 
+      height: hp(5),
       borderRadius: hp(2.5),
-      backgroundColor: "#F4F9FB", 
+      backgroundColor: isDarkMode ? '#374151' : '#F4F9FB',
       justifyContent: "center",
       alignItems: "center",
     }}
   >
   <Image 
   source={require('../assets/images/Terms and Conditions.png')} 
-  style={{ width: hp(3), height: hp(3), tintColor: '#8F8F8F' }} 
+  style={{ 
+    width: hp(3), 
+    height: hp(3), 
+    tintColor: isDarkMode ? '#a67dff' : '#8F8F8F' 
+  }} 
 />
   </View>
-  <Text style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} className="text-gray-800">
+  <Text 
+                  style={{ flex: 1, marginLeft: wp(4), fontSize: hp(2) }} 
+                  className={isDarkMode ? 'text-white' : 'text-gray-800'}
+                >
     Terms & Conditions
   </Text>
-  <Ionicons name="chevron-forward-outline" size={hp(2.5)} color="#8F8F8F" style={{ marginRight: wp(2) }} />
+  <Ionicons name="chevron-forward-outline" size={hp(2.5)}  color={isDarkMode ? "#a67dff" : "#8F8F8F"}  style={{ marginRight: wp(2) }} />
 </TouchableOpacity>
 
-<View className="mb-8">
-          <View className="border-b border-gray-200 my-5" />
+              
+              <View className="mb-8">
+                <View className={`border-b my-5 ${isDarkMode ? 'border-gray-700' : 'border-gray-200'}`} />
 
-          <TouchableOpacity className="flex-row items-center" onPress={handleLogout}> 
-
-          <View
-    style={{
-      width: hp(5), 
-      height: hp(5),
-      borderRadius: hp(2.5), 
-      backgroundColor: "#FFF2EE",
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-            <Ionicons name="log-out-outline" size={hp(3)} color="#FF3B30" />
+                <TouchableOpacity className="flex-row items-center" onPress={handleLogout}> 
+                  <View
+                    style={{
+                      width: hp(5),
+                      height: hp(5),
+                      borderRadius: hp(2.5),
+                      backgroundColor: isDarkMode ? '#4B2A7F' : '#FFF2EE',
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Ionicons name="log-out-outline" size={hp(3)} color="#FF3B30" />
+                  </View>
+                  <Text style={{ marginLeft: wp(4), fontSize: hp(2), color: "#FF3B30", fontWeight: "bold" }}>
+                    Logout
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <Text style={{ marginLeft: wp(4), fontSize: hp(2), color: "#FF3B30", fontWeight: "bold" }}>Logout</Text>
-          </TouchableOpacity>
+          </ScrollView>
         </View>
-        </View>
-        
-       
-
-      </ScrollView>
-      </View>
-    )}
-   
+      )}
     </View>
-    </KeyboardAvoidingView>
-  );
+  </KeyboardAvoidingView>
+);
 };
 
  export default SidebarScreen;

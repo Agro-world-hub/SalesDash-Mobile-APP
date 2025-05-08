@@ -19,6 +19,7 @@ import environment from "@/environment/environment";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTheme } from '../ThemeContext';
 
 type CreateCustomPackageNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -55,6 +56,7 @@ const CreateCustomPackage: React.FC<CreateCustomPackageProps> = ({ navigation, r
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -150,19 +152,35 @@ const CreateCustomPackage: React.FC<CreateCustomPackageProps> = ({ navigation, r
   };
 
   if (loading) {
+    // return (
+    //   <SafeAreaView className="flex-1 bg-white justify-center items-center">
+    //     <ActivityIndicator size="large" color="#6C3CD1" />
+    //   </SafeAreaView>
+    // );
     return (
-      <SafeAreaView className="flex-1 bg-white justify-center items-center">
-        <ActivityIndicator size="large" color="#6C3CD1" />
+      <SafeAreaView className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'} justify-center items-center`}>
+        <ActivityIndicator size="large" color={isDarkMode ? "#A78BFA" : "#6C3CD1"} />
       </SafeAreaView>
     );
   }
 
   if (error) {
+    // return (
+    //   <SafeAreaView className="flex-1 bg-white justify-center items-center">
+    //     <Text className="text-red-500 text-lg">{error}</Text>
+    //     <TouchableOpacity 
+    //       className="mt-4 bg-purple-600 px-4 py-2 rounded-full"
+    //       onPress={() => navigation.goBack()}
+    //     >
+    //       <Text className="text-white">Go Back</Text>
+    //     </TouchableOpacity>
+    //   </SafeAreaView>
+    // );
     return (
-      <SafeAreaView className="flex-1 bg-white justify-center items-center">
-        <Text className="text-red-500 text-lg">{error}</Text>
+      <SafeAreaView className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'} justify-center items-center`}>
+        <Text className={`text-lg ${isDarkMode ? 'text-red-400' : 'text-red-500'}`}>{error}</Text>
         <TouchableOpacity 
-          className="mt-4 bg-purple-600 px-4 py-2 rounded-full"
+          className={`mt-4 px-4 py-2 rounded-full ${isDarkMode ? 'bg-purple-700' : 'bg-purple-600'}`}
           onPress={() => navigation.goBack()}
         >
           <Text className="text-white">Go Back</Text>
@@ -171,31 +189,129 @@ const CreateCustomPackage: React.FC<CreateCustomPackageProps> = ({ navigation, r
     );
   }
 
+  // return (
+  //   <SafeAreaView className="flex-1 bg-white">
+  //     <KeyboardAvoidingView
+  //       behavior={Platform.OS === "ios" ? "padding" : "height"}
+  //       className="flex-1"
+  //     >
+  //       <View className="flex-1 px-4">
+  //         {/* Header */}
+  //         <View className="flex-row items-center h-16 shadow-md bg-white">
+  //           <BackButton navigation={navigation} />
+  //           <Text className="text-lg font-bold text-[#6C3CD1] flex-grow text-center mr-7">
+  //             Select Custom Items
+  //           </Text>
+  //         </View>
+
+  //         {/* Search Bar */}
+  //         <View className="mb-4 bg-[#F5F1FC] rounded-full flex-row items-center px-4 py-2">
+  //           <TextInput
+  //             className="flex-1 text-gray-700"
+  //             placeholder="Search By Product Name"
+  //             placeholderTextColor="#6839CF"
+  //             value={searchQuery}
+  //             onChangeText={setSearchQuery}
+  //           />
+  //           <Ionicons name="search" size={20} color="#6839CF" />
+  //         </View>
+
+  //         {/* Product List */}
+  //         <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+  //           {filteredProducts.length > 0 ? (
+  //             filteredProducts.map((product) => {
+  //               const pricePerKg = product.discountedPrice;
+  //               return (
+  //                 <TouchableOpacity
+  //                   key={product.id}
+  //                   className="flex-row items-center justify-between py-3 border-b border-gray-100"
+  //                   onPress={() => toggleProductSelection(product.id)}
+  //                 >
+  //                   <View>
+  //                     <Text className="text-base font-medium text-gray-800">
+  //                       {product.displayName}
+  //                     </Text>
+  //                     <Text className="text-sm text-gray-600">
+  //                       Rs.{product.discountedPrice} per kg
+  //                       {product.unitType.toLowerCase() === 'g' && (
+  //                         <Text style={{fontSize: 10}}> </Text>
+  //                       )}
+  //                     </Text>
+  //                   </View>
+  //                   <View
+  //                     className={`w-6 h-6 rounded border ${
+  //                       product.selected ? "bg-black border-black" : "border-gray-400"
+  //                     } justify-center items-center`}
+  //                   >
+  //                     {product.selected && (
+  //                       <Ionicons name="checkmark" size={16} color="white" />
+  //                     )}
+  //                   </View>
+  //                 </TouchableOpacity>
+  //               );
+  //             })
+  //           ) : (
+  //             <View className="py-8 items-center justify-center">
+  //               <Text className="text-gray-500">No products found</Text>
+  //             </View>
+  //           )}
+         
+  //           {/* Go to Cart Button */}
+  //           <View className="py-4 px-6 ">
+  //             <TouchableOpacity
+  //               onPress={goToCart}
+  //               disabled={!hasSelectedProducts}
+  //             >
+  //               {hasSelectedProducts ? (
+  //                 <LinearGradient
+  //                   colors={["#6839CF", "#874DDB"]}
+  //                   start={{ x: 0, y: 0 }}
+  //                   end={{ x: 1, y: 1 }}
+  //                   className="py-3 rounded-full items-center"
+  //                 >
+  //                   <Text className="text-white font-medium text-base">Go to Cart</Text>
+  //                 </LinearGradient>
+  //               ) : (
+  //                 <View className="py-3 rounded-full items-center bg-[#B6B7BC]">
+  //                   <Text className="text-white font-medium text-base">Go to Cart</Text>
+  //                 </View>
+  //               )}
+  //             </TouchableOpacity>
+  //           </View>
+  //         </ScrollView>
+  //       </View>
+  //     </KeyboardAvoidingView>
+  //   </SafeAreaView>
+  // );
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
       >
         <View className="flex-1 px-4">
           {/* Header */}
-          <View className="flex-row items-center h-16 shadow-md bg-white">
+          <View className={`flex-row items-center h-16 shadow-md ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <BackButton navigation={navigation} />
-            <Text className="text-lg font-bold text-[#6C3CD1] flex-grow text-center mr-7">
+            <Text className={`text-lg font-bold flex-grow text-center mr-7 ${isDarkMode ? 'text-purple-300' : 'text-[#6C3CD1]'}`}>
               Select Custom Items
             </Text>
           </View>
 
           {/* Search Bar */}
-          <View className="mb-4 bg-[#F5F1FC] rounded-full flex-row items-center px-4 py-2">
+          <View className={`mb-4 rounded-full flex-row items-center px-4 py-2 ${isDarkMode ? 'bg-gray-700' : 'bg-[#F5F1FC]'}`}>
             <TextInput
-              className="flex-1 text-gray-700"
+              className={`flex-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}
               placeholder="Search By Product Name"
-              placeholderTextColor="#6839CF"
+              placeholderTextColor={isDarkMode ? "#A78BFA" : "#6839CF"}
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
-            <Ionicons name="search" size={20} color="#6839CF" />
+            <Ionicons 
+              name="search" 
+              size={20} 
+              color={isDarkMode ? "#A78BFA" : "#6839CF"} 
+            />
           </View>
 
           {/* Product List */}
@@ -206,14 +322,14 @@ const CreateCustomPackage: React.FC<CreateCustomPackageProps> = ({ navigation, r
                 return (
                   <TouchableOpacity
                     key={product.id}
-                    className="flex-row items-center justify-between py-3 border-b border-gray-100"
+                    className={`flex-row items-center justify-between py-3 border-b ${isDarkMode ? 'border-gray-700' : 'border-gray-100'}`}
                     onPress={() => toggleProductSelection(product.id)}
                   >
                     <View>
-                      <Text className="text-base font-medium text-gray-800">
+                      <Text className={`text-base font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                         {product.displayName}
                       </Text>
-                      <Text className="text-sm text-gray-600">
+                      <Text className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
                         Rs.{product.discountedPrice} per kg
                         {product.unitType.toLowerCase() === 'g' && (
                           <Text style={{fontSize: 10}}> </Text>
@@ -222,7 +338,13 @@ const CreateCustomPackage: React.FC<CreateCustomPackageProps> = ({ navigation, r
                     </View>
                     <View
                       className={`w-6 h-6 rounded border ${
-                        product.selected ? "bg-black border-black" : "border-gray-400"
+                        product.selected 
+                          ? isDarkMode 
+                            ? "bg-purple-500 border-purple-500" 
+                            : "bg-black border-black"
+                          : isDarkMode 
+                            ? "border-gray-500" 
+                            : "border-gray-400"
                       } justify-center items-center`}
                     >
                       {product.selected && (
@@ -234,19 +356,21 @@ const CreateCustomPackage: React.FC<CreateCustomPackageProps> = ({ navigation, r
               })
             ) : (
               <View className="py-8 items-center justify-center">
-                <Text className="text-gray-500">No products found</Text>
+                <Text className={isDarkMode ? "text-gray-400" : "text-gray-500"}>
+                  No products found
+                </Text>
               </View>
             )}
          
             {/* Go to Cart Button */}
-            <View className="py-4 px-6 ">
+            <View className="py-4 px-6">
               <TouchableOpacity
                 onPress={goToCart}
                 disabled={!hasSelectedProducts}
               >
                 {hasSelectedProducts ? (
                   <LinearGradient
-                    colors={["#6839CF", "#874DDB"]}
+                    colors={isDarkMode ? ["#7C3AED", "#8B5CF6"] : ["#6839CF", "#874DDB"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     className="py-3 rounded-full items-center"
@@ -254,7 +378,7 @@ const CreateCustomPackage: React.FC<CreateCustomPackageProps> = ({ navigation, r
                     <Text className="text-white font-medium text-base">Go to Cart</Text>
                   </LinearGradient>
                 ) : (
-                  <View className="py-3 rounded-full items-center bg-[#B6B7BC]">
+                  <View className={`py-3 rounded-full items-center ${isDarkMode ? 'bg-gray-700' : 'bg-[#B6B7BC]'}`}>
                     <Text className="text-white font-medium text-base">Go to Cart</Text>
                   </View>
                 )}

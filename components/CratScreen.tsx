@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import BackButton from '../components/BackButton'; 
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTheme } from '../ThemeContext';
 
 type RootStackParamList = {
   CratScreen: undefined;
@@ -57,7 +58,7 @@ const CratScreen: React.FC<CratScreenProps> = ({ navigation, route }) => {
   const { id ,isCustomPackage, isSelectPackage} = route.params || {};
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
-
+const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
     if (route.params?.selectedProducts) {
@@ -260,12 +261,146 @@ const CratScreen: React.FC<CratScreenProps> = ({ navigation, route }) => {
     return item.changeby.toFixed(0);
   };
 
+  // return (
+  //   <SafeAreaView className="flex-1 bg-white">
+  //     <View className="flex-1 px-4">
+  //       <View className="flex-row items-center">
+  //         <BackButton navigation={navigation} />
+  //         <Text className="text-lg font-medium text-[#6C3CD1] flex-1 text-center mr-10">
+  //           Custom Cart
+  //         </Text>
+  //         {isSelectionMode && (
+  //           <TouchableOpacity 
+  //             onPress={deleteSelectedItems}
+  //             className="absolute right-0"
+  //           >
+  //             <Ionicons name="trash-outline" size={24} color="#FF2C2C" />
+  //           </TouchableOpacity>
+  //         )}
+  //       </View>
+        
+  //       <ScrollView className="flex-1 mt-4" showsVerticalScrollIndicator={false}>
+  //         {cartItems.map((item) => (
+  //           <View key={item.id} className="flex-row items-center py-4 border-b border-gray-200">
+  //             <TouchableOpacity 
+  //               onPress={() => toggleItemSelection(item.id)}
+  //               className="mr-4"
+  //             >
+  //               <View className={`w-5 h-5 rounded-sm border ${
+  //                 item.selected ? 'bg-black border-black' : 'border-gray-400'
+  //               } justify-center items-center`}>
+  //                 {item.selected && (
+  //                   <Ionicons name="checkmark" size={14} color="white" />
+  //                 )}
+  //               </View>
+  //             </TouchableOpacity>
+              
+  //             <View className="flex-1">
+  //               <Text className="text-base font-medium text-gray-800">{item.name}</Text>
+  //               <Text className="text-sm text-gray-600">
+  //                 Rs.{item.price.toFixed(2)} per kg
+  //               </Text>
+  //             </View>
+              
+  //             <View className="flex-row items-center">
+  //               <View className="flex-row mr-2">
+  //                 <TouchableOpacity 
+  //                   className={`px-2 py-1 rounded-md border border-purple-200 ${
+  //                     item.unitType === 'kg' ? 'bg-purple-100' : 'bg-white'
+  //                   }`}
+  //                   onPress={() => changeUnit(item.id, 'kg')}
+  //                 >
+  //                   <Text className={`text-xs ${
+  //                     item.unitType === 'kg' ? 'text-purple-600' : 'text-gray-600'
+  //                   }`}>kg</Text>
+  //                 </TouchableOpacity>
+                  
+  //                 <TouchableOpacity 
+  //                   className={`px-2 py-1 rounded-md border border-purple-200 ml-1 ${
+  //                     item.unitType === 'g' ? 'bg-purple-100' : 'bg-white'
+  //                   }`}
+  //                   onPress={() => changeUnit(item.id, 'g')}
+  //                 >
+  //                   <Text className={`text-xs ${
+  //                     item.unitType === 'g' ? 'text-purple-600' : 'text-gray-600'
+  //                   }`}>g</Text>
+  //                 </TouchableOpacity>
+  //               </View>
+  //               <View className="flex-row items-center">
+  //                 <TouchableOpacity 
+  //                   className="bg-gray-200 w-6 h-6 rounded-full justify-center items-center"
+  //                   onPress={() => decreaseQuantity(item.id)}
+  //                 >
+  //                   <Image
+  //                     source={require("../assets/images/minns.png")}
+  //                     className="w-7 h-7"
+  //                     resizeMode="contain"
+  //                   />
+  //                 </TouchableOpacity>
+                  
+  //                 <Text className="mx-2 text-base w-12 text-center">
+  //                   {formatQuantity(item)}
+  //                 </Text>
+                  
+  //                 <TouchableOpacity 
+  //                   className="bg-gray-200 w-6 h-6 rounded-full justify-center items-center"
+  //                   onPress={() => increaseQuantity(item.id)}
+  //                 >
+  //                   <Image
+  //                     source={require("../assets/images/adddd.png")}
+  //                     className="w-7 h-7"
+  //                     resizeMode="contain"
+  //                   />
+  //                 </TouchableOpacity>
+  //               </View>
+  //             </View>
+  //           </View>
+  //         ))}
+          
+  //         <View className="py-4 border-t border-gray-200">
+  //           <View className="flex-row justify-between py-2">
+  //             <Text className="text-gray-500">Subtotal</Text>
+  //             <Text className="font-medium">Rs.{currentSubtotal.toFixed(2)}</Text>
+  //           </View>
+            
+  //           <View className="flex-row justify-between py-2">
+  //             <Text className="text-gray-500">Discount</Text>
+  //             <Text className="font-medium text-[#686868]">Rs.{discount.toFixed(2)}</Text>
+  //           </View>
+            
+  //           <View className="flex-row justify-between py-2">
+  //             <Text className="font-semibold">Total</Text>
+  //             <Text className="font-bold">Rs.{currentTotal.toFixed(2)}</Text>
+  //           </View>
+  //         </View>
+  //         <View className="py-4 border-t border-gray-200"></View>
+  //       </ScrollView>
+       
+        
+  //       <View className="py-4 px-6">
+  //         <TouchableOpacity onPress={handleConfirm}>
+  //           <LinearGradient
+  //             colors={["#6839CF", "#874DDB"]}
+  //             start={{ x: 0, y: 0 }}
+  //             end={{ x: 1, y: 1 }}
+  //             className="py-3 rounded-full items-center"
+  //           >
+  //             <Text className="text-white font-medium text-base">Confirm</Text>
+  //           </LinearGradient>
+  //         </TouchableOpacity>
+  //       </View>
+  //     </View>
+  //   </SafeAreaView>
+  // );
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       <View className="flex-1 px-4">
+        {/* Header */}
         <View className="flex-row items-center">
           <BackButton navigation={navigation} />
-          <Text className="text-lg font-medium text-[#6C3CD1] flex-1 text-center mr-10">
+          <Text className={`text-lg font-medium flex-1 text-center mr-10 ${
+            isDarkMode ? 'text-purple-300' : 'text-[#6C3CD1]'
+          }`}>
             Custom Cart
           </Text>
           {isSelectionMode && (
@@ -273,20 +408,33 @@ const CratScreen: React.FC<CratScreenProps> = ({ navigation, route }) => {
               onPress={deleteSelectedItems}
               className="absolute right-0"
             >
-              <Ionicons name="trash-outline" size={24} color="#FF2C2C" />
+              <Ionicons name="trash-outline" size={24} color="#FF6B6B" />
             </TouchableOpacity>
           )}
         </View>
         
+        {/* Cart Items List */}
         <ScrollView className="flex-1 mt-4" showsVerticalScrollIndicator={false}>
           {cartItems.map((item) => (
-            <View key={item.id} className="flex-row items-center py-4 border-b border-gray-200">
+            <View 
+              key={item.id} 
+              className={`flex-row items-center py-4 border-b ${
+                isDarkMode ? 'border-gray-700' : 'border-gray-200'
+              }`}
+            >
+              {/* Selection Checkbox */}
               <TouchableOpacity 
                 onPress={() => toggleItemSelection(item.id)}
                 className="mr-4"
               >
                 <View className={`w-5 h-5 rounded-sm border ${
-                  item.selected ? 'bg-black border-black' : 'border-gray-400'
+                  item.selected 
+                    ? isDarkMode 
+                      ? 'bg-purple-500 border-purple-500' 
+                      : 'bg-black border-black'
+                    : isDarkMode 
+                      ? 'border-gray-500' 
+                      : 'border-gray-400'
                 } justify-center items-center`}>
                   {item.selected && (
                     <Ionicons name="checkmark" size={14} color="white" />
@@ -294,59 +442,107 @@ const CratScreen: React.FC<CratScreenProps> = ({ navigation, route }) => {
                 </View>
               </TouchableOpacity>
               
+              {/* Item Info */}
               <View className="flex-1">
-                <Text className="text-base font-medium text-gray-800">{item.name}</Text>
-                <Text className="text-sm text-gray-600">
+                <Text className={`text-base font-medium ${
+                  isDarkMode ? 'text-gray-200' : 'text-gray-800'
+                }`}>
+                  {item.name}
+                </Text>
+                <Text className={`text-sm ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}>
                   Rs.{item.price.toFixed(2)} per kg
                 </Text>
               </View>
               
+              {/* Unit Selector and Quantity Controls */}
               <View className="flex-row items-center">
                 <View className="flex-row mr-2">
                   <TouchableOpacity 
-                    className={`px-2 py-1 rounded-md border border-purple-200 ${
-                      item.unitType === 'kg' ? 'bg-purple-100' : 'bg-white'
+                    className={`px-2 py-1 rounded-md border ${
+                      isDarkMode ? 'border-purple-800' : 'border-purple-200'
+                    } ${
+                      item.unitType === 'kg' 
+                        ? isDarkMode 
+                          ? 'bg-purple-900' 
+                          : 'bg-purple-100'
+                        : isDarkMode 
+                          ? 'bg-gray-800' 
+                          : 'bg-white'
                     }`}
                     onPress={() => changeUnit(item.id, 'kg')}
                   >
                     <Text className={`text-xs ${
-                      item.unitType === 'kg' ? 'text-purple-600' : 'text-gray-600'
+                      item.unitType === 'kg' 
+                        ? isDarkMode 
+                          ? 'text-purple-300' 
+                          : 'text-purple-600'
+                        : isDarkMode 
+                          ? 'text-gray-300' 
+                          : 'text-gray-600'
                     }`}>kg</Text>
                   </TouchableOpacity>
                   
                   <TouchableOpacity 
-                    className={`px-2 py-1 rounded-md border border-purple-200 ml-1 ${
-                      item.unitType === 'g' ? 'bg-purple-100' : 'bg-white'
+                    className={`px-2 py-1 rounded-md border ${
+                      isDarkMode ? 'border-purple-800' : 'border-purple-200'
+                    } ml-1 ${
+                      item.unitType === 'g' 
+                        ? isDarkMode 
+                          ? 'bg-purple-900' 
+                          : 'bg-purple-100'
+                        : isDarkMode 
+                          ? 'bg-gray-800' 
+                          : 'bg-white'
                     }`}
                     onPress={() => changeUnit(item.id, 'g')}
                   >
                     <Text className={`text-xs ${
-                      item.unitType === 'g' ? 'text-purple-600' : 'text-gray-600'
+                      item.unitType === 'g' 
+                        ? isDarkMode 
+                          ? 'text-purple-300' 
+                          : 'text-purple-600'
+                        : isDarkMode 
+                          ? 'text-gray-300' 
+                          : 'text-gray-600'
                     }`}>g</Text>
                   </TouchableOpacity>
                 </View>
+                
+                {/* Quantity Controls */}
                 <View className="flex-row items-center">
                   <TouchableOpacity 
-                    className="bg-gray-200 w-6 h-6 rounded-full justify-center items-center"
+                    className={`w-6 h-6 rounded-full justify-center items-center ${
+                      isDarkMode ? 'bg-gray-700' : 'bg-gray-200'
+                    }`}
                     onPress={() => decreaseQuantity(item.id)}
                   >
                     <Image
-                      source={require("../assets/images/minns.png")}
+                      source={isDarkMode 
+                        ? require("../assets/images/minns.png") 
+                        : require("../assets/images/minns.png")}
                       className="w-7 h-7"
                       resizeMode="contain"
                     />
                   </TouchableOpacity>
                   
-                  <Text className="mx-2 text-base w-12 text-center">
+                  <Text className={`mx-2 text-base w-12 text-center ${
+                    isDarkMode ? 'text-gray-200' : 'text-gray-800'
+                  }`}>
                     {formatQuantity(item)}
                   </Text>
                   
                   <TouchableOpacity 
-                    className="bg-gray-200 w-6 h-6 rounded-full justify-center items-center"
+                    className={`w-6 h-6 rounded-full justify-center items-center ${
+                      isDarkMode ? 'bg-gray-700' : 'bg-gray-200'
+                    }`}
                     onPress={() => increaseQuantity(item.id)}
                   >
                     <Image
-                      source={require("../assets/images/adddd.png")}
+                      source={isDarkMode 
+                        ? require("../assets/images/adddd.png") 
+                        : require("../assets/images/adddd.png")}
                       className="w-7 h-7"
                       resizeMode="contain"
                     />
@@ -356,30 +552,49 @@ const CratScreen: React.FC<CratScreenProps> = ({ navigation, route }) => {
             </View>
           ))}
           
-          <View className="py-4 border-t border-gray-200">
+          {/* Order Summary */}
+          <View className={`py-4 border-t ${
+            isDarkMode ? 'border-gray-700' : 'border-gray-200'
+          }`}>
             <View className="flex-row justify-between py-2">
-              <Text className="text-gray-500">Subtotal</Text>
-              <Text className="font-medium">Rs.{currentSubtotal.toFixed(2)}</Text>
+              <Text className={isDarkMode ? "text-gray-400" : "text-gray-500"}>Subtotal</Text>
+              <Text className={`font-medium ${
+                isDarkMode ? 'text-gray-200' : 'text-gray-800'
+              }`}>
+                Rs.{currentSubtotal.toFixed(2)}
+              </Text>
             </View>
             
             <View className="flex-row justify-between py-2">
-              <Text className="text-gray-500">Discount</Text>
-              <Text className="font-medium text-[#686868]">Rs.{discount.toFixed(2)}</Text>
+              <Text className={isDarkMode ? "text-gray-400" : "text-gray-500"}>Discount</Text>
+              <Text className={`font-medium ${
+                isDarkMode ? 'text-gray-400' : 'text-[#686868]'
+              }`}>
+                Rs.{discount.toFixed(2)}
+              </Text>
             </View>
             
             <View className="flex-row justify-between py-2">
-              <Text className="font-semibold">Total</Text>
-              <Text className="font-bold">Rs.{currentTotal.toFixed(2)}</Text>
+              <Text className={`font-semibold ${
+                isDarkMode ? 'text-gray-200' : 'text-gray-800'
+              }`}>Total</Text>
+              <Text className={`font-bold ${
+                isDarkMode ? 'text-white' : 'text-black'
+              }`}>
+                Rs.{currentTotal.toFixed(2)}
+              </Text>
             </View>
           </View>
-          <View className="py-4 border-t border-gray-200"></View>
+          <View className={`py-4 border-t ${
+            isDarkMode ? 'border-gray-700' : 'border-gray-200'
+          }`}></View>
         </ScrollView>
        
-        
+        {/* Confirm Button */}
         <View className="py-4 px-6">
           <TouchableOpacity onPress={handleConfirm}>
             <LinearGradient
-              colors={["#6839CF", "#874DDB"]}
+              colors={isDarkMode ? ["#7C3AED", "#8B5CF6"] : ["#6839CF", "#874DDB"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               className="py-3 rounded-full items-center"

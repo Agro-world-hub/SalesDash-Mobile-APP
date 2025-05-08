@@ -10,6 +10,7 @@ import axios from "axios";
 import environment from "@/environment/environment";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ViewComplainScreenSkeleton from "../components/Skeleton/ViewComplainScreenSkeleton";  // Assuming skeleton loader component
+import { useTheme } from '../ThemeContext';
 
 type ViewComplainScreenNavigationProp = StackNavigationProp<RootStackParamList, "ViewComplainScreen">;
 
@@ -24,6 +25,8 @@ const ViewComplainScreen: React.FC<ViewComplainScreenProps> = ({ navigation }) =
   const [loading, setLoading] = useState<boolean>(true); 
   const [formData, setFormData] = useState({ username: "" });
   const [refreshing, setRefreshing] = useState(false);
+
+   const { isDarkMode, toggleTheme } = useTheme();
 
   interface Complaint {
     id: number;
@@ -120,32 +123,159 @@ const ViewComplainScreen: React.FC<ViewComplainScreenProps> = ({ navigation }) =
   };
 
   
+  // return (
+  //   <View className="flex-1 bg-white">
+  //     {loading ? (
+  //       <ViewComplainScreenSkeleton />
+  //     ) : (
+  //       <>
+  //         {/* Header */}
+  //         <LinearGradient colors={["#6839CF", "#854EDC"]} className="h-30 shadow-md px-2 pt-5 mb-4">
+  //           <View className="flex-row items-center justify-between mt-[-4]">
+  //             <View className="mt-[-3]">
+  //               <BackButton navigation={navigation} />
+  //             </View>
+    
+  //             <Text className="text-white text-lg font-bold flex-1 mx-14 ">Complaint History</Text>
+  //           </View>
+  //         </LinearGradient>
+  
+  //         <View style={{ paddingHorizontal: wp(6) }} className="flex-1">
+  //           {/* Complaint List (FlatList) */}
+  //           {isEmpty ? (
+  //             <View className="flex-1 justify-center items-center px-4">
+  //               <Image
+  //                 source={require("../assets/images/searchr.png")}
+  //                 style={{ width: wp("60%"), height: hp("30%"), resizeMode: "contain" }}
+  //               />
+  //               <Text className="text-black text-i text-center mt-4">You have no previous complaints</Text>
+  //             </View>
+  //           ) : (
+  //             <FlatList
+  //               data={complaints}
+  //               keyExtractor={(item) => item.id.toString()}
+  //               showsVerticalScrollIndicator={true}
+  //               contentContainerStyle={{ paddingBottom: 100 }}
+  //               refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+  //               renderItem={({ item }) => (
+  //                 <View className="bg-white shadow-md p-4 mb-4 border border-gray-300 rounded-lg">
+  //                   <Text className="text-gray-700 font-semibold">Ref No: {item.refNo}</Text>
+  //                   <Text className="text-gray-500 text-sm">Sent {item.createdAt}</Text>
+  //                   <Text className="text-gray-700 mt-2">{item.complain}</Text>
+    
+      
+  //                   <View className="mt-4 flex-row justify-between items-center rounded-lg">
+  //                     {item.status === "Opened" ? (
+  //                       <Text></Text>
+  //                     ) : (
+  //                       <TouchableOpacity
+  //                         className="bg-black px-3 py-1 text-xs rounded-lg"
+  //                         onPress={() => handleViewResponse(item)}
+  //                       >
+  //                         <Text className="text-white text-xs">View Response</Text>
+  //                       </TouchableOpacity>
+  //                     )}
+  //                     <Text
+  //                       className={`px-3 py-1 text-xs rounded-lg ${item.status === "Opened" ? "bg-blue-200 text-blue-700" : "bg-purple-200 text-purple-700"}`}
+  //                     >
+  //                       {item.status}
+  //                     </Text>
+  //                   </View>
+  //                 </View>
+  //               )}
+  //             />
+  //           )}
+  //         </View>
+  //       </>
+  //     )}
+  
+  //     {/* Modal to View Response */}
+  //     <Modal
+  //       animationType="fade"
+  //       transparent={true}
+  //       visible={modalVisible}
+  //       onRequestClose={() => setModalVisible(false)}
+  //     >
+  //       <View className="flex-1 items-center bg-white bg-opacity-50">
+  //         <View className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+  //           {/* Close Button */}
+  //           <TouchableOpacity className="absolute top-3 right-3" onPress={() => setModalVisible(false)}>
+  //             <AntDesign name="closecircle" size={24} color="gray" />
+  //           </TouchableOpacity>
+  
+  //           {/* Complaint Response Content */}
+  //           {selectedComplaint ? (
+  //             <View className="mt-4">
+  //               <Text className="text-gray-800 text-base leading-relaxed text-left">
+  //                 <Text className="font-bold">Dear {formData.username || "User"},</Text>
+  //                 {"\n\n"}
+  //                 {selectedComplaint.reply || "No response available."}
+  //                 {"\n\n"}
+  //                 <Text className="text-left">Sincerely,</Text>
+  //                 {"\n"}
+  //                 <Text className="text-left">AgroWorld Customer Support Team</Text>
+  //                 {"\n\n"}
+  //               </Text>
+  
+  //               {selectedComplaint.replyTime ? (
+  //                 <Text className="text-gray-800 mt-[-28] text-base">
+  //                   {new Date(selectedComplaint.replyTime).toLocaleString("en-US", {
+  //                     day: "2-digit",     
+  //                     month: "2-digit",    
+  //                     year: "numeric",    
+  //                   })}
+  //                 </Text>
+  //               ) : (
+  //                 <Text className="text-gray-600 text-sm">No reply time available</Text>
+  //               )}
+  //             </View>
+  //           ) : (
+  //             <Text className="text-gray-700">No response available.</Text>
+  //           )}
+  //         </View>
+  //       </View>
+  //     </Modal>
+  
+  //     {/* Bottom Navigation */}
+  //   </View>
+  // );
+
   return (
-    <View className="flex-1 bg-white">
+    <View className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       {loading ? (
         <ViewComplainScreenSkeleton />
       ) : (
         <>
-          {/* Header */}
-          <LinearGradient colors={["#6839CF", "#854EDC"]} className="h-30 shadow-md px-2 pt-5 mb-4">
+      
+          <LinearGradient 
+            colors={isDarkMode ? ["#5A2DB2", "#6A3AD0"] : ["#6839CF", "#854EDC"]} 
+            className="h-30 shadow-md px-2 pt-5 mb-4"
+          >
             <View className="flex-row items-center justify-between mt-[-4]">
               <View className="mt-[-3]">
                 <BackButton navigation={navigation} />
               </View>
     
-              <Text className="text-white text-lg font-bold flex-1 mx-14 ">Complaint History</Text>
+              <Text className="text-white text-lg font-bold flex-1 mx-14">Complaint History</Text>
             </View>
           </LinearGradient>
   
           <View style={{ paddingHorizontal: wp(6) }} className="flex-1">
-            {/* Complaint List (FlatList) */}
+          
             {isEmpty ? (
               <View className="flex-1 justify-center items-center px-4">
                 <Image
                   source={require("../assets/images/searchr.png")}
-                  style={{ width: wp("60%"), height: hp("30%"), resizeMode: "contain" }}
+                  style={{ 
+                    width: wp("60%"), 
+                    height: hp("30%"), 
+                    resizeMode: "contain",
+                    tintColor: isDarkMode ? '#a67dff' : undefined 
+                  }}
                 />
-                <Text className="text-black text-i text-center mt-4">You have no previous complaints</Text>
+                <Text className={`text-center mt-4 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                  You have no previous complaints
+                </Text>
               </View>
             ) : (
               <FlatList
@@ -153,27 +283,53 @@ const ViewComplainScreen: React.FC<ViewComplainScreenProps> = ({ navigation }) =
                 keyExtractor={(item) => item.id.toString()}
                 showsVerticalScrollIndicator={true}
                 contentContainerStyle={{ paddingBottom: 100 }}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                refreshControl={
+                  <RefreshControl 
+                    refreshing={refreshing} 
+                    onRefresh={onRefresh}
+                    colors={[isDarkMode ? "#a67dff" : "#6839CF"]}
+                    tintColor={isDarkMode ? "#a67dff" : "#6839CF"}
+                  />
+                }
                 renderItem={({ item }) => (
-                  <View className="bg-white shadow-md p-4 mb-4 border border-gray-300 rounded-lg">
-                    <Text className="text-gray-700 font-semibold">Ref No: {item.refNo}</Text>
-                    <Text className="text-gray-500 text-sm">Sent {item.createdAt}</Text>
-                    <Text className="text-gray-700 mt-2">{item.complain}</Text>
-    
-      
+                  <View className={`shadow-md p-4 mb-4 border rounded-lg ${
+                    isDarkMode 
+                      ? 'bg-gray-800 border-gray-700' 
+                      : 'bg-white border-gray-300'
+                  }`}>
+                    <Text className={isDarkMode ? 'text-gray-300 font-semibold' : 'text-gray-700 font-semibold'}>
+                      Ref No: {item.refNo}
+                    </Text>
+                    <Text className={isDarkMode ? 'text-gray-400 text-sm' : 'text-gray-500 text-sm'}>
+                      Sent {item.createdAt}
+                    </Text>
+                    <Text className={`mt-2 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      {item.complain}
+                    </Text>
+  
                     <View className="mt-4 flex-row justify-between items-center rounded-lg">
                       {item.status === "Opened" ? (
                         <Text></Text>
                       ) : (
                         <TouchableOpacity
-                          className="bg-black px-3 py-1 text-xs rounded-lg"
+                          className={`px-3 py-1 text-xs rounded-lg ${
+                            isDarkMode ? 'bg-purple-700' : 'bg-black'
+                          }`}
                           onPress={() => handleViewResponse(item)}
                         >
                           <Text className="text-white text-xs">View Response</Text>
                         </TouchableOpacity>
                       )}
                       <Text
-                        className={`px-3 py-1 text-xs rounded-lg ${item.status === "Opened" ? "bg-blue-200 text-blue-700" : "bg-purple-200 text-purple-700"}`}
+                        className={`px-3 py-1 text-xs rounded-lg ${
+                          item.status === "Opened" 
+                            ? isDarkMode 
+                              ? 'bg-blue-900 text-blue-200' 
+                              : 'bg-blue-200 text-blue-700'
+                            : isDarkMode 
+                              ? 'bg-purple-900 text-purple-200' 
+                              : 'bg-purple-200 text-purple-700'
+                        }`}
                       >
                         {item.status}
                       </Text>
@@ -186,8 +342,8 @@ const ViewComplainScreen: React.FC<ViewComplainScreenProps> = ({ navigation }) =
         </>
       )}
   
-      {/* Modal to View Response */}
-      <Modal
+ 
+           <Modal
         animationType="fade"
         transparent={true}
         visible={modalVisible}
@@ -195,12 +351,12 @@ const ViewComplainScreen: React.FC<ViewComplainScreenProps> = ({ navigation }) =
       >
         <View className="flex-1 items-center bg-white bg-opacity-50">
           <View className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            {/* Close Button */}
+        
             <TouchableOpacity className="absolute top-3 right-3" onPress={() => setModalVisible(false)}>
               <AntDesign name="closecircle" size={24} color="gray" />
             </TouchableOpacity>
   
-            {/* Complaint Response Content */}
+          
             {selectedComplaint ? (
               <View className="mt-4">
                 <Text className="text-gray-800 text-base leading-relaxed text-left">
@@ -232,8 +388,6 @@ const ViewComplainScreen: React.FC<ViewComplainScreenProps> = ({ navigation }) =
           </View>
         </View>
       </Modal>
-  
-      {/* Bottom Navigation */}
     </View>
   );
 };

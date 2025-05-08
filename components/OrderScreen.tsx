@@ -10,6 +10,7 @@ import environment from "@/environment/environment";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RouteProp } from "@react-navigation/native";
+import { useTheme } from '../ThemeContext';
 
 
 type OrderScreenNavigationProp = StackNavigationProp<RootStackParamList, "OrderScreen">;
@@ -161,6 +162,8 @@ const [finaldiscount, setFinaldiscount] = useState("0.00");
     mpItemId?: number;
     price?: number 
   }[]>([]);
+
+   const { isDarkMode, toggleTheme } = useTheme();
   
   // Make sure to set this when fetching items
   useEffect(() => {
@@ -1296,433 +1299,996 @@ const saveUpdatedItem = () => {
 
   
 
-  return (
-    <View className="flex-1 bg-white">
-    <KeyboardAvoidingView 
-                               behavior={Platform.OS === "ios" ? "padding" : "height"}
-                               enabled 
-                               className="flex-1"
-                             >
+//   return (
+//     <View className="flex-1 bg-white">
+//     <KeyboardAvoidingView 
+//                                behavior={Platform.OS === "ios" ? "padding" : "height"}
+//                                enabled 
+//                                className="flex-1"
+//                              >
       
-      {/* Header */}
-      <View className="flex-row items-center h-16 shadow-md px-4 bg-white">
-        <BackButton navigation={navigation} />
-        <Text className="text-lg font-bold text-[#6C3CD1] flex-grow text-center mr-7">Order Details</Text>
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false} className="px-6 mt-4" keyboardShouldPersistTaps="handled">
-  {/* Package Selection */}
-  <Text className="text-gray-700 text-base mb-2">Package</Text>
+//       {/* Header */}
+//       <View className="flex-row items-center h-16 shadow-md px-4 bg-white">
+//         <BackButton navigation={navigation} />
+//         <Text className="text-lg font-bold text-[#6C3CD1] flex-grow text-center mr-7">Order Details</Text>
+//       </View>
+//       <ScrollView showsVerticalScrollIndicator={false} className="px-6 mt-4" keyboardShouldPersistTaps="handled">
+//   {/* Package Selection */}
+//   <Text className="text-gray-700 text-base mb-2">Package</Text>
   
-  <SelectList
-    setSelected={async (val: string) => {
-      const selectedPkg = packages.find(pkg => pkg.id.toString() === val);
-      if (selectedPkg) {
-        setSelectedPackage(selectedPkg);
-        setTotalPrice(Number(selectedPkg.total) || 0);
+//   <SelectList
+//     setSelected={async (val: string) => {
+//       const selectedPkg = packages.find(pkg => pkg.id.toString() === val);
+//       if (selectedPkg) {
+//         setSelectedPackage(selectedPkg);
+//         setTotalPrice(Number(selectedPkg.total) || 0);
         
-        const items = await fetchItemsForPackage(selectedPkg.id);
-        setPackageItems(items);
-        setPackageItemsCount(items.length);
-      }
-    }}
-    data={packages.map(pkg => ({
-      key: pkg.id.toString(),
-      value: pkg.displayName || "Unnamed Package"
-    }))}
-    save="key"
-    search={true}
-    placeholder="Select Package"
-    boxStyles={{
-      borderColor: "#F6F6F6",
-      backgroundColor: "#F6F6F6",
-      borderRadius: 40,
-      padding: 10
-    }}
-  />
+//         const items = await fetchItemsForPackage(selectedPkg.id);
+//         setPackageItems(items);
+//         setPackageItemsCount(items.length);
+//       }
+//     }}
+//     data={packages.map(pkg => ({
+//       key: pkg.id.toString(),
+//       value: pkg.displayName || "Unnamed Package"
+//     }))}
+//     save="key"
+//     search={true}
+//     placeholder="Select Package"
+//     boxStyles={{
+//       borderColor: "#F6F6F6",
+//       backgroundColor: "#F6F6F6",
+//       borderRadius: 40,
+//       padding: 10
+//     }}
+//   />
 
-  {selectedPackage && (
-    <View className="mt-6 px-3 mb-20">
-      <View className="flex-row justify-between items-center border-b border-gray-200 py-3">
-        <Text className="font-bold text-gray-800">
-          Package ({packageItemsCount} items)
-        </Text>
+//   {selectedPackage && (
+//     <View className="mt-6 px-3 mb-20">
+//       <View className="flex-row justify-between items-center border-b border-gray-200 py-3">
+//         <Text className="font-bold text-gray-800">
+//           Package ({packageItemsCount} items)
+//         </Text>
         
-        <TouchableOpacity
-          className="ml-3 flex-row items-center"
-          onPress={() => setModalVisible1(true)}
-        >
-          <Image source={require("../assets/images/Add.png")} className="w-5 h-5 mr-2" />
-          <Text className="text-[#6839CF] font-semibold">Add More</Text>
-        </TouchableOpacity>
+//         <TouchableOpacity
+//           className="ml-3 flex-row items-center"
+//           onPress={() => setModalVisible1(true)}
+//         >
+//           <Image source={require("../assets/images/Add.png")} className="w-5 h-5 mr-2" />
+//           <Text className="text-[#6839CF] font-semibold">Add More</Text>
+//         </TouchableOpacity>
 
-      </View>
+//       </View>
       
-      {/* Render package items */}
-      {packageItems.map((item, index) => (
-        <View key={index} className="flex-row justify-between items-center border-b border-gray-200 py-3">
-          <Text className="text-gray-700 text-base">{item.name}</Text>
-          <View className="flex-row items-center">
-            <Text className="text-gray-600 text-base">
-              {item.quantity} {item.quantityType}
-            </Text>
-            <TouchableOpacity
-              className="ml-3"
-              onPress={() => handleItemClick(item)}
-            >
-              <Image source={require("../assets/images/Edit.png")} className="w-4 h-4" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      ))}
+//       {/* Render package items */}
+//       {packageItems.map((item, index) => (
+//         <View key={index} className="flex-row justify-between items-center border-b border-gray-200 py-3">
+//           <Text className="text-gray-700 text-base">{item.name}</Text>
+//           <View className="flex-row items-center">
+//             <Text className="text-gray-600 text-base">
+//               {item.quantity} {item.quantityType}
+//             </Text>
+//             <TouchableOpacity
+//               className="ml-3"
+//               onPress={() => handleItemClick(item)}
+//             >
+//               <Image source={require("../assets/images/Edit.png")} className="w-4 h-4" />
+//             </TouchableOpacity>
+//           </View>
+//         </View>
+//       ))}
       
-      {additionalItems.length > 0 && (
-        <View className="flex-row justify-between items-center mt-5 border-b border-gray-200 py-3">
-          <Text className="font-bold text-gray-800">Additional ({additionalItems.length} items)</Text>
-          {selectedItems.size > 0 && (
-            <TouchableOpacity
-              className="flex-row items-center"
-              onPress={deleteSelectedItems}
-            >
-              <Image source={require("../assets/images/trash.png")} className="w-5 h-5 mr-1" />
-              <Text className="text-red-500"></Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
+//       {additionalItems.length > 0 && (
+//         <View className="flex-row justify-between items-center mt-5 border-b border-gray-200 py-3">
+//           <Text className="font-bold text-gray-800">Additional ({additionalItems.length} items)</Text>
+//           {selectedItems.size > 0 && (
+//             <TouchableOpacity
+//               className="flex-row items-center"
+//               onPress={deleteSelectedItems}
+//             >
+//               <Image source={require("../assets/images/trash.png")} className="w-5 h-5 mr-1" />
+//               <Text className="text-red-500"></Text>
+//             </TouchableOpacity>
+//           )}
+//         </View>
+//       )}
 
-      {/* Render Additional Items with checkboxes */}
-      {additionalItems.map((item, index) => (
-        <View key={index} className="flex-row justify-between items-center border-b border-gray-200 py-3">
-          <View className="flex-row items-center">
-            <TouchableOpacity 
-              onPress={() => toggleItemSelection(item.id)}
-              className="mr-2"
-            >
-              <View className={`w-5 h-5 border rounded-sm  flex items-center justify-center ${selectedItems.has(item.id) ? 'bg-black border-black' : 'border-gray-400'}`}>
-                {selectedItems.has(item.id) && (
-                  <Text className="text-white text-xs">✓</Text>
-                )}
-              </View>
-            </TouchableOpacity>
-            <Text className="text-gray-700 text-base">{item.name}</Text>
-          </View>
-          <View className="flex-row items-center">
-            <Text className="text-gray-600 text-base">{item.quantity}</Text>
-            <TouchableOpacity
-              className="ml-3"
-              onPress={() => handleEditItemClick(item)}
-            >
-              <Image source={require("../assets/images/Edit.png")} className="w-4 h-4" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      ))}
-    </View>
-  )}
-</ScrollView>
+//       {/* Render Additional Items with checkboxes */}
+//       {additionalItems.map((item, index) => (
+//         <View key={index} className="flex-row justify-between items-center border-b border-gray-200 py-3">
+//           <View className="flex-row items-center">
+//             <TouchableOpacity 
+//               onPress={() => toggleItemSelection(item.id)}
+//               className="mr-2"
+//             >
+//               <View className={`w-5 h-5 border rounded-sm  flex items-center justify-center ${selectedItems.has(item.id) ? 'bg-black border-black' : 'border-gray-400'}`}>
+//                 {selectedItems.has(item.id) && (
+//                   <Text className="text-white text-xs">✓</Text>
+//                 )}
+//               </View>
+//             </TouchableOpacity>
+//             <Text className="text-gray-700 text-base">{item.name}</Text>
+//           </View>
+//           <View className="flex-row items-center">
+//             <Text className="text-gray-600 text-base">{item.quantity}</Text>
+//             <TouchableOpacity
+//               className="ml-3"
+//               onPress={() => handleEditItemClick(item)}
+//             >
+//               <Image source={require("../assets/images/Edit.png")} className="w-4 h-4" />
+//             </TouchableOpacity>
+//           </View>
+//         </View>
+//       ))}
+//     </View>
+//   )}
+// </ScrollView>
   
   
-{/* Edit Item Modal */}
-<Modal visible={modalVisible} transparent animationType="slide">
-  <View className="flex-1 justify-center items-center bg-[#00000066] bg-opacity-10">
-    <View className="bg-white p-6 rounded-xl w-4/5">
-      <Text className="text-gray-700 mb-2">Product</Text>
-      <TextInput
-        className="bg-gray-100 p-3 rounded-full mb-3 text-gray-700"
-        value={editingItem?.name}
-        editable={false}
-      />
+// {/* Edit Item Modal */}
+// <Modal visible={modalVisible} transparent animationType="slide">
+//   <View className="flex-1 justify-center items-center bg-[#00000066] bg-opacity-10">
+//     <View className="bg-white p-6 rounded-xl w-4/5">
+//       <Text className="text-gray-700 mb-2">Product</Text>
+//       <TextInput
+//         className="bg-gray-100 p-3 rounded-full mb-3 text-gray-700"
+//         value={editingItem?.name}
+//         editable={false}
+//       />
       
-      {/* Quantity and Unit Selector */}
-      <View>
-        <Text className="text-gray-700 mb-2">Quantity</Text>
-        <View className="flex-row items-center space-x-2">
-          {/* Quantity Control with +/- buttons */}
-          <View className="flex-row items-center bg-gray-100 rounded-full flex-1">
-          <TouchableOpacity
-  className="w-10 h-10 flex items-center justify-center"
-  onPress={() => updateQuantity2(parseFloat(itemDetails?.changeby || "0.5"), false)} // Decrease quantity on "-" button
+//       {/* Quantity and Unit Selector */}
+//       <View>
+//         <Text className="text-gray-700 mb-2">Quantity</Text>
+//         <View className="flex-row items-center space-x-2">
+//           {/* Quantity Control with +/- buttons */}
+//           <View className="flex-row items-center bg-gray-100 rounded-full flex-1">
+//           <TouchableOpacity
+//   className="w-10 h-10 flex items-center justify-center"
+//   onPress={() => updateQuantity2(parseFloat(itemDetails?.changeby || "0.5"), false)} // Decrease quantity on "-" button
 
->
-  <Text className="text-gray-700 text-xl font-bold">-</Text>
-</TouchableOpacity>
+// >
+//   <Text className="text-gray-700 text-xl font-bold">-</Text>
+// </TouchableOpacity>
 
-<Text className="flex-1 text-center text-gray-700">
-  {newItemQuantity || "0"}
-</Text>
+// <Text className="flex-1 text-center text-gray-700">
+//   {newItemQuantity || "0"}
+// </Text>
 
-<TouchableOpacity
-  className="w-10 h-10 flex items-center justify-center"
-   onPress={() => updateQuantity(parseFloat(itemDetails?.changeby || "0.5"), true)} // Increase quantity on "+" button
+// <TouchableOpacity
+//   className="w-10 h-10 flex items-center justify-center"
+//    onPress={() => updateQuantity(parseFloat(itemDetails?.changeby || "0.5"), true)} // Increase quantity on "+" button
 
->
-  <Text className="text-gray-700 text-xl font-bold">+</Text>
-</TouchableOpacity>
+// >
+//   <Text className="text-gray-700 text-xl font-bold">+</Text>
+// </TouchableOpacity>
 
 
 
-          </View>
+//           </View>
           
         
-              <DropDownPicker
-              open={open}
-              setOpen={setOpen}
-              value={selectedUnit}
-              setValue={setSelectedUnit}
-              items={units}
-              setItems={setUnits}
-              dropDownDirection="BOTTOM"
-              containerStyle={{ width: 100 }}
-              style={{
-                backgroundColor: "#F6F6F6",
-                borderColor: "#F6F6F6",
-                borderRadius: 50,
-                paddingHorizontal: 10,
-              }}
-              dropDownContainerStyle={{
-                backgroundColor: "#FFFFFF",
-                borderColor: "#FFFFFF",
-              }}
-            />
-        </View>
-      </View>
+//               <DropDownPicker
+//               open={open}
+//               setOpen={setOpen}
+//               value={selectedUnit}
+//               setValue={setSelectedUnit}
+//               items={units}
+//               setItems={setUnits}
+//               dropDownDirection="BOTTOM"
+//               containerStyle={{ width: 100 }}
+//               style={{
+//                 backgroundColor: "#F6F6F6",
+//                 borderColor: "#F6F6F6",
+//                 borderRadius: 50,
+//                 paddingHorizontal: 10,
+//               }}
+//               dropDownContainerStyle={{
+//                 backgroundColor: "#FFFFFF",
+//                 borderColor: "#FFFFFF",
+//               }}
+//             />
+//         </View>
+//       </View>
       
-      {/* Buttons */}
-      <View className="justify-between mt-4">
-        <TouchableOpacity
-          className="bg-gray-300 py-3 rounded-full items-center justify-center"
-          onPress={() => setModalVisible(false)}
-        >
-          <Text className="text-gray-700 font-semibold text-center">Go Back</Text>
-        </TouchableOpacity>
-      </View>
-      <View className="justify-between mt-4">
-      <TouchableOpacity
-  className="bg-purple-700 py-3 rounded-full items-center justify-center"
-  onPress={saveUpdatedItem} // Call the new function here
->
-  <Text className="text-white font-semibold text-center">Save</Text>
-</TouchableOpacity>
+//       {/* Buttons */}
+//       <View className="justify-between mt-4">
+//         <TouchableOpacity
+//           className="bg-gray-300 py-3 rounded-full items-center justify-center"
+//           onPress={() => setModalVisible(false)}
+//         >
+//           <Text className="text-gray-700 font-semibold text-center">Go Back</Text>
+//         </TouchableOpacity>
+//       </View>
+//       <View className="justify-between mt-4">
+//       <TouchableOpacity
+//   className="bg-purple-700 py-3 rounded-full items-center justify-center"
+//   onPress={saveUpdatedItem} // Call the new function here
+// >
+//   <Text className="text-white font-semibold text-center">Save</Text>
+// </TouchableOpacity>
 
 
 
 
 
 
-      </View>
-    </View>
-  </View>
-</Modal>
+//       </View>
+//     </View>
+//   </View>
+// </Modal>
 
 
 
       
  
       
-     <Modal visible={modalVisible1} transparent animationType="slide">
-  <TouchableOpacity
-    activeOpacity={1}
-    onPress={Keyboard.dismiss}
-    className="flex-1 justify-center items-center bg-[#00000066]"
-  >
-    <View className="bg-white p-6 rounded-xl w-4/5">
-      <Text className="text-gray-700 mb-2">Product</Text>
+//      <Modal visible={modalVisible1} transparent animationType="slide">
+//   <TouchableOpacity
+//     activeOpacity={1}
+//     onPress={Keyboard.dismiss}
+//     className="flex-1 justify-center items-center bg-[#00000066]"
+//   >
+//     <View className="bg-white p-6 rounded-xl w-4/5">
+//       <Text className="text-gray-700 mb-2">Product</Text>
 
-      <View  className="">
+//       <View  className="">
         
-              <DropDownPicker
-          open={productOpen}
-          setOpen={setProductOpen}
-          value={newItemName}
-          setValue={setNewItemName}
-          onSelectItem={(item) => {
-            // Check if item and item.value exist and are not undefined
-            if (item && typeof item.value === 'string') {
-              handleCropSelect(item.value);
-            }
-          }}
-          items={crops.map(crop => ({
-            label: crop.displayName,  
-            value: crop.displayName,  
+//               <DropDownPicker
+//           open={productOpen}
+//           setOpen={setProductOpen}
+//           value={newItemName}
+//           setValue={setNewItemName}
+//           onSelectItem={(item) => {
+//             // Check if item and item.value exist and are not undefined
+//             if (item && typeof item.value === 'string') {
+//               handleCropSelect(item.value);
+//             }
+//           }}
+//           items={crops.map(crop => ({
+//             label: crop.displayName,  
+//             value: crop.displayName,  
  
-            key: crop.cropId
-          }))}
-                   searchable={true}
-          searchPlaceholder="Search product..."
-          setItems={setCrops}
-          dropDownContainerStyle={{
-            borderColor: "#F6F6F6",
-            borderWidth: 1,
-            backgroundColor: "#F6F6F6",
-            maxHeight: 200,
-            minHeight: 150,
-          }}
-          style={{
-            borderWidth: 1,
-            borderColor: "#F6F6F6",
-            backgroundColor: "#F6F6F6",
-            borderRadius: 30,
-            paddingHorizontal: 12,
-            paddingVertical: 12,
-          }}
-          textStyle={{
-            fontSize: 14,
-          }}
-          zIndex={80000}
-                  listMode="SCROLLVIEW"
-        />
-      </View>
+//             key: crop.cropId
+//           }))}
+//                    searchable={true}
+//           searchPlaceholder="Search product..."
+//           setItems={setCrops}
+//           dropDownContainerStyle={{
+//             borderColor: "#F6F6F6",
+//             borderWidth: 1,
+//             backgroundColor: "#F6F6F6",
+//             maxHeight: 200,
+//             minHeight: 150,
+//           }}
+//           style={{
+//             borderWidth: 1,
+//             borderColor: "#F6F6F6",
+//             backgroundColor: "#F6F6F6",
+//             borderRadius: 30,
+//             paddingHorizontal: 12,
+//             paddingVertical: 12,
+//           }}
+//           textStyle={{
+//             fontSize: 14,
+//           }}
+//           zIndex={80000}
+//                   listMode="SCROLLVIEW"
+//         />
+//       </View>
 
 
 
-      <View className="mb-4">
-  <Text className="text-gray-700 mb-2 mt-2">Price per 1kg</Text>
-  <View className="bg-gray-100 rounded-full px-4 py-3">
-    <Text className="text-gray-700">Rs. {pricePerKg}</Text>
-  </View>
-</View>
+//       <View className="mb-4">
+//   <Text className="text-gray-700 mb-2 mt-2">Price per 1kg</Text>
+//   <View className="bg-gray-100 rounded-full px-4 py-3">
+//     <Text className="text-gray-700">Rs. {pricePerKg}</Text>
+//   </View>
+// </View>
 
 
 
-      <View>
-        <Text className="text-gray-700 mb-2">Quantity</Text>
-        <View className="flex-row items-center space-x-2">
-          <View className="flex-row items-center bg-gray-100 rounded-full flex-1">
-            <TouchableOpacity 
-              className="w-10 h-10 flex items-center justify-center"
+//       <View>
+//         <Text className="text-gray-700 mb-2">Quantity</Text>
+//         <View className="flex-row items-center space-x-2">
+//           <View className="flex-row items-center bg-gray-100 rounded-full flex-1">
+//             <TouchableOpacity 
+//               className="w-10 h-10 flex items-center justify-center"
              
-              onPress={() => updateQuantity2Add(parseFloat(itemDetails?.changeby || "0.5"), false)} // Decrease quantity on "-" button
-            >
-              <Text className="text-gray-700 text-xl font-bold">-</Text>
-            </TouchableOpacity>
+//               onPress={() => updateQuantity2Add(parseFloat(itemDetails?.changeby || "0.5"), false)} // Decrease quantity on "-" button
+//             >
+//               <Text className="text-gray-700 text-xl font-bold">-</Text>
+//             </TouchableOpacity>
             
-            <Text className="flex-1 text-center text-gray-700">
-              {newItemQuantity || "0"}
-            </Text>
+//             <Text className="flex-1 text-center text-gray-700">
+//               {newItemQuantity || "0"}
+//             </Text>
             
-            <TouchableOpacity 
-              className="w-10 h-10 flex items-center justify-center"
+//             <TouchableOpacity 
+//               className="w-10 h-10 flex items-center justify-center"
            
-              onPress={() => updateQuantityAdd(parseFloat(itemDetails?.changeby || "0.5"), true)} // Increase quantity on "+" button
-            >
-              <Text className="text-gray-700 text-xl font-bold">+</Text>
-            </TouchableOpacity>
-          </View>
+//               onPress={() => updateQuantityAdd(parseFloat(itemDetails?.changeby || "0.5"), true)} // Increase quantity on "+" button
+//             >
+//               <Text className="text-gray-700 text-xl font-bold">+</Text>
+//             </TouchableOpacity>
+//           </View>
 
-          <View style={{ zIndex: 1000 }}>
-            <DropDownPicker
-              open={open}
-              setOpen={setOpen}
-              value={selectedUnit}
-              setValue={setSelectedUnit}
-              items={units}
-              setItems={setUnits}
-              dropDownDirection="BOTTOM"
-              containerStyle={{ width: 100 }}
-              style={{
-                backgroundColor: "#F6F6F6",
-                borderColor: "#F6F6F6",
-                borderRadius: 50,
-                paddingHorizontal: 10,
-              }}
-              dropDownContainerStyle={{
-                backgroundColor: "#FFFFFF",
-                borderColor: "#FFFFFF",
-              }}
-            />
-          </View>
-        </View>
-      </View>
+//           <View style={{ zIndex: 1000 }}>
+//             <DropDownPicker
+//               open={open}
+//               setOpen={setOpen}
+//               value={selectedUnit}
+//               setValue={setSelectedUnit}
+//               items={units}
+//               setItems={setUnits}
+//               dropDownDirection="BOTTOM"
+//               containerStyle={{ width: 100 }}
+//               style={{
+//                 backgroundColor: "#F6F6F6",
+//                 borderColor: "#F6F6F6",
+//                 borderRadius: 50,
+//                 paddingHorizontal: 10,
+//               }}
+//               dropDownContainerStyle={{
+//                 backgroundColor: "#FFFFFF",
+//                 borderColor: "#FFFFFF",
+//               }}
+//             />
+//           </View>
+//         </View>
+//       </View>
 
-      <View className="mb-4">
-  <Text className="text-gray-700 mb-2 mt-2">Total Amount</Text>
-  <View className="bg-gray-100 rounded-full px-4 py-3">
-    <Text className="text-gray-700">Rs.{newPrice1} </Text>
+//       <View className="mb-4">
+//   <Text className="text-gray-700 mb-2 mt-2">Total Amount</Text>
+//   <View className="bg-gray-100 rounded-full px-4 py-3">
+//     <Text className="text-gray-700">Rs.{newPrice1} </Text>
 
     
-  </View>
+//   </View>
 
   
-</View>
+// </View>
 
-<View className="mb-4">
-<Text className="text-[#7340D3] text-center">
-  You received a discount of Rs.{finaldiscount} for this product
-</Text>
+// <View className="mb-4">
+// <Text className="text-[#7340D3] text-center">
+//   You received a discount of Rs.{finaldiscount} for this product
+// </Text>
 
  
-</View>
+// </View>
 
 
 
-      <View className="justify-between mt-4">
-        <TouchableOpacity
-          className="bg-gray-300 py-3 px-6 rounded-full items-center justify-center"
-          onPress={() => setModalVisible1(false)}
-        >
-          <Text className="text-gray-700 font-semibold text-center">Go Back</Text>
-        </TouchableOpacity>
-      </View>
-      <View className="justify-between mt-4">
-        <TouchableOpacity
-          className="bg-purple-700 py-3 px-6 rounded-full items-center justify-center"
-          onPress={() => {
-            addItem();
-            setCounter(0);
-            setModalVisible1(false);
-          }}
-        >
-          <Text className="text-white font-semibold text-center">Add</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  </TouchableOpacity>
-</Modal>
+//       <View className="justify-between mt-4">
+//         <TouchableOpacity
+//           className="bg-gray-300 py-3 px-6 rounded-full items-center justify-center"
+//           onPress={() => setModalVisible1(false)}
+//         >
+//           <Text className="text-gray-700 font-semibold text-center">Go Back</Text>
+//         </TouchableOpacity>
+//       </View>
+//       <View className="justify-between mt-4">
+//         <TouchableOpacity
+//           className="bg-purple-700 py-3 px-6 rounded-full items-center justify-center"
+//           onPress={() => {
+//             addItem();
+//             setCounter(0);
+//             setModalVisible1(false);
+//           }}
+//         >
+//           <Text className="text-white font-semibold text-center">Add</Text>
+//         </TouchableOpacity>
+//       </View>
+//     </View>
+//   </TouchableOpacity>
+// </Modal>
 
 
 
 
 
   
-      {/* Conditionally Render Navbar */}
-      {selectedPackage && !isKeyboardVisible && (
-          <View className={`bg-white flex-row justify-between items-center p-4 rounded-t-3xl shadow-lg ${!selectedPackage ? 'mb-20' : ''}`}
-          style={{
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: -4 },
-            shadowOpacity: 0.2,
-            shadowRadius: 8,
-            elevation: 10,
-            marginTop: -10,
-          }}
-          >
+//       {/* Conditionally Render Navbar */}
+//       {selectedPackage && !isKeyboardVisible && (
+//           <View className={`bg-white flex-row justify-between items-center p-4 rounded-t-3xl shadow-lg ${!selectedPackage ? 'mb-20' : ''}`}
+//           style={{
+//             shadowColor: "#000",
+//             shadowOffset: { width: 0, height: -4 },
+//             shadowOpacity: 0.2,
+//             shadowRadius: 8,
+//             elevation: 10,
+//             marginTop: -10,
+//           }}
+//           >
 
             
 
-<Text className="text-lg font-semibold text-gray-800">
-  Total : 
-  <Text className="text-lg font-semibold text-[#5C5C5C]">
-    Rs. {Number(totalPrice).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-  </Text>
-</Text>
+// <Text className="text-lg font-semibold text-gray-800">
+//   Total : 
+//   <Text className="text-lg font-semibold text-[#5C5C5C]">
+//     Rs. {Number(totalPrice).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+//   </Text>
+// </Text>
 
   
-  <LinearGradient colors={["#854BDA", "#6E3DD1"]} className="py-3 px-6 rounded-full">
-    <TouchableOpacity 
-      onPress={navigateToNextScreen}
+//   <LinearGradient colors={["#854BDA", "#6E3DD1"]} className="py-3 px-6 rounded-full">
+//     <TouchableOpacity 
+//       onPress={navigateToNextScreen}
+//     >
+//       <Text className="text-white font-semibold">Confirm</Text>
+//     </TouchableOpacity>
+//   </LinearGradient>
+
+
+//           </View>
+//         )}
+   
+//     </KeyboardAvoidingView>
+//   </View>
+  
+//   );
+return (
+  <View className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      enabled 
+      className="flex-1"
     >
-      <Text className="text-white font-semibold">Confirm</Text>
-    </TouchableOpacity>
-  </LinearGradient>
+      {/* Header */}
+      <View className={`flex-row items-center h-16 shadow-md px-4 ${
+        isDarkMode ? 'bg-gray-800' : 'bg-white'
+      }`}>
+        <BackButton navigation={navigation} />
+        <Text className={`text-lg font-bold flex-grow text-center mr-7 ${
+          isDarkMode ? 'text-purple-300' : 'text-[#6C3CD1]'
+        }`}>
+          Order Details
+        </Text>
+      </View>
 
+      <ScrollView 
+        showsVerticalScrollIndicator={false} 
+        className="px-6 mt-4" 
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Package Selection */}
+        <Text className={`text-base mb-2 ${
+          isDarkMode ? 'text-gray-300' : 'text-gray-700'
+        }`}>
+          Package
+        </Text>
+        
+        <SelectList
+          setSelected={async (val: string) => {
+            const selectedPkg = packages.find(pkg => pkg.id.toString() === val);
+            if (selectedPkg) {
+              setSelectedPackage(selectedPkg);
+              setTotalPrice(Number(selectedPkg.total) || 0);
+              
+              const items = await fetchItemsForPackage(selectedPkg.id);
+              setPackageItems(items);
+              setPackageItemsCount(items.length);
+            }
+          }}
+          data={packages.map(pkg => ({
+            key: pkg.id.toString(),
+            value: pkg.displayName || "Unnamed Package"
+          }))}
+          save="key"
+          search={true}
+          placeholder="Select Package"
+          boxStyles={{
+            borderColor: isDarkMode ? "#374151" : "#F6F6F6",
+            backgroundColor: isDarkMode ? "#374151" : "#F6F6F6",
+            borderRadius: 40,
+            padding: 10
+          }}
+          inputStyles={{
+            color: isDarkMode ? "#E5E7EB" : "#1F2937",
+          }}
+          dropdownTextStyles={{
+            color: isDarkMode ? "#E5E7EB" : "#1F2937",
+          }}
+          dropdownStyles={{
+            backgroundColor: isDarkMode ? "#374151" : "#F6F6F6",
+            borderColor: isDarkMode ? "#4B5563" : "#E5E7EB",
+          }}
+        />
 
+        {selectedPackage && (
+          <View className={`mt-6 px-3 mb-20 ${
+            isDarkMode ? 'bg-gray-800' : 'bg-white'
+          }`}>
+            <View className={`flex-row justify-between items-center border-b ${
+              isDarkMode ? 'border-gray-700' : 'border-gray-200'
+            } py-3`}>
+              <Text className={`font-bold ${
+                isDarkMode ? 'text-gray-200' : 'text-gray-800'
+              }`}>
+                Package ({packageItemsCount} items)
+              </Text>
+              
+              <TouchableOpacity
+                className="ml-3 flex-row items-center"
+                onPress={() => setModalVisible1(true)}
+              >
+                <Image 
+                  source={isDarkMode 
+                    ? require("../assets/images/Add.png") 
+                    : require("../assets/images/Add.png")} 
+                  className="w-5 h-5 mr-2" 
+                />
+                <Text className={`font-semibold ${
+                  isDarkMode ? 'text-purple-300' : 'text-[#6839CF]'
+                }`}>
+                  Add More
+                </Text>
+              </TouchableOpacity>
+            </View>
+            
+            {/* Render package items */}
+            {packageItems.map((item, index) => (
+              <View 
+                key={index} 
+                className={`flex-row justify-between items-center border-b ${
+                  isDarkMode ? 'border-gray-700' : 'border-gray-200'
+                } py-3`}
+              >
+                <Text className={`text-base ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                }`}>
+                  {item.name}
+                </Text>
+                <View className="flex-row items-center">
+                  <Text className={`text-base ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
+                    {item.quantity} {item.quantityType}
+                  </Text>
+                  <TouchableOpacity
+                    className="ml-3"
+                    onPress={() => handleItemClick(item)}
+                  >
+                    <Image 
+                      source={isDarkMode 
+                        ? require("../assets/images/Edit.png") 
+                        : require("../assets/images/Edit.png")} 
+                      className="w-4 h-4" 
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+            
+            {additionalItems.length > 0 && (
+              <View className={`flex-row justify-between items-center mt-5 border-b ${
+                isDarkMode ? 'border-gray-700' : 'border-gray-200'
+              } py-3`}>
+                <Text className={`font-bold ${
+                  isDarkMode ? 'text-gray-200' : 'text-gray-800'
+                }`}>
+                  Additional ({additionalItems.length} items)
+                </Text>
+                {selectedItems.size > 0 && (
+                  <TouchableOpacity
+                    className="flex-row items-center"
+                    onPress={deleteSelectedItems}
+                  >
+                    <Image 
+                      source={isDarkMode 
+                        ? require("../assets/images/trash.png") 
+                        : require("../assets/images/trash.png")} 
+                      className="w-5 h-5 mr-1" 
+                    />
+                    <Text className="text-red-500"></Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
+
+            {/* Render Additional Items with checkboxes */}
+            {additionalItems.map((item, index) => (
+              <View 
+                key={index} 
+                className={`flex-row justify-between items-center border-b ${
+                  isDarkMode ? 'border-gray-700' : 'border-gray-200'
+                } py-3`}
+              >
+                <View className="flex-row items-center">
+                  <TouchableOpacity 
+                    onPress={() => toggleItemSelection(item.id)}
+                    className="mr-2"
+                  >
+                    <View className={`w-5 h-5 border rounded-sm flex items-center justify-center ${
+                      selectedItems.has(item.id) 
+                        ? isDarkMode 
+                          ? 'bg-purple-500 border-purple-500' 
+                          : 'bg-black border-black'
+                        : isDarkMode 
+                          ? 'border-gray-500' 
+                          : 'border-gray-400'
+                    }`}>
+                      {selectedItems.has(item.id) && (
+                        <Text className="text-white text-xs">✓</Text>
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                  <Text className={`text-base ${
+                    isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
+                    {item.name}
+                  </Text>
+                </View>
+                <View className="flex-row items-center">
+                  <Text className={`text-base ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
+                    {item.quantity}
+                  </Text>
+                  <TouchableOpacity
+                    className="ml-3"
+                    onPress={() => handleEditItemClick(item)}
+                  >
+                    <Image 
+                      source={isDarkMode 
+                        ? require("../assets/images/Edit.png") 
+                        : require("../assets/images/Edit.png")} 
+                      className="w-4 h-4" 
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
           </View>
         )}
-   
+      </ScrollView>
+      
+      {/* Edit Item Modal */}
+      <Modal visible={modalVisible} transparent animationType="slide">
+        <View className="flex-1 justify-center items-center bg-[#00000066]">
+          <View className={`p-6 rounded-xl w-4/5 ${
+            isDarkMode ? 'bg-gray-800' : 'bg-white'
+          }`}>
+            <Text className={`mb-2 ${
+              isDarkMode ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+              Product
+            </Text>
+            <TextInput
+              className={`p-3 rounded-full mb-3 ${
+                isDarkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-100 text-gray-700'
+              }`}
+              value={editingItem?.name}
+              editable={false}
+            />
+            
+            {/* Quantity and Unit Selector */}
+            <View>
+              <Text className={`mb-2 ${
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
+                Quantity
+              </Text>
+              <View className="flex-row items-center space-x-2">
+                {/* Quantity Control with +/- buttons */}
+                <View className={`flex-row items-center rounded-full flex-1 ${
+                  isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
+                }`}>
+                  <TouchableOpacity
+                    className="w-10 h-10 flex items-center justify-center"
+                    onPress={() => updateQuantity2(parseFloat(itemDetails?.changeby || "0.5"), false)}
+                  >
+                    <Text className={`text-xl font-bold ${
+                      isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      -
+                    </Text>
+                  </TouchableOpacity>
+
+                  <Text className={`flex-1 text-center ${
+                    isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
+                    {newItemQuantity || "0"}
+                  </Text>
+
+                  <TouchableOpacity
+                    className="w-10 h-10 flex items-center justify-center"
+                    onPress={() => updateQuantity(parseFloat(itemDetails?.changeby || "0.5"), true)}
+                  >
+                    <Text className={`text-xl font-bold ${
+                      isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      +
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                
+                <DropDownPicker
+                  open={open}
+                  setOpen={setOpen}
+                  value={selectedUnit}
+                  setValue={setSelectedUnit}
+                  items={units}
+                  setItems={setUnits}
+                  dropDownDirection="BOTTOM"
+                  containerStyle={{ width: 100 }}
+                  style={{
+                    backgroundColor: isDarkMode ? "#374151" : "#F6F6F6",
+                    borderColor: isDarkMode ? "#4B5563" : "#F6F6F6",
+                    borderRadius: 50,
+                    paddingHorizontal: 10,
+                  }}
+                  dropDownContainerStyle={{
+                    backgroundColor: isDarkMode ? "#374151" : "#FFFFFF",
+                    borderColor: isDarkMode ? "#4B5563" : "#FFFFFF",
+                  }}
+                  textStyle={{
+                    color: isDarkMode ? "#E5E7EB" : "#1F2937",
+                  }}
+                />
+              </View>
+            </View>
+            
+            {/* Buttons */}
+            <View className="justify-between mt-4">
+              <TouchableOpacity
+                className={`py-3 rounded-full items-center justify-center ${
+                  isDarkMode ? 'bg-gray-700' : 'bg-gray-300'
+                }`}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text className={`font-semibold text-center ${
+                  isDarkMode ? 'text-gray-200' : 'text-gray-700'
+                }`}>
+                  Go Back
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View className="justify-between mt-4">
+              <TouchableOpacity
+                className={`py-3 rounded-full items-center justify-center ${
+                  isDarkMode ? 'bg-purple-600' : 'bg-purple-700'
+                }`}
+                onPress={saveUpdatedItem}
+              >
+                <Text className="text-white font-semibold text-center">Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+        {/* Add Item Modal */}
+        <Modal visible={modalVisible1} transparent animationType="slide">
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={Keyboard.dismiss}
+          className="flex-1 justify-center items-center bg-[#00000066]"
+        >
+          <View className={`p-6 rounded-xl w-4/5 ${
+            isDarkMode ? 'bg-gray-800' : 'bg-white'
+          }`}>
+            <Text className={`mb-2 ${
+              isDarkMode ? 'text-gray-300' : 'text-gray-700'
+            }`}>
+              Product
+            </Text>
+
+            <View className="">
+              <DropDownPicker
+                open={productOpen}
+                setOpen={setProductOpen}
+                value={newItemName}
+                setValue={setNewItemName}
+                onSelectItem={(item) => {
+                  if (item && typeof item.value === 'string') {
+                    handleCropSelect(item.value);
+                  }
+                }}
+                items={crops.map(crop => ({
+                  label: crop.displayName,  
+                  value: crop.displayName,  
+                  key: crop.cropId
+                }))}
+                searchable={true}
+                searchPlaceholder="Search product..."
+                setItems={setCrops}
+                dropDownContainerStyle={{
+                  borderColor: isDarkMode ? "#4B5563" : "#F6F6F6",
+                  borderWidth: 1,
+                  backgroundColor: isDarkMode ? "#374151" : "#F6F6F6",
+                  maxHeight: 200,
+                  minHeight: 150,
+                }}
+                style={{
+                  borderWidth: 1,
+                  borderColor: isDarkMode ? "#4B5563" : "#F6F6F6",
+                  backgroundColor: isDarkMode ? "#374151" : "#F6F6F6",
+                  borderRadius: 30,
+                  paddingHorizontal: 12,
+                  paddingVertical: 12,
+                }}
+                textStyle={{
+                  fontSize: 14,
+                  color: isDarkMode ? "#E5E7EB" : "#1F2937",
+                }}
+                zIndex={80000}
+                listMode="SCROLLVIEW"
+              />
+            </View>
+
+            <View className="mb-4">
+              <Text className={`mb-2 mt-2 ${
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
+                Price per 1kg
+              </Text>
+              <View className={`rounded-full px-4 py-3 ${
+                isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
+              }`}>
+                <Text className={isDarkMode ? "text-gray-300" : "text-gray-700"}>
+                  Rs. {pricePerKg}
+                </Text>
+              </View>
+            </View>
+
+            <View>
+              <Text className={`mb-2 ${
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
+                Quantity
+              </Text>
+              <View className="flex-row items-center space-x-2">
+                <View className={`flex-row items-center rounded-full flex-1 ${
+                  isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
+                }`}>
+                  <TouchableOpacity 
+                    className="w-10 h-10 flex items-center justify-center"
+                    onPress={() => updateQuantity2Add(parseFloat(itemDetails?.changeby || "0.5"), false)}
+                  >
+                    <Text className={`text-xl font-bold ${
+                      isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      -
+                    </Text>
+                  </TouchableOpacity>
+                  
+                  <Text className={`flex-1 text-center ${
+                    isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                  }`}>
+                    {newItemQuantity || "0"}
+                  </Text>
+                  
+                  <TouchableOpacity 
+                    className="w-10 h-10 flex items-center justify-center"
+                    onPress={() => updateQuantityAdd(parseFloat(itemDetails?.changeby || "0.5"), true)}
+                  >
+                    <Text className={`text-xl font-bold ${
+                      isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
+                      +
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View style={{ zIndex: 1000 }}>
+                  <DropDownPicker
+                    open={open}
+                    setOpen={setOpen}
+                    value={selectedUnit}
+                    setValue={setSelectedUnit}
+                    items={units}
+                    setItems={setUnits}
+                    dropDownDirection="BOTTOM"
+                    containerStyle={{ width: 100 }}
+                    style={{
+                      backgroundColor: isDarkMode ? "#374151" : "#F6F6F6",
+                      borderColor: isDarkMode ? "#4B5563" : "#F6F6F6",
+                      borderRadius: 50,
+                      paddingHorizontal: 10,
+                    }}
+                    dropDownContainerStyle={{
+                      backgroundColor: isDarkMode ? "#374151" : "#FFFFFF",
+                      borderColor: isDarkMode ? "#4B5563" : "#FFFFFF",
+                    }}
+                    textStyle={{
+                      color: isDarkMode ? "#E5E7EB" : "#1F2937",
+                    }}
+                  />
+                </View>
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <Text className={`mb-2 mt-2 ${
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
+                Total Amount
+              </Text>
+              <View className={`rounded-full px-4 py-3 ${
+                isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
+              }`}>
+                <Text className={isDarkMode ? "text-gray-300" : "text-gray-700"}>
+                  Rs.{newPrice1}
+                </Text>
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <Text className={`text-center ${
+                isDarkMode ? 'text-purple-300' : 'text-[#7340D3]'
+              }`}>
+                You received a discount of Rs.{finaldiscount} for this product
+              </Text>
+            </View>
+
+            <View className="justify-between mt-4">
+              <TouchableOpacity
+                className="bg-gray-300 dark:bg-gray-600 py-3 px-6 rounded-full items-center justify-center"
+                onPress={() => setModalVisible1(false)}
+              >
+                <Text className="text-gray-700 dark:text-gray-300 font-semibold text-center">Go Back</Text>
+              </TouchableOpacity>
+            </View>
+            <View className="justify-between mt-4">
+              <TouchableOpacity
+                className="bg-purple-700 py-3 px-6 rounded-full items-center justify-center"
+                onPress={() => {
+                  addItem();
+                  setCounter(0);
+                  setModalVisible1(false);
+                }}
+              >
+                <Text className="text-white font-semibold text-center">Add</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
+      {/* Conditionally Render Navbar */}
+      {selectedPackage && !isKeyboardVisible && (
+  <View
+    className={`flex-row justify-between items-center p-4 rounded-t-3xl shadow-lg ${
+      isDarkMode ? 'bg-gray-800' : 'bg-white'
+    }`}
+    style={{
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: -4 },
+      shadowOpacity: 0.2,
+      shadowRadius: 8,
+      elevation: 10,
+      marginTop: -10,
+    }}
+  >
+    <Text
+      className={`text-lg font-semibold ${
+        isDarkMode ? 'text-white' : 'text-gray-800'
+      }`}
+    >
+      Total :{" "}
+      <Text
+        className={`text-lg font-semibold ${
+          isDarkMode ? 'text-gray-300' : 'text-[#5C5C5C]'
+        }`}
+      >
+        Rs. {Number(totalPrice).toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+      </Text>
+    </Text>
+
+    <LinearGradient colors={["#854BDA", "#6E3DD1"]} className="py-3 px-6 rounded-full">
+      <TouchableOpacity onPress={navigateToNextScreen}>
+        <Text className="text-white font-semibold">Confirm</Text>
+      </TouchableOpacity>
+    </LinearGradient>
+  </View>
+)}
+
     </KeyboardAvoidingView>
   </View>
-  
-  );
+);
 };
 
 export default OrderScreen;

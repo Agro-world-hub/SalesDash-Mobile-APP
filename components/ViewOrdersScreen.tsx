@@ -21,6 +21,7 @@ import OrderScreenSkeleton from '../components/Skeleton/OrderScreenSkeleton';
 import axios from "axios";
 import environment from "@/environment/environment";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTheme } from '../ThemeContext';
 
 type ViewOrdersScreenNavigationProp = StackNavigationProp<RootStackParamList, "ViewOrdersScreen">;
 
@@ -64,6 +65,8 @@ const ViewOrdersScreen: React.FC<ViewOrdersScreenProps> = ({ navigation }) => {
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [orders, setOrders] = useState<Order[]>([]);
   const isMounted = useRef(true);
+
+  const { isDarkMode, toggleTheme } = useTheme();
 
   // Function to safely update state only if component is mounted
   const safeSetOrders = (data: Order[]) => {
@@ -225,46 +228,221 @@ const ViewOrdersScreen: React.FC<ViewOrdersScreenProps> = ({ navigation }) => {
     }
   };
 
+  // return (
+  //   <KeyboardAvoidingView 
+  //     behavior={Platform.OS === "ios" ? "padding" : "height"}
+  //     enabled 
+  //     className="flex-1"
+  //   >
+  //     <View className="flex-1 bg-white">
+  //       {/* Loading Animation */}
+  //       {loading ? (
+  //         <OrderScreenSkeleton />
+  //       ) : (
+  //         <>
+  //           {/* Header */}
+  //           <LinearGradient colors={["#884EDC", "#6E3DD1"]} className="h-20 shadow-md px-4 pt-17 items-center justify-center">
+  //             <View className="flex-row items-center">
+  //               <Text className="text-white text-lg font-bold mt-[-4]">Total Orders: <Text className="font-bold">{(orders && Array.isArray(orders)) ? orders.length : 0}</Text></Text>
+  //             </View>
+  //           </LinearGradient>
+
+  //           {/* Search Bar */}
+  //           <View className="flex-row items-center bg-[#F5F1FC] px-6 py-3 rounded-full mx-auto w-[90%] shadow-md mt-[-22]">
+  //             <TextInput
+  //               placeholder="Search By Order Number"
+  //               placeholderTextColor="#6839CF"
+  //               className="flex-1 text-sm text-purple"
+  //               onChangeText={(text) => setSearchText(text)}
+  //               value={searchText}
+  //               style={{ fontStyle: 'italic' }}
+  //             />
+  //             <Image source={require("../assets/images/search.png")} className="w-6 h-6" resizeMode="contain" />
+  //           </View>
+
+  //           {/* Horizontal Scrollable Filters */}
+  //           <View>
+  //             <ScrollView 
+  //               horizontal 
+  //               showsHorizontalScrollIndicator={false}
+  //               contentContainerStyle={{ 
+  //                 paddingHorizontal: 16,
+  //                 height: 40, 
+  //                 marginBottom: 5
+  //               }}
+  //               className="my-2"
+  //             >
+  //               {filters.map((filter) => (
+  //                 <TouchableOpacity
+  //                   key={filter}
+  //                   style={{
+  //                     paddingHorizontal: 12, 
+  //                     paddingVertical: 6,    
+  //                     borderRadius: 20,
+  //                     borderWidth: 1,
+  //                     borderColor: "#6B3BCF",
+  //                     backgroundColor: selectedFilter === filter ? "#6B3BCF" : "transparent",
+  //                     marginHorizontal: 4,   
+  //                     justifyContent: 'center',
+  //                     alignItems: 'center',
+  //                     height: 32,          
+  //                     minWidth: 80,        
+  //                   }}
+  //                   onPress={() => setSelectedFilter(filter)}
+  //                 >
+  //                   <Text style={{
+  //                     fontSize: 14,
+  //                     fontWeight: selectedFilter === filter ? "bold" : "normal",
+  //                     color: selectedFilter === filter ? "white" : "#6B3BCF",
+  //                   }}>
+  //                     {filter}
+  //                   </Text>
+  //                 </TouchableOpacity>
+  //               ))}
+  //             </ScrollView>
+  //           </View>
+
+  //           <View className="py-[-12%] mb-[60%]">
+  //             {/* Order List with Pull-to-Refresh */}
+  //             {filteredOrders && filteredOrders.length > 0 ? (
+  //               <FlatList
+  //                 data={filteredOrders}
+  //                 className="p-4 mb-10"
+  //                 keyExtractor={(item) => item.orderId.toString()}
+  //                 refreshControl={
+  //                   <RefreshControl
+  //                     refreshing={refreshing}
+  //                     onRefresh={onRefresh}
+  //                     colors={["#884EDC"]}
+  //                     tintColor="#884EDC"
+  //                   />
+  //                 }
+  //                 renderItem={({ item }) => (
+  //                   <TouchableOpacity 
+  //                     onPress={() => navigation.navigate("View_CancelOrderScreen" as any, { orderId: item.orderId })} 
+  //                     activeOpacity={0.7}
+  //                   >
+  //                     <View style={{
+  //                       backgroundColor: "white",
+  //                       borderRadius: wp(4),
+  //                       padding: wp(4),
+  //                       marginBottom: hp(2),
+  //                       borderWidth: 1,
+  //                       borderColor: "#EAEAEA",
+  //                       marginHorizontal: wp(4),
+  //                       shadowColor: "#0000001A",
+  //                       shadowOpacity: 0.2,
+  //                       shadowOffset: { width: 0, height: 2 },
+  //                       shadowRadius: 5,
+  //                       elevation: 5,
+  //                     }}>
+  //                       {/* Order number and status */}
+  //                       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+  //                         <Text style={{ fontSize: wp(4.5), fontWeight: "600", color: "#393939" }}>Order: {item.InvNo}</Text>
+  //                         <View style={{
+  //                           paddingHorizontal: wp(3),
+  //                           paddingVertical: hp(0.5),
+  //                           borderRadius: wp(5),
+  //                           backgroundColor:
+  //                             item.orderStatus === "Ordered" ? "#CCFBF1" :
+  //                             item.orderStatus === "On the way" ? "#FFFD99" :
+  //                             item.orderStatus === "Processing" ? "#CFE1FF" : 
+  //                             item.orderStatus === "Cancelled" ? "#FCE7F3" : "#EAEAEA",
+  //                         }}>
+  //                           <Text style={{
+  //                             fontSize: wp(3),
+  //                             fontWeight: "600",
+  //                             color:
+  //                               item.orderStatus === "Ordered" ? "#0D9488" :
+  //                               item.orderStatus === "On the way" ? "#A6A100" :
+  //                               item.orderStatus === "Processing" ? "#3B82F6" : 
+  //                               item.orderStatus === "Cancelled" ? "#BE185D" : "#393939",
+  //                           }}>
+  //                             {item.orderStatus}
+  //                           </Text>
+  //                         </View>
+  //                       </View>
+
+  //                       <Text style={{ fontSize: wp(3.6), color: "#808FA2" }}>
+  //                         Schedule to: {formatDate(item.scheduleDate)}
+  //                       </Text>
+
+  //                       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+  //                         {/* Customer name */}
+  //                         <Text style={{ fontSize: wp(3.6), color: "#808FA2", marginTop: hp(0.5) }}>
+  //                           Within : {item.scheduleTimeSlot}
+  //                         </Text>
+  //                         <Text style={{ fontSize: wp(3.6), color: "#FF4C4C" }}> {item.reportStatus}</Text>
+  //                       </View>
+  //                     </View>
+  //                   </TouchableOpacity>
+  //                 )}
+  //                 contentContainerStyle={{ paddingBottom: hp(5) }}
+  //               />
+  //             ) : (
+  //               <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+  //                 <Text style={{ fontSize: wp(4), color: "#6B7280", textAlign: "center" }}>No orders found.</Text>
+  //               </View>
+  //             )}
+  //           </View>
+  //         </>
+  //       )}
+  //     </View>
+  //   </KeyboardAvoidingView>
+  // );
+
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      enabled 
+      enabled
       className="flex-1"
     >
-      <View className="flex-1 bg-white">
-        {/* Loading Animation */}
+      <View className={`flex-1 ${isDarkMode ? 'bg-black' : 'bg-white'}`}>
         {loading ? (
           <OrderScreenSkeleton />
         ) : (
           <>
-            {/* Header */}
-            <LinearGradient colors={["#884EDC", "#6E3DD1"]} className="h-20 shadow-md px-4 pt-17 items-center justify-center">
+           
+            <LinearGradient
+              colors={["#884EDC", "#6E3DD1"]}
+              className="h-20 shadow-md px-4 pt-17 items-center justify-center"
+            >
               <View className="flex-row items-center">
-                <Text className="text-white text-lg font-bold mt-[-4]">Total Orders: <Text className="font-bold">{(orders && Array.isArray(orders)) ? orders.length : 0}</Text></Text>
+                <Text className="text-white text-lg font-bold mt-[-4]">
+                  Total Orders:{" "}
+                  <Text className="font-bold">
+                    {(orders && Array.isArray(orders)) ? orders.length : 0}
+                  </Text>
+                </Text>
               </View>
             </LinearGradient>
-
-            {/* Search Bar */}
-            <View className="flex-row items-center bg-[#F5F1FC] px-6 py-3 rounded-full mx-auto w-[90%] shadow-md mt-[-22]">
+  
+            
+            <View className={`flex-row items-center px-6 py-3 rounded-full mx-auto w-[90%] shadow-md mt-[-22] 
+              ${isDarkMode ? 'bg-gray-800' : 'bg-[#F5F1FC]'}`}>
               <TextInput
                 placeholder="Search By Order Number"
-                placeholderTextColor="#6839CF"
-                className="flex-1 text-sm text-purple"
+                placeholderTextColor={isDarkMode ? "#D6BCFA" : "#6839CF"}
+                className={`flex-1 text-sm ${isDarkMode ? 'text-gray-100' : 'text-purple-900'}`}
                 onChangeText={(text) => setSearchText(text)}
                 value={searchText}
                 style={{ fontStyle: 'italic' }}
               />
-              <Image source={require("../assets/images/search.png")} className="w-6 h-6" resizeMode="contain" />
+              <Image
+                source={require("../assets/images/search.png")}
+                className="w-6 h-6"
+                resizeMode="contain"
+              />
             </View>
-
-            {/* Horizontal Scrollable Filters */}
+  
+        
             <View>
-              <ScrollView 
-                horizontal 
+              <ScrollView
+                horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ 
+                contentContainerStyle={{
                   paddingHorizontal: 16,
-                  height: 40, 
+                  height: 40,
                   marginBottom: 5
                 }}
                 className="my-2"
@@ -273,17 +451,17 @@ const ViewOrdersScreen: React.FC<ViewOrdersScreenProps> = ({ navigation }) => {
                   <TouchableOpacity
                     key={filter}
                     style={{
-                      paddingHorizontal: 12, 
-                      paddingVertical: 6,    
+                      paddingHorizontal: 12,
+                      paddingVertical: 6,
                       borderRadius: 20,
                       borderWidth: 1,
                       borderColor: "#6B3BCF",
                       backgroundColor: selectedFilter === filter ? "#6B3BCF" : "transparent",
-                      marginHorizontal: 4,   
+                      marginHorizontal: 4,
                       justifyContent: 'center',
                       alignItems: 'center',
-                      height: 32,          
-                      minWidth: 80,        
+                      height: 32,
+                      minWidth: 80,
                     }}
                     onPress={() => setSelectedFilter(filter)}
                   >
@@ -298,9 +476,9 @@ const ViewOrdersScreen: React.FC<ViewOrdersScreenProps> = ({ navigation }) => {
                 ))}
               </ScrollView>
             </View>
-
+  
             <View className="py-[-12%] mb-[60%]">
-              {/* Order List with Pull-to-Refresh */}
+            
               {filteredOrders && filteredOrders.length > 0 ? (
                 <FlatList
                   data={filteredOrders}
@@ -315,17 +493,17 @@ const ViewOrdersScreen: React.FC<ViewOrdersScreenProps> = ({ navigation }) => {
                     />
                   }
                   renderItem={({ item }) => (
-                    <TouchableOpacity 
-                      onPress={() => navigation.navigate("View_CancelOrderScreen" as any, { orderId: item.orderId })} 
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate("View_CancelOrderScreen" as any, { orderId: item.orderId })}
                       activeOpacity={0.7}
                     >
                       <View style={{
-                        backgroundColor: "white",
+                        backgroundColor: isDarkMode ? "#1F2937" : "white",
                         borderRadius: wp(4),
                         padding: wp(4),
                         marginBottom: hp(2),
                         borderWidth: 1,
-                        borderColor: "#EAEAEA",
+                        borderColor: isDarkMode ? "#374151" : "#EAEAEA",
                         marginHorizontal: wp(4),
                         shadowColor: "#0000001A",
                         shadowOpacity: 0.2,
@@ -333,9 +511,11 @@ const ViewOrdersScreen: React.FC<ViewOrdersScreenProps> = ({ navigation }) => {
                         shadowRadius: 5,
                         elevation: 5,
                       }}>
-                        {/* Order number and status */}
+                     
                         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                          <Text style={{ fontSize: wp(4.5), fontWeight: "600", color: "#393939" }}>Order: {item.InvNo}</Text>
+                          <Text style={{ fontSize: wp(4.5), fontWeight: "600", color: isDarkMode ? "#E5E7EB" : "#393939" }}>
+                            Order: {item.InvNo}
+                          </Text>
                           <View style={{
                             paddingHorizontal: wp(3),
                             paddingVertical: hp(0.5),
@@ -343,7 +523,7 @@ const ViewOrdersScreen: React.FC<ViewOrdersScreenProps> = ({ navigation }) => {
                             backgroundColor:
                               item.orderStatus === "Ordered" ? "#CCFBF1" :
                               item.orderStatus === "On the way" ? "#FFFD99" :
-                              item.orderStatus === "Processing" ? "#CFE1FF" : 
+                              item.orderStatus === "Processing" ? "#CFE1FF" :
                               item.orderStatus === "Cancelled" ? "#FCE7F3" : "#EAEAEA",
                           }}>
                             <Text style={{
@@ -352,24 +532,25 @@ const ViewOrdersScreen: React.FC<ViewOrdersScreenProps> = ({ navigation }) => {
                               color:
                                 item.orderStatus === "Ordered" ? "#0D9488" :
                                 item.orderStatus === "On the way" ? "#A6A100" :
-                                item.orderStatus === "Processing" ? "#3B82F6" : 
+                                item.orderStatus === "Processing" ? "#3B82F6" :
                                 item.orderStatus === "Cancelled" ? "#BE185D" : "#393939",
                             }}>
                               {item.orderStatus}
                             </Text>
                           </View>
                         </View>
-
-                        <Text style={{ fontSize: wp(3.6), color: "#808FA2" }}>
+  
+                        <Text style={{ fontSize: wp(3.6), color: isDarkMode ? "#9CA3AF" : "#808FA2" }}>
                           Schedule to: {formatDate(item.scheduleDate)}
                         </Text>
-
+  
                         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                          {/* Customer name */}
-                          <Text style={{ fontSize: wp(3.6), color: "#808FA2", marginTop: hp(0.5) }}>
+                          <Text style={{ fontSize: wp(3.6), color: isDarkMode ? "#9CA3AF" : "#808FA2", marginTop: hp(0.5) }}>
                             Within : {item.scheduleTimeSlot}
                           </Text>
-                          <Text style={{ fontSize: wp(3.6), color: "#FF4C4C" }}> {item.reportStatus}</Text>
+                          <Text style={{ fontSize: wp(3.6), color: "#FF4C4C" }}>
+                            {item.reportStatus}
+                          </Text>
                         </View>
                       </View>
                     </TouchableOpacity>
@@ -378,7 +559,9 @@ const ViewOrdersScreen: React.FC<ViewOrdersScreenProps> = ({ navigation }) => {
                 />
               ) : (
                 <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                  <Text style={{ fontSize: wp(4), color: "#6B7280", textAlign: "center" }}>No orders found.</Text>
+                  <Text style={{ fontSize: wp(4), color: isDarkMode ? "#9CA3AF" : "#6B7280", textAlign: "center" }}>
+                    No orders found.
+                  </Text>
                 </View>
               )}
             </View>
@@ -387,6 +570,7 @@ const ViewOrdersScreen: React.FC<ViewOrdersScreenProps> = ({ navigation }) => {
       </View>
     </KeyboardAvoidingView>
   );
+  
 };
 
 export default ViewOrdersScreen;

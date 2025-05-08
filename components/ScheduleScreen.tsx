@@ -9,6 +9,7 @@ import { RootStackParamList } from "./types";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { LinearGradient } from "expo-linear-gradient";
 import DateTimePicker from '@react-native-community/datetimepicker'; 
+import { useTheme } from '../ThemeContext';
 
 type ScheduleScreenNavigationProp = StackNavigationProp<RootStackParamList, "ScheduleScreen">;
 type ScheduleScreenRouteProp = RouteProp<RootStackParamList, "ScheduleScreen">;
@@ -120,6 +121,7 @@ const ScheduleScreen: React.FC<ScheduleScreenProps> = ({ navigation, route }) =>
   const [isDateSelected, setIsDateSelected] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [date, setDate] = useState(new Date());
+   const { isDarkMode, toggleTheme } = useTheme();
   
   // Calculate minimum date (2 days from today)
   const getMinimumSelectableDate = () => {
@@ -287,181 +289,419 @@ const ScheduleScreen: React.FC<ScheduleScreenProps> = ({ navigation, route }) =>
     });
   };
   
-  return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      enabled 
-      className="flex-1"
-    >
-      <View className="flex-1 bg-white">
-        {/* Header */}
-        <View className="flex-row items-center shadow-md px-3 bg-white">
-          <BackButton navigation={navigation} />
-          <Text className="text-lg font-bold text-[#6C3CD1] flex-grow text-center mr-8">Schedule</Text>
-        </View>
+//   return (
+//     <KeyboardAvoidingView 
+//       behavior={Platform.OS === "ios" ? "padding" : "height"}
+//       enabled 
+//       className="flex-1"
+//     >
+//       <View className="flex-1 bg-white">
+//         {/* Header */}
+//         <View className="flex-row items-center shadow-md px-3 bg-white">
+//           <BackButton navigation={navigation} />
+//           <Text className="text-lg font-bold text-[#6C3CD1] flex-grow text-center mr-8">Schedule</Text>
+//         </View>
         
-        <View className="px-10 py-3">
-          {/* Delivery Type Dropdown */}
-          <Text className="text-[#000000] mb-2">Delivery Type</Text>
-          <TouchableOpacity 
-            className="flex-row items-center px-4 py-3 bg-gray-100 rounded-full"
-            activeOpacity={0.7}
-          >
-            <Text className="text-gray-700 font-semibold">One Time</Text>
-          </TouchableOpacity>
-        </View>
+//         <View className="px-10 py-3">
+//           {/* Delivery Type Dropdown */}
+//           <Text className="text-[#000000] mb-2">Delivery Type</Text>
+//           <TouchableOpacity 
+//             className="flex-row items-center px-4 py-3 bg-gray-100 rounded-full"
+//             activeOpacity={0.7}
+//           >
+//             <Text className="text-gray-700 font-semibold">One Time</Text>
+//           </TouchableOpacity>
+//         </View>
   
-        <ScrollView 
-          className="px-10 mt-[-5]" 
-          keyboardShouldPersistTaps="handled"
-        >
-          {/* Schedule Date section */}
-          <Text className="text-[#000000] mt-4 mb-2">Schedule Date</Text>
-          <TouchableOpacity
-            onPress={handleScheduleDateSelection}
-            className="flex-row items-center bg-[#F6F6F6] p-3 rounded-full"
-          >
-            <Text className="flex-1 text-[#7F7F7F]">
-              {selectedDate || "Select Date"}
-            </Text>
-            <Image source={require("../assets/images/Calendar.png")} className="w-8 h-8" resizeMode="contain" />
-          </TouchableOpacity>
+//         <ScrollView 
+//           className="px-10 mt-[-5]" 
+//           keyboardShouldPersistTaps="handled"
+//         >
+//           {/* Schedule Date section */}
+//           <Text className="text-[#000000] mt-4 mb-2">Schedule Date</Text>
+//           <TouchableOpacity
+//             onPress={handleScheduleDateSelection}
+//             className="flex-row items-center bg-[#F6F6F6] p-3 rounded-full"
+//           >
+//             <Text className="flex-1 text-[#7F7F7F]">
+//               {selectedDate || "Select Date"}
+//             </Text>
+//             <Image source={require("../assets/images/Calendar.png")} className="w-8 h-8" resizeMode="contain" />
+//           </TouchableOpacity>
   
-          <Text className="text-[#000000] mt-4 mb-2">Schedule Time Slot</Text>
+//           <Text className="text-[#000000] mt-4 mb-2">Schedule Time Slot</Text>
   
-          <SelectList
-            key="time-slot-select"
-            setSelected={handleTimeSlotSelection}
-            data={timeSlots}
-            save="value"
-            placeholder="Select Time Slot"
-            search={false}
-            defaultOption={
-              selectedTimeSlot 
-                ? timeSlots.find(slot => slot.value === selectedTimeSlot) 
-                : undefined
-            }
-            inputStyles={{
-              color: "#7F7F7F",
-            }}
-            boxStyles={{
-              backgroundColor: "#F6F6F6",
-              padding: 12,
-              borderRadius: 30,
-              borderColor: "#F6F6F6",
-              borderWidth: 5,
-            }}
-            dropdownStyles={{
-              backgroundColor: "#F6F6F6",
-              borderRadius: 10,
-              borderColor: "#F6F6F6",
-            }}
-          />
-        </ScrollView>
+//           <SelectList
+//             key="time-slot-select"
+//             setSelected={handleTimeSlotSelection}
+//             data={timeSlots}
+//             save="value"
+//             placeholder="Select Time Slot"
+//             search={false}
+//             defaultOption={
+//               selectedTimeSlot 
+//                 ? timeSlots.find(slot => slot.value === selectedTimeSlot) 
+//                 : undefined
+//             }
+//             inputStyles={{
+//               color: "#7F7F7F",
+//             }}
+//             boxStyles={{
+//               backgroundColor: "#F6F6F6",
+//               padding: 12,
+//               borderRadius: 30,
+//               borderColor: "#F6F6F6",
+//               borderWidth: 5,
+//             }}
+//             dropdownStyles={{
+//               backgroundColor: "#F6F6F6",
+//               borderRadius: 10,
+//               borderColor: "#F6F6F6",
+//             }}
+//           />
+//         </ScrollView>
   
-        {/* Date Picker (conditionally rendered) */}
-        {showDatePicker && Platform.OS === 'android' && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="default"
-            onChange={handleDateChange}
-            minimumDate={minimumDate} // Set minimum date to 2 days from today
-          />
-        )}
+//         {/* Date Picker (conditionally rendered) */}
+//         {showDatePicker && Platform.OS === 'android' && (
+//           <DateTimePicker
+//             value={date}
+//             mode="date"
+//             display="default"
+//             onChange={handleDateChange}
+//             minimumDate={minimumDate} // Set minimum date to 2 days from today
+//           />
+//         )}
   
-        {Platform.OS === 'ios' && showDatePicker && (
-          <Modal
-            visible={showDatePicker}
-            transparent={true}
-            animationType="slide"
-          >
-            <View className="flex-1 justify-end bg-black/50">
-              <View className="bg-white p-4 rounded-t-2xl">
-                <View className="flex-row justify-between items-center mb-4">
-                  <Text className="text-lg font-bold text-[#6C3CD1]">Select Date</Text>
-                  <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                    <Feather name="x" size={24} color="#6C3CD1" />
-                  </TouchableOpacity>
-                </View>
+//         {Platform.OS === 'ios' && showDatePicker && (
+//           <Modal
+//             visible={showDatePicker}
+//             transparent={true}
+//             animationType="slide"
+//           >
+//             <View className="flex-1 justify-end bg-black/50">
+//               <View className="bg-white p-4 rounded-t-2xl">
+//                 <View className="flex-row justify-between items-center mb-4">
+//                   <Text className="text-lg font-bold text-[#6C3CD1]">Select Date</Text>
+//                   <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+//                     <Feather name="x" size={24} color="#6C3CD1" />
+//                   </TouchableOpacity>
+//                 </View>
                 
-                <DateTimePicker
-                  value={date}
-                  mode="date"
-                  display="spinner"
-                  onChange={handleDateChange}
-                  minimumDate={minimumDate} // Set minimum date to 2 days from today
-                  style={{ height: 200, marginTop: -10 }}
-                />
+//                 <DateTimePicker
+//                   value={date}
+//                   mode="date"
+//                   display="spinner"
+//                   onChange={handleDateChange}
+//                   minimumDate={minimumDate} // Set minimum date to 2 days from today
+//                   style={{ height: 200, marginTop: -10 }}
+//                 />
                 
-                <View className="flex-row justify-between mt-2">
-                  <TouchableOpacity
-                    onPress={() => setShowDatePicker(false)}
-                    className="px-4 py-2"
-                  >
-                    <Text className="text-[#6C3CD1] font-semibold">Cancel</Text>
-                  </TouchableOpacity>
+//                 <View className="flex-row justify-between mt-2">
+//                   <TouchableOpacity
+//                     onPress={() => setShowDatePicker(false)}
+//                     className="px-4 py-2"
+//                   >
+//                     <Text className="text-[#6C3CD1] font-semibold">Cancel</Text>
+//                   </TouchableOpacity>
                   
-                  <TouchableOpacity
-                    onPress={handleIOSDateConfirm}
-                    className="px-4 py-2"
-                  >
-                    <Text className="text-[#6C3CD1] font-semibold">Confirm</Text>
-                  </TouchableOpacity>
-                </View>
+//                   <TouchableOpacity
+//                     onPress={handleIOSDateConfirm}
+//                     className="px-4 py-2"
+//                   >
+//                     <Text className="text-[#6C3CD1] font-semibold">Confirm</Text>
+//                   </TouchableOpacity>
+//                 </View>
+//               </View>
+//             </View>
+//           </Modal>
+//         )}
+   
+//         <View
+//           className="bg-white flex-row justify-between items-center p-4 rounded-t-3xl shadow-lg"
+//           style={{
+//             shadowColor: "#000",
+//             shadowOffset: { width: 0, height: -4 },
+//             shadowOpacity: 0.2,
+//             shadowRadius: 8,
+//             elevation: 10,
+//             marginTop: -10,
+//           }}
+//         >
+         
+//           <View className="flex-1">
+//             <View className="flex-row justify-between">
+//               <Text className="text-[#5C5C5C]">Delivery Fee :</Text>
+//               <Text className="font-semibold text-[#5C5C5C]">+ Rs.{DELIVERY_FEE.toFixed(2)}</Text>
+//             </View>
+            
+//             {/* <View className="flex-row justify-between mt-2">
+//               <Text className="font-semibold text-lg">Full Total</Text>
+//               <Text className="font-bold text-lg">Rs.{fullTotal.toFixed(2)}</Text>
+//             </View> */}
+//             <View className="flex-row justify-between mt-2">
+//   <Text className="font-semibold text-lg">Full Total :</Text>
+//   <Text className="font-bold text-lg">
+//     Rs. {fullTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+//   </Text>
+// </View>
+
+//           </View>
+  
+//           <TouchableOpacity onPress={handleProceed}>
+//             <LinearGradient 
+//               colors={["#854BDA", "#6E3DD1"]} 
+//               className="py-3 px-6 rounded-full flex-row items-center ml-4"
+//             >
+//               <Text className="text-white font-semibold mr-2">Proceed</Text>
+//               <Image
+//                 source={require("../assets/images/Done.png")}
+//                 className="w-5 h-5"
+//                 resizeMode="contain"
+//               />
+//             </LinearGradient>
+//           </TouchableOpacity>
+//         </View>
+//       </View>
+//     </KeyboardAvoidingView>
+//   );
+return (
+  <KeyboardAvoidingView 
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    enabled 
+    className="flex-1"
+  >
+    <View className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+      {/* Header */}
+      <View className={`flex-row items-center shadow-md px-3 ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
+        <BackButton navigation={navigation} />
+        <Text className={`text-lg font-bold flex-grow text-center mr-8 ${
+          isDarkMode ? 'text-purple-300' : 'text-[#6C3CD1]'
+        }`}>
+          Schedule
+        </Text>
+      </View>
+      
+      <View className="px-10 py-3">
+        {/* Delivery Type Dropdown */}
+        <Text className={`mb-2 ${isDarkMode ? 'text-gray-300' : 'text-[#000000]'}`}>
+          Delivery Type
+        </Text>
+        <TouchableOpacity 
+          className={`flex-row items-center px-4 py-3 rounded-full ${
+            isDarkMode ? 'bg-gray-700' : 'bg-gray-100'
+          }`}
+          activeOpacity={0.7}
+        >
+          <Text className={`font-semibold ${
+            isDarkMode ? 'text-gray-200' : 'text-gray-700'
+          }`}>
+            One Time
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView 
+        className="px-10 mt-[-5]" 
+        keyboardShouldPersistTaps="handled"
+      >
+        {/* Schedule Date section */}
+        <Text className={`mt-4 mb-2 ${isDarkMode ? 'text-gray-300' : 'text-[#000000]'}`}>
+          Schedule Date
+        </Text>
+        <TouchableOpacity
+          onPress={handleScheduleDateSelection}
+          className={`flex-row items-center p-3 rounded-full ${
+            isDarkMode ? 'bg-gray-700' : 'bg-[#F6F6F6]'
+          }`}
+        >
+          <Text className={`flex-1 ${
+            isDarkMode ? 'text-gray-400' : 'text-[#7F7F7F]'
+          }`}>
+            {selectedDate || "Select Date"}
+          </Text>
+          <Image 
+            source={isDarkMode 
+              ? require("../assets/images/Calendar.png") 
+              : require("../assets/images/Calendar.png")} 
+            className="w-8 h-8" 
+            resizeMode="contain" 
+          />
+        </TouchableOpacity>
+
+        <Text className={`mt-4 mb-2 ${isDarkMode ? 'text-gray-300' : 'text-[#000000]'}`}>
+          Schedule Time Slot
+        </Text>
+
+        <SelectList
+          key="time-slot-select"
+          setSelected={handleTimeSlotSelection}
+          data={timeSlots}
+          save="value"
+          placeholder="Select Time Slot"
+          search={false}
+          defaultOption={
+            selectedTimeSlot 
+              ? timeSlots.find(slot => slot.value === selectedTimeSlot) 
+              : undefined
+          }
+          inputStyles={{
+            color: isDarkMode ? "#E5E7EB" : "#7F7F7F",
+          }}
+          boxStyles={{
+            backgroundColor: isDarkMode ? "#374151" : "#F6F6F6",
+            padding: 12,
+            borderRadius: 30,
+            borderColor: isDarkMode ? "#374151" : "#F6F6F6",
+            borderWidth: 5,
+          }}
+          dropdownStyles={{
+            backgroundColor: isDarkMode ? "#374151" : "#F6F6F6",
+            borderRadius: 10,
+            borderColor: isDarkMode ? "#374151" : "#F6F6F6",
+          }}
+          dropdownTextStyles={{
+            color: isDarkMode ? "#E5E7EB" : "#1F2937",
+          }}
+        />
+      </ScrollView>
+
+      {/* Date Picker (conditionally rendered) */}
+      {showDatePicker && Platform.OS === 'android' && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display={isDarkMode ? "spinner" : "default"}
+          onChange={handleDateChange}
+          minimumDate={minimumDate}
+          themeVariant={isDarkMode ? "dark" : "light"}
+        />
+      )}
+
+      {Platform.OS === 'ios' && showDatePicker && (
+        <Modal
+          visible={showDatePicker}
+          transparent={true}
+          animationType="slide"
+        >
+          <View className="flex-1 justify-end bg-black/50">
+            <View className={`p-4 rounded-t-2xl ${
+              isDarkMode ? 'bg-gray-800' : 'bg-white'
+            }`}>
+              <View className="flex-row justify-between items-center mb-4">
+                <Text className={`text-lg font-bold ${
+                  isDarkMode ? 'text-purple-300' : 'text-[#6C3CD1]'
+                }`}>
+                  Select Date
+                </Text>
+                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                  <Feather 
+                    name="x" 
+                    size={24} 
+                    color={isDarkMode ? "#A78BFA" : "#6C3CD1"} 
+                  />
+                </TouchableOpacity>
+              </View>
+              
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="spinner"
+                onChange={handleDateChange}
+                minimumDate={minimumDate}
+                style={{ height: 200, marginTop: -10 }}
+                themeVariant={isDarkMode ? "dark" : "light"}
+              />
+              
+              <View className="flex-row justify-between mt-2">
+                <TouchableOpacity
+                  onPress={() => setShowDatePicker(false)}
+                  className="px-4 py-2"
+                >
+                  <Text className={`font-semibold ${
+                    isDarkMode ? 'text-purple-300' : 'text-[#6C3CD1]'
+                  }`}>
+                    Cancel
+                  </Text>
+                </TouchableOpacity>
+                
+                <TouchableOpacity
+                  onPress={handleIOSDateConfirm}
+                  className="px-4 py-2"
+                >
+                  <Text className={`font-semibold ${
+                    isDarkMode ? 'text-purple-300' : 'text-[#6C3CD1]'
+                  }`}>
+                    Confirm
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
-          </Modal>
-        )}
-   
-        <View
-          className="bg-white flex-row justify-between items-center p-4 rounded-t-3xl shadow-lg"
-          style={{
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: -4 },
-            shadowOpacity: 0.2,
-            shadowRadius: 8,
-            elevation: 10,
-            marginTop: -10,
-          }}
-        >
-         
-          <View className="flex-1">
-            <View className="flex-row justify-between">
-              <Text className="text-[#5C5C5C]">Delivery Fee :</Text>
-              <Text className="font-semibold text-[#5C5C5C]">+ Rs.{DELIVERY_FEE.toFixed(2)}</Text>
-            </View>
-            
-            {/* <View className="flex-row justify-between mt-2">
-              <Text className="font-semibold text-lg">Full Total</Text>
-              <Text className="font-bold text-lg">Rs.{fullTotal.toFixed(2)}</Text>
-            </View> */}
-            <View className="flex-row justify-between mt-2">
-  <Text className="font-semibold text-lg">Full Total :</Text>
-  <Text className="font-bold text-lg">
-    Rs. {fullTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-  </Text>
-</View>
-
           </View>
-  
-          <TouchableOpacity onPress={handleProceed}>
-            <LinearGradient 
-              colors={["#854BDA", "#6E3DD1"]} 
-              className="py-3 px-6 rounded-full flex-row items-center ml-4"
-            >
-              <Text className="text-white font-semibold mr-2">Proceed</Text>
-              <Image
-                source={require("../assets/images/Done.png")}
-                className="w-5 h-5"
-                resizeMode="contain"
-              />
-            </LinearGradient>
-          </TouchableOpacity>
+        </Modal>
+      )}
+
+      {/* Footer */}
+      <View
+        className={`flex-row justify-between items-center p-4 rounded-t-3xl shadow-lg ${
+          isDarkMode ? 'bg-gray-800' : 'bg-white'
+        }`}
+        style={{
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: isDarkMode ? 0.1 : 0.2,
+          shadowRadius: 8,
+          elevation: 10,
+          marginTop: -10,
+        }}
+      >
+        <View className="flex-1">
+          <View className="flex-row justify-between">
+            <Text className={isDarkMode ? "text-gray-400" : "text-[#5C5C5C]"}>
+              Delivery Fee :
+            </Text>
+            <Text className={`font-semibold ${
+              isDarkMode ? 'text-gray-300' : 'text-[#5C5C5C]'
+            }`}>
+              + Rs.{DELIVERY_FEE.toFixed(2)}
+            </Text>
+          </View>
+          
+          <View className="flex-row justify-between mt-2">
+            <Text className={`font-semibold text-lg ${
+              isDarkMode ? 'text-gray-200' : 'text-gray-800'
+            }`}>
+              Full Total :
+            </Text>
+            <Text className={`font-bold text-lg ${
+              isDarkMode ? 'text-white' : 'text-black'
+            }`}>
+              Rs. {fullTotal.toLocaleString('en-IN', { 
+                minimumFractionDigits: 2, 
+                maximumFractionDigits: 2 
+              })}
+            </Text>
+          </View>
         </View>
+
+        <TouchableOpacity onPress={handleProceed}>
+          <LinearGradient 
+            colors={isDarkMode ? ["#7C3AED", "#8B5CF6"] : ["#854BDA", "#6E3DD1"]} 
+            className="py-3 px-6 rounded-full flex-row items-center ml-4"
+          >
+            <Text className="text-white font-semibold mr-2">Proceed</Text>
+            <Image
+              source={isDarkMode 
+                ? require("../assets/images/Done.png") 
+                : require("../assets/images/Done.png")}
+              className="w-5 h-5"
+              resizeMode="contain"
+            />
+          </LinearGradient>
+        </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
-  );
+    </View>
+  </KeyboardAvoidingView>
+);
 };
 
 export default ScheduleScreen;

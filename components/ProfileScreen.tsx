@@ -24,6 +24,7 @@ import {
 import BackButton from "./BackButton";
 import { LinearGradient } from "expo-linear-gradient";
 import { AxiosError } from 'axios';
+import { useTheme } from '../ThemeContext';
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -66,6 +67,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const [orderCount, setOrderCount] = useState<number>(0);
   const [customerCount, setCustomerCount] = useState<number>(0);
   const [points, setPoints] = useState<number>(0);
+    const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
     getUserProfile();
@@ -264,15 +266,247 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     }
   };
 
+  // return (
+  //   <View className={`flex-1 w-full ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+  //     <KeyboardAvoidingView 
+  //       behavior={Platform.OS === "ios" ? "padding" : "height"}
+  //       enabled 
+  //       className="flex-1"
+  //     >
+  //       <ScrollView keyboardShouldPersistTaps="handled">
+  //         <View className="bg-[#6839CF]">
+  //           <View className="relative">
+  //             <ImageBackground
+  //               source={require("../assets/images/profilebackground.png")}
+  //               resizeMode="cover"
+  //               style={{
+  //                 width: "100%",
+  //                 height: hp(25),
+  //                 position: "absolute",
+  //                 top: 0,
+  //                 left: 0,
+  //               }}
+  //             />
+  //           </View>
+  //           <View className="ml-3"> 
+  //             <BackButton navigation={navigation} />
+  //           </View>
+
+  //           <View
+  //             className="bg-white rounded-t-3xl pt-6"
+  //             style={{ marginTop: hp(15), paddingHorizontal: wp(6) }}
+  //           >
+  //             <View className="items-center" style={{ marginTop: -hp(12) }}>
+  //               <TouchableOpacity className="relative">
+  //                 {profileImage ? (
+  //                   <Image
+  //                     source={{ uri: profileImage }}
+  //                     style={{
+  //                       width: wp(35),
+  //                       height: wp(35),
+  //                       borderRadius: wp(35) / 2,
+  //                     }}
+  //                   />
+  //                 ) : (
+  //                   <Image
+  //                     source={require("../assets/images/profile.png")}
+  //                     style={{
+  //                       width: wp(34),
+  //                       height: wp(34),
+  //                       borderRadius: wp(34) / 2,
+  //                     }}
+  //                   />
+  //                 )}
+  //               </TouchableOpacity>
+  //               <Text className="text-black text-2xl font-bold mb-2">
+  //                 {formData.firstName} {formData.lastName}
+  //               </Text>
+  //             </View>
+  //           </View>
+
+  //           <View className="bg-white px-7">
+  //             <View className="p-4">
+  //               <View className="bg-[#6839CF] flex-row justify-between mt-3 px-4 py-3 rounded-2xl">
+  //                 <View className="flex-1 items-center">
+  //                   <Image 
+  //                     source={require("../assets/images/star.png")} 
+  //                     style={{ width: 24, height: 24 }} 
+  //                   />
+  //                   <Text className="text-white text-sm mt-1">Points</Text>
+  //                   <Text className="text-white text-lg font-bold">{points}</Text>
+  //                 </View>
+
+  //                 <View className="w-[1px] bg-white h-full mx-2" />
+
+  //                 <View className="flex-1 items-center">
+  //                   <Image 
+  //                     source={require("../assets/images/Order Completed.png")} 
+  //                     style={{ width: 24, height: 24 }} 
+  //                   />
+  //                   <Text className="text-white text-sm mt-1">Orders</Text>
+  //                   <Text className="text-white text-lg font-bold">{orderCount}</Text>
+  //                 </View>
+
+  //                 <View className="w-[1px] bg-white h-full mx-2" />
+
+  //                 <View className="flex-1 items-center">
+  //                   <Image 
+  //                     source={require("../assets/images/Batch Assign.png")} 
+  //                     style={{ width: 24, height: 24 }} 
+  //                   />
+  //                   <Text className="text-white text-sm mt-1">Customers</Text>
+  //                   <Text className="text-white text-lg font-bold">{customerCount}</Text>
+  //                 </View>
+  //               </View>
+  //             </View>
+  //             <View className="px-5">
+
+  //             <View className="mb-4">
+  //               <Text className="text-black mb-1">
+  //                 Employee ID
+  //               </Text>
+  //               <Text
+  //                 className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2 text-[#8492A3]"
+  //               >
+  //                 {formData.empId}
+  //               </Text>
+  //             </View>
+
+  //             <View className="mb-4">
+  //             <Text className="text-black mb-1">
+  //                 First Name
+  //               </Text>
+  //               <TextInput
+  //                 className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
+  //                 value={formData.firstName}
+  //                 onChangeText={(text) => handleInputChange("firstName", text)}
+  //                 placeholder="Enter First Name"
+  //               />
+  //             </View>
+
+  //             <View className="mb-4">
+  //             <Text className="text-black mb-1">
+  //                 Last Name
+  //               </Text>
+  //               <TextInput
+  //                 className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
+  //                 value={formData.lastName}
+  //                 onChangeText={(text) => handleInputChange("lastName", text)}
+  //                 placeholder="Enter Last Name"
+  //               />
+  //             </View>
+
+  //             <View className="mb-4">
+  //             <Text className="text-black mb-1">
+  //                 Phone Number - 1
+  //               </Text>
+  //               <Text
+  //                 className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2 text-[#8492A3]"
+  //               >
+  //                 {formData.phoneNumber1}
+  //               </Text>
+  //             </View>
+
+  //             <View className="mb-4">
+  //             <Text className="text-black mb-1">
+  //                 Phone Number - 2
+  //               </Text>
+  //               <Text
+  //                 className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2 text-[#8492A3]"
+  //               >
+  //                 {formData.phoneNumber2 || "---"}
+  //               </Text>
+  //             </View>
+
+  //             <View className="mb-4">
+  //             <Text className="text-black mb-1">
+  //                 NIC Number
+  //               </Text>
+  //               <TextInput
+  //                 className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
+  //                 value={formData.nic}
+  //                 onChangeText={(text) => handleInputChange("nic", text)}
+  //                 placeholder="Enter NIC Number"
+  //               />
+  //             </View>
+
+  //             <View className="mb-4">
+  //             <Text className="text-black mb-1">
+  //                 Email Address
+  //               </Text>
+  //               <TextInput
+  //                 className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
+  //                 value={formData.email}
+  //                 onChangeText={(text) => handleInputChange("email", text)}
+  //                 placeholder="Enter Email Address"
+  //                 keyboardType="email-address"
+  //               />
+  //             </View>
+
+  //             <View className="mb-4">
+  //             <Text className="text-black mb-1">
+  //                 Building / House No
+  //               </Text>
+  //               <TextInput
+  //                 className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
+  //                 value={formData.houseNumber}
+  //                 onChangeText={(text) => handleInputChange("houseNumber", text)}
+  //                 placeholder="Enter Building Number"
+  //               />
+  //             </View>
+
+  //             <View className="mb-4">
+  //             <Text className="text-black mb-1">
+  //                 Street Name
+  //               </Text>
+  //               <TextInput
+  //                 className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
+  //                 value={formData.streetName}
+  //                 onChangeText={(text) => handleInputChange("streetName", text)}
+  //                 placeholder="Enter Street Name"
+  //               />
+  //             </View>
+
+  //             <View className="mb-4">
+  //             <Text className="text-black mb-1">
+  //                 City
+  //               </Text>
+  //               <TextInput
+  //                 className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
+  //                 value={formData.city}
+  //                 onChangeText={(text) => handleInputChange("city", text)}
+  //                 placeholder="Enter City"
+  //               />
+  //             </View>
+  //             </View>
+  //             <View className="">
+  //             <TouchableOpacity  onPress={handleUpdate} >
+
+  //                <LinearGradient colors={["#6839CF", "#874DDB"]} className="py-3  rounded-lg items-center mt-6 mb-[15%] mr-[20%] ml-[20%] rounded-3xl h-15">
+                              
+  //                                 <Text className="text-center text-white text-base font-bold">Update</Text>
+                                
+  //                             </LinearGradient>
+  //                             </TouchableOpacity>
+
+            
+  //             </View>
+  //           </View>
+  //         </View>
+  //       </ScrollView>
+  //     </KeyboardAvoidingView>
+  //   </View>
+  // );
   return (
-    <View className="flex-1 bg-white">
+    <View className={`flex-1 w-full ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         enabled 
         className="flex-1"
       >
         <ScrollView keyboardShouldPersistTaps="handled">
-          <View className="bg-[#6839CF]">
+      
+          <View className={`${isDarkMode ? 'bg-gray-800' : 'bg-[#6839CF]'}`}>
             <View className="relative">
               <ImageBackground
                 source={require("../assets/images/profilebackground.png")}
@@ -283,15 +517,17 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                   position: "absolute",
                   top: 0,
                   left: 0,
+                  opacity: isDarkMode ? 0.3 : 1
                 }}
               />
             </View>
             <View className="ml-3"> 
               <BackButton navigation={navigation} />
             </View>
-
+  
+           
             <View
-              className="bg-white rounded-t-3xl pt-6"
+              className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} rounded-t-3xl pt-6`}
               style={{ marginTop: hp(15), paddingHorizontal: wp(6) }}
             >
               <View className="items-center" style={{ marginTop: -hp(12) }}>
@@ -303,6 +539,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                         width: wp(35),
                         height: wp(35),
                         borderRadius: wp(35) / 2,
+                        borderWidth: 3,
+                        borderColor: isDarkMode ? '#6A3AD0' : '#6839CF'
                       }}
                     />
                   ) : (
@@ -312,116 +550,121 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
                         width: wp(34),
                         height: wp(34),
                         borderRadius: wp(34) / 2,
+                        borderWidth: 3,
+                        borderColor: isDarkMode ? '#6A3AD0' : '#6839CF'
                       }}
                     />
                   )}
                 </TouchableOpacity>
-                <Text className="text-black text-2xl font-bold mb-2">
+                <Text className={`text-2xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-black'}`}>
                   {formData.firstName} {formData.lastName}
                 </Text>
               </View>
             </View>
-
-            <View className="bg-white px-7">
+  
+            
+            <View className={`${isDarkMode ? 'bg-gray-800' : 'bg-white'} px-7`}>
               <View className="p-4">
-                <View className="bg-[#6839CF] flex-row justify-between mt-3 px-4 py-3 rounded-2xl">
+                <View className={`${isDarkMode ? 'bg-gray-700' : 'bg-[#6839CF]'} flex-row justify-between mt-3 px-4 py-3 rounded-2xl`}>
                   <View className="flex-1 items-center">
                     <Image 
                       source={require("../assets/images/star.png")} 
-                      style={{ width: 24, height: 24 }} 
+                      style={{ width: 24, height: 24, tintColor: isDarkMode ? '#a67dff' : 'white' }} 
                     />
                     <Text className="text-white text-sm mt-1">Points</Text>
                     <Text className="text-white text-lg font-bold">{points}</Text>
                   </View>
-
+  
                   <View className="w-[1px] bg-white h-full mx-2" />
-
+  
                   <View className="flex-1 items-center">
                     <Image 
                       source={require("../assets/images/Order Completed.png")} 
-                      style={{ width: 24, height: 24 }} 
+                      style={{ width: 24, height: 24, tintColor: isDarkMode ? '#a67dff' : 'white' }} 
                     />
                     <Text className="text-white text-sm mt-1">Orders</Text>
                     <Text className="text-white text-lg font-bold">{orderCount}</Text>
                   </View>
-
+  
                   <View className="w-[1px] bg-white h-full mx-2" />
-
+  
                   <View className="flex-1 items-center">
                     <Image 
                       source={require("../assets/images/Batch Assign.png")} 
-                      style={{ width: 24, height: 24 }} 
+                      style={{ width: 24, height: 24, tintColor: isDarkMode ? '#a67dff' : 'white' }} 
                     />
                     <Text className="text-white text-sm mt-1">Customers</Text>
                     <Text className="text-white text-lg font-bold">{customerCount}</Text>
                   </View>
                 </View>
               </View>
+  
+            
               <View className="px-5">
-
-              <View className="mb-4">
-                <Text className="text-black mb-1">
-                  Employee ID
-                </Text>
-                <Text
-                  className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2 text-[#8492A3]"
-                >
-                  {formData.empId}
-                </Text>
-              </View>
-
-              <View className="mb-4">
-              <Text className="text-black mb-1">
-                  First Name
-                </Text>
-                <TextInput
-                  className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
-                  value={formData.firstName}
-                  onChangeText={(text) => handleInputChange("firstName", text)}
-                  placeholder="Enter First Name"
-                />
-              </View>
-
-              <View className="mb-4">
-              <Text className="text-black mb-1">
-                  Last Name
-                </Text>
-                <TextInput
-                  className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
-                  value={formData.lastName}
-                  onChangeText={(text) => handleInputChange("lastName", text)}
-                  placeholder="Enter Last Name"
-                />
-              </View>
-
-              <View className="mb-4">
-              <Text className="text-black mb-1">
-                  Phone Number - 1
-                </Text>
-                <Text
-                  className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2 text-[#8492A3]"
-                >
-                  {formData.phoneNumber1}
-                </Text>
-              </View>
-
-              <View className="mb-4">
-              <Text className="text-black mb-1">
-                  Phone Number - 2
-                </Text>
-                <Text
-                  className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2 text-[#8492A3]"
-                >
-                  {formData.phoneNumber2 || "---"}
-                </Text>
-              </View>
-
-              <View className="mb-4">
-              <Text className="text-black mb-1">
+                <View className="mb-4">
+                  <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                    Employee ID
+                  </Text>
+                  <View className={`${isDarkMode ? 'bg-gray-700' : 'bg-[#F6F6F6]'} rounded-full px-3 py-2`}>
+                    <Text className={isDarkMode ? 'text-gray-300' : 'text-[#8492A3]'}>
+                      {formData.empId}
+                    </Text>
+                  </View>
+                </View>
+  
+                <View className="mb-4">
+                  <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                    First Name
+                  </Text>
+                  <TextInput
+                    className={`${isDarkMode ? 'bg-gray-700 text-white' : 'bg-[#F6F6F6]'} rounded-full px-3 py-2`}
+                    value={formData.firstName}
+                    onChangeText={(text) => handleInputChange("firstName", text)}
+                    placeholder="Enter First Name"
+                    placeholderTextColor={isDarkMode ? '#a0a0a0' : '#8492A3'}
+                  />
+                </View>
+  
+                <View className="mb-4">
+                  <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                    Last Name
+                  </Text>
+                  <TextInput
+                    className={`${isDarkMode ? 'bg-gray-700 text-white' : 'bg-[#F6F6F6]'} rounded-full px-3 py-2`}
+                    value={formData.lastName}
+                    onChangeText={(text) => handleInputChange("lastName", text)}
+                    placeholder="Enter Last Name"
+                    placeholderTextColor={isDarkMode ? '#a0a0a0' : '#8492A3'}
+                  />
+                </View>
+  
+               
+                <View className="mb-4">
+                  <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                    Phone Number - 1
+                  </Text>
+                  <View className={`${isDarkMode ? 'bg-gray-700' : 'bg-[#F6F6F6]'} rounded-full px-3 py-2`}>
+                    <Text className={isDarkMode ? 'text-gray-300' : 'text-[#8492A3]'}>
+                      {formData.phoneNumber1}
+                    </Text>
+                  </View>
+                </View>
+  
+                <View className="mb-4">
+                  <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                    Phone Number - 2
+                  </Text>
+                  <View className={`${isDarkMode ? 'bg-gray-700' : 'bg-[#F6F6F6]'} rounded-full px-3 py-2`}>
+                    <Text className={isDarkMode ? 'text-gray-300' : 'text-[#8492A3]'}>
+                      {formData.phoneNumber2 || "---"}
+                    </Text>
+                  </View>
+                  <View className="mb-4">
+                  <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
                   NIC Number
-                </Text>
-                <TextInput
-                  className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
+                 </Text>
+                 <TextInput
+                  className={`${isDarkMode ? 'bg-gray-700 text-white' : 'bg-[#F6F6F6]'} rounded-full px-3 py-2`}
                   value={formData.nic}
                   onChangeText={(text) => handleInputChange("nic", text)}
                   placeholder="Enter NIC Number"
@@ -429,11 +672,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
               </View>
 
               <View className="mb-4">
-              <Text className="text-black mb-1">
+              <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
                   Email Address
                 </Text>
                 <TextInput
-                  className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
+                   className={`${isDarkMode ? 'bg-gray-700 text-white' : 'bg-[#F6F6F6]'} rounded-full px-3 py-2`}
                   value={formData.email}
                   onChangeText={(text) => handleInputChange("email", text)}
                   placeholder="Enter Email Address"
@@ -442,11 +685,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
               </View>
 
               <View className="mb-4">
-              <Text className="text-black mb-1">
+              <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
                   Building / House No
                 </Text>
                 <TextInput
-                  className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
+                  className={`${isDarkMode ? 'bg-gray-700 text-white' : 'bg-[#F6F6F6]'} rounded-full px-3 py-2`}
                   value={formData.houseNumber}
                   onChangeText={(text) => handleInputChange("houseNumber", text)}
                   placeholder="Enter Building Number"
@@ -454,11 +697,11 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
               </View>
 
               <View className="mb-4">
-              <Text className="text-black mb-1">
+              <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
                   Street Name
                 </Text>
                 <TextInput
-                  className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
+                   className={`${isDarkMode ? 'bg-gray-700 text-white' : 'bg-[#F6F6F6]'} rounded-full px-3 py-2`}
                   value={formData.streetName}
                   onChangeText={(text) => handleInputChange("streetName", text)}
                   placeholder="Enter Street Name"
@@ -466,28 +709,29 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
               </View>
 
               <View className="mb-4">
-              <Text className="text-black mb-1">
+              <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
                   City
                 </Text>
                 <TextInput
-                  className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-3 py-2"
+                   className={`${isDarkMode ? 'bg-gray-700 text-white' : 'bg-[#F6F6F6]'} rounded-full px-3 py-2`}
                   value={formData.city}
                   onChangeText={(text) => handleInputChange("city", text)}
                   placeholder="Enter City"
                 />
               </View>
-              </View>
-              <View className="">
-              <TouchableOpacity  onPress={handleUpdate} >
-
-                 <LinearGradient colors={["#6839CF", "#874DDB"]} className="py-3  rounded-lg items-center mt-6 mb-[15%] mr-[20%] ml-[20%] rounded-3xl h-15">
-                              
-                                  <Text className="text-center text-white text-base font-bold">Update</Text>
-                                
-                              </LinearGradient>
-                              </TouchableOpacity>
-
+                </View>
+  
             
+                <View className="">
+                  <TouchableOpacity onPress={handleUpdate}>
+                    <LinearGradient 
+                      colors={isDarkMode ? ["#5a2db2", "#6a3ad0"] : ["#6839CF", "#874DDB"]} 
+                      className="py-3 rounded-3xl items-center mt-6 mb-[15%] mr-[20%] ml-[20%] h-15"
+                    >
+                      <Text className="text-center text-white text-base font-bold">Update</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>

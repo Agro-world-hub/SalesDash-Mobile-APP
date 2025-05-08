@@ -23,6 +23,7 @@ import { Alert } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SelectList } from "react-native-dropdown-select-list";
+import { useTheme } from '../ThemeContext';
 
 type AddComplaintScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -34,6 +35,7 @@ interface AddComplaintScreenProps {
 }
 
 const AddComplaintScreen: React.FC<AddComplaintScreenProps> = ({ navigation }) => {
+   const { isDarkMode, toggleTheme } = useTheme();
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   console.log(selectedCategory)
   const [complaintText, setComplaintText] = useState<string>("");
@@ -135,68 +137,107 @@ const AddComplaintScreen: React.FC<AddComplaintScreenProps> = ({ navigation }) =
     Keyboard.dismiss();
   };
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={`flex-1 w-full ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
       <ScrollView 
-      keyboardShouldPersistTaps="handled"
-      style={{ paddingHorizontal: wp(4) }}>
+        keyboardShouldPersistTaps="handled"
+        style={{ paddingHorizontal: wp(4) }}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
         <TouchableWithoutFeedback>
-        <KeyboardAvoidingView 
-    behavior={Platform.OS ==="ios" ? "padding" : "height"}
-  enabled 
-  className="flex-1"
->
+          <KeyboardAvoidingView 
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            enabled 
+            className="flex-1"
+          >
             <View className="flex-1">
               <BackButton navigation={navigation} />
-              <ScrollView className="px-8 py-4" keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: 100 }}>
+              <ScrollView 
+                className="px-8 py-4" 
+                keyboardShouldPersistTaps="handled" 
+                contentContainerStyle={{ paddingBottom: 100 }}
+              >
+               
                 <View className="items-center mb-6">
-                  <Image source={require("../assets/images/complain11.png")} className="w-20 h-20" />
-                  <Text className="text-xl font-bold text-gray-900 mt-2">
+                  <Image 
+                    source={require("../assets/images/complain11.png")} 
+                    className="w-20 h-20" 
+                   // style={{ tintColor: isDarkMode ? '#a67dff' : undefined }}
+                  />
+                  <Text className={`text-xl font-bold mt-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                     Tell us the <Text className="text-[#6839CF]">problem</Text>
                   </Text>
                 </View>
-               <SelectList
-  setSelected={(val: string) => setSelectedCategory(val)}
-  data={category}
-  save="key"
-  placeholder="Select Complaint Category"
-  boxStyles={{ borderColor: "#393939", height: 50 }}
-  inputStyles={{ color: "#434343", fontSize: 14 }}
-  dropdownTextStyles={{ fontSize: 12 }}
-  search={false}
-/>
-
-              
-
+  
+    
+                <SelectList
+                  setSelected={(val: string) => setSelectedCategory(val)}
+                  data={category}
+                  save="key"
+                  placeholder="Select Complaint Category"
+                  boxStyles={{ 
+                    borderColor: isDarkMode ? '#4B5563' : "#393939", 
+                    height: 50,
+                    backgroundColor: isDarkMode ? '#374151' : 'white'
+                  }}
+                  inputStyles={{ 
+                    color: isDarkMode ? '#E5E7EB' : "#434343", 
+                    fontSize: 14 
+                  }}
+                  dropdownTextStyles={{ 
+                    fontSize: 12,
+                    color: isDarkMode ? '#E5E7EB' : 'black'
+                  }}
+                  dropdownStyles={{
+                    backgroundColor: isDarkMode ? '#374151' : 'white',
+                    borderColor: isDarkMode ? '#4B5563' : '#E5E7EB'
+                  }}
+                  search={false}
+                />
+  
                 
-
-                <Text className="text-center text-black mb-4 mt-4">
+                <Text className={`text-center mt-4 mb-4 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
                   -- We will get back to you within 2 days --
                 </Text>
-
+  
+         
                 <View className="mb-8">
-  <TextInput
-    multiline
-    numberOfLines={6}
-    textAlignVertical="top"
-    placeholder="Add the Complaint here.."
-    placeholderTextColor="#808FA2 text-italic" 
-    className="text-black bg-white border border-[#393939] rounded-lg p-4 min-h-[250px] italic"
-    value={complaintText}
-    onChangeText={setComplaintText}
-  />
-</View>
-
-                <TouchableOpacity onPress={handleSubmit} className="mx-auto shadow-lg w-40">
-  <LinearGradient
-    colors={["#6839CF", "#874DDB"]}
-    start={{ x: 0, y: 0 }}
-    end={{ x: 1, y: 1 }}
-    className="py-3 rounded-full items-center"
-  >
-    <Text className="text-white text-lg font-bold">Submit</Text>
-  </LinearGradient>
-</TouchableOpacity>
-
+                  <TextInput
+                    multiline
+                    numberOfLines={6}
+                    textAlignVertical="top"
+                    placeholder="Add the Complaint here.."
+                    placeholderTextColor={isDarkMode ? '#9CA3AF' : "#808FA2"}
+                    className={`rounded-lg p-4 min-h-[250px] italic ${
+                      isDarkMode 
+                        ? 'bg-gray-800 text-white border-gray-600' 
+                        : 'bg-white text-black border-[#393939]'
+                    } border`}
+                    value={complaintText}
+                    onChangeText={setComplaintText}
+                  />
+                </View>
+  
+             
+                <TouchableOpacity 
+                  onPress={handleSubmit} 
+                  className="mx-auto shadow-lg w-40"
+                  style={{
+                    shadowColor: isDarkMode ? '#6B46C1' : '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 4,
+                    elevation: 5
+                  }}
+                >
+                  <LinearGradient
+                    colors={isDarkMode ? ["#5A2DB2", "#6A3AD0"] : ["#6839CF", "#874DDB"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    className="py-3 rounded-full items-center"
+                  >
+                    <Text className="text-white text-lg font-bold">Submit</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
               </ScrollView>
             </View>
           </KeyboardAvoidingView>

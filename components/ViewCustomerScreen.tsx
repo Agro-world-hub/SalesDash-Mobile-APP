@@ -21,6 +21,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-nat
 import BackButton from "./BackButton";
 import axios from "axios";
 import environment from "@/environment/environment";
+import { useTheme } from '../ThemeContext';
 
 type ViewCustomerScreenNavigationProp = StackNavigationProp<RootStackParamList, "ViewCustomerScreen">;
 type ViewCustomerScreenRouteProp = RouteProp<RootStackParamList, "ViewCustomerScreen">;
@@ -62,6 +63,8 @@ const ViewCustomerScreen: React.FC<ViewCustomerScreenProps> = ({ route, navigati
   const [searchError, setSearchError] = useState<string | null>(null);
 
   const { name, number, id, customerId,title } = route.params;
+  const { isDarkMode, toggleTheme } = useTheme();
+  
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => setKeyboardVisible(true));
@@ -152,109 +155,284 @@ const ViewCustomerScreen: React.FC<ViewCustomerScreenProps> = ({ route, navigati
     return matchesStatus && matchesSearch;
   });
 
-  return (
-    <KeyboardAvoidingView 
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      enabled 
-      className="flex-1"
-    >
-      <View className="flex-1 bg-white">
-        {/* Header Section */}
-        <View className="relative">
-          <View className="bg-white flex-row rounded-b-[35px] items-center justify-between h-28 z-50 shadow-lg px-5">
-            <View className="mt-[-8%] ml-[-2%]">
-              <BackButton navigation={navigation} />
-            </View> 
+//   return (
+//     <KeyboardAvoidingView 
+//       behavior={Platform.OS === "ios" ? "padding" : "height"}
+//       enabled 
+//       className="flex-1"
+//     >
+//       <View className="flex-1 bg-white">
+//         {/* Header Section */}
+//         <View className="relative">
+//           <View className="bg-white flex-row rounded-b-[35px] items-center justify-between h-28 z-50 shadow-lg px-5">
+//             <View className="mt-[-8%] ml-[-2%]">
+//               <BackButton navigation={navigation} />
+//             </View> 
 
-            <View className="flex-1 justify-center items-center mt-[-3%]">
-              <Text className="text-xl font-bold text-gray-800" style={{ textAlign: 'center' }}>
-                {title}.{name}
-              </Text>
-              <Text className="text-gray-500" style={{ textAlign: 'center' }}>
-                Customer ID: {customerId}
-              </Text>
-            </View>
+//             <View className="flex-1 justify-center items-center mt-[-3%]">
+//               <Text className="text-xl font-bold text-gray-800" style={{ textAlign: 'center' }}>
+//                 {title}.{name}
+//               </Text>
+//               <Text className="text-gray-500" style={{ textAlign: 'center' }}>
+//                 Customer ID: {customerId}
+//               </Text>
+//             </View>
 
-            <TouchableOpacity 
-              className="px-6 mt-[-20%] mr-[-10%]"
-              onPress={() => navigation.navigate("EditCustomerScreen", { id })}
-            >
-              <MaterialIcons name="edit" size={28} color="#6839CF" />
-            </TouchableOpacity>
-          </View>
+//             <TouchableOpacity 
+//               className="px-6 mt-[-20%] mr-[-10%]"
+//               onPress={() => navigation.navigate("EditCustomerScreen", { id })}
+//             >
+//               <MaterialIcons name="edit" size={28} color="#6839CF" />
+//             </TouchableOpacity>
+//           </View>
 
-          {/* Action Buttons */}
-          <View className="bg-[#F1E8FF] rounded-b-[25px] pt-6 pb-3 shadow-md mt-[-20] items-center z-5">
-            <View className="flex-row justify-between mb-4 px-5 mx-5">
-              <TouchableOpacity 
-                onPress={handleGetACall} 
-                className="flex-row bg-[#6B3BCF] px-4 py-2 rounded-full items-center mt-5 mx-4"
-              >
-                <Image source={require("../assets/images/call.png")} className="w-5 h-5 mr-2" />
-                <Text className="text-white font-bold">Get a Call</Text>
-              </TouchableOpacity>
+//           {/* Action Buttons */}
+//           <View className="bg-[#F1E8FF] rounded-b-[25px] pt-6 pb-3 shadow-md mt-[-20] items-center z-5">
+//             <View className="flex-row justify-between mb-4 px-5 mx-5">
+//               <TouchableOpacity 
+//                 onPress={handleGetACall} 
+//                 className="flex-row bg-[#6B3BCF] px-4 py-2 rounded-full items-center mt-5 mx-4"
+//               >
+//                 <Image source={require("../assets/images/call.png")} className="w-5 h-5 mr-2" />
+//                 <Text className="text-white font-bold">Get a Call</Text>
+//               </TouchableOpacity>
 
-              <TouchableOpacity 
-                onPress={() => navigation.navigate("SelectOrderType" as any, { id })}
+//               <TouchableOpacity 
+//                 onPress={() => navigation.navigate("SelectOrderType" as any, { id })}
                 
-                className="flex-row bg-[#6B3BCF] px-4 py-2 rounded-full items-center mt-5 mx-4"
-              >
-                <Image source={require("../assets/images/newOrder.png")} className="w-5 h-5 mr-2" />
-                <Text className="text-white font-bold">New Order</Text>
-              </TouchableOpacity>
-            </View>
+//                 className="flex-row bg-[#6B3BCF] px-4 py-2 rounded-full items-center mt-5 mx-4"
+//               >
+//                 <Image source={require("../assets/images/newOrder.png")} className="w-5 h-5 mr-2" />
+//                 <Text className="text-white font-bold">New Order</Text>
+//               </TouchableOpacity>
+//             </View>
+//           </View>
+//         </View>
+
+//         {/* Search and Filters */}
+//         <View className="mx-5">
+//           <View className="flex-row items-center bg-[#F5F1FC] px-8 py-2 border border-[#6B3BCF] rounded-full mt-4 shadow-sm">
+//             <TextInput
+//               placeholder="Search By Order Number"
+//               placeholderTextColor="#000000"
+//               className="flex-1 text-sm text-black"
+//               onChangeText={setSearchText}
+//               value={searchText}
+//               style={{ fontStyle: 'italic' }}
+//               onSubmitEditing={handleSearch}
+//               returnKeyType="search"
+//             />
+//             <TouchableOpacity onPress={handleSearch}>
+//               <Image source={require("../assets/images/search.png")} className="w-8 h-8" />
+//             </TouchableOpacity>
+//           </View>
+          
+//           {/* Search Error Message */}
+//           {searchError && (
+//             <View className="bg-red-50 px-4 py-2 mt-2 rounded-lg border border-red-200">
+//               <Text className="text-red-600 text-center">{searchError}</Text>
+//             </View>
+//           )}
+//         </View>
+// <View className="mt-4">
+//         <ScrollView 
+//   horizontal 
+//   showsHorizontalScrollIndicator={false}
+//   className="flex-row flex-wrap  mt-[2%] mb-[1%] mx-[2%]"
+//   contentContainerStyle={{ paddingHorizontal: wp('1%') }}
+// >
+//   {filters.map((filter) => (
+//     <TouchableOpacity
+//       key={filter}
+//       className={`px-4 py-2 rounded-full border mr-2 ${selectedFilter === filter ? " px-4 py-2 rounded-full border mr-2 bg-[#6B3BCF] border-[#6B3BCF]" : "border-[#6B3BCF]"}`}
+//       onPress={() => setSelectedFilter(filter)}
+//     >
+//       <Text className={`text-center text-sm ${selectedFilter === filter ? "text-white font-bold" : "text-[#6B3BCF]"}`}>
+//         {filter}
+//       </Text>
+//     </TouchableOpacity>
+//   ))}
+// </ScrollView>
+// </View>
+
+
+// <View className="mt-3 mb-[100%]">
+//         {/* Orders List */}
+//         {loading ? (
+//           <View className="flex-1 justify-center items-center">
+//             {/* <ActivityIndicator size="large" color="#6B3BCF" /> */}
+//             {/* <Text className="text-[#6B3BCF] mt-2">Loading orders...</Text> */}
+//           </View>
+//         ) : error ? (
+//           <View className="flex-1 justify-center items-center px-4">
+//             <Text className="text-red-500 text-center">{error}</Text>
+//             <TouchableOpacity 
+//               className="mt-4 bg-[#6B3BCF] px-4 py-2 rounded-full"
+//               onPress={() => {
+//                 setLoading(true);
+//                 setError(null);
+//               }}
+//             >
+//               <Text className="text-white font-semibold">Retry</Text>
+//             </TouchableOpacity>
+//           </View>
+//         ) : filteredOrders.length > 0 ? (
+//           <FlatList
+//             data={filteredOrders}
+//             keyExtractor={(item) => item.orderId.toString()}
+//             renderItem={({ item }) => (
+//               <TouchableOpacity 
+//                 onPress={() => navigation.navigate("View_CancelOrderScreen" as any, { 
+//                   orderId: item.orderId
+//                 })}
+//               >
+//                 <View className="bg-white rounded-2xl p-4 mb-4 border border-gray-200 mx-4 shadow-sm mt-4">
+//                   <View className="flex-row justify-between items-center">
+//                     <Text className="text-lg font-semibold text-gray-900">
+//                       Order: #{item.InvNo || "N/A"}
+//                     </Text>
+//                     <View className={`px-3 py-1 rounded-full ${
+//                       item.orderStatus === "Ordered" ? "bg-[#E0E0E0]" 
+//                       : item.orderStatus === "On the way" ? "bg-[#FFFD99]" 
+//                       : item.orderStatus === "Processing" ? "bg-[#CFE1FF]"
+//                       : item.orderStatus === "Cancelled" ? "bg-[#FFE4E1]"
+//                       : "bg-[#EAEAEA]"
+//                     }`}>
+//                       <Text className={`text-xs font-semibold ${
+//                         item.orderStatus === "Ordered" ? "text-[#3F3F3F]"
+//                         : item.orderStatus === "On the way" ? "text-[#A6A100]"
+//                         : item.orderStatus === "Processing" ? "text-[#3B82F6]"
+//                         : item.orderStatus === "Cancelled" ? "text-[#FF0000]"
+//                         : "text-[#393939]"
+//                       }`}>
+//                         {item.orderStatus}
+//                       </Text>
+//                     </View>
+//                   </View>
+                  
+//                   <Text className="text-sm text-[#808FA2] mt-1">
+//                     Scheduled to : {formatScheduleDate(item.scheduleDate)}
+//                   </Text>
+//                   <Text className="text-sm text-[#808FA2]">
+//                      {item.scheduleTimeSlot}
+//                   </Text>
+                 
+//                 </View>
+//               </TouchableOpacity>
+//             )}
+//             contentContainerStyle={{ paddingBottom: 16 }}
+//           />
+//         ) : (
+//           <View className="flex-1 justify-center items-center">
+//             <Text className="text-center text-gray-500">
+//               {searchText ? "No matching orders found" : "No orders found for this status"}
+//             </Text>
+//           </View>
+//         )}
+//       </View>
+//       </View>
+//     </KeyboardAvoidingView>
+//   );
+return (
+  <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    enabled
+    className={`flex-1 ${isDarkMode ? 'bg-black' : 'bg-white'}`}
+  >
+    <View className="flex-1">
+
+      <View className="relative">
+        <View className={`flex-row rounded-b-[35px] items-center justify-between h-28 z-50 shadow-lg px-5 ${isDarkMode ? 'bg-black' : 'bg-white'}`}>
+          <View className="mt-[-8%] ml-[-2%]">
+            <BackButton navigation={navigation} />
           </View>
+
+          <View className="flex-1 justify-center items-center mt-[-3%]">
+            <Text className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-800'}`} style={{ textAlign: 'center' }}>
+              {title}.{name}
+            </Text>
+            <Text className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`} style={{ textAlign: 'center' }}>
+              Customer ID: {customerId}
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            className="px-6 mt-[-20%] mr-[-10%]"
+            onPress={() => navigation.navigate("EditCustomerScreen", { id })}
+          >
+            <MaterialIcons name="edit" size={28} color="#6839CF" />
+          </TouchableOpacity>
         </View>
 
-        {/* Search and Filters */}
-        <View className="mx-5">
-          <View className="flex-row items-center bg-[#F5F1FC] px-8 py-2 border border-[#6B3BCF] rounded-full mt-4 shadow-sm">
-            <TextInput
-              placeholder="Search By Order Number"
-              placeholderTextColor="#000000"
-              className="flex-1 text-sm text-black"
-              onChangeText={setSearchText}
-              value={searchText}
-              style={{ fontStyle: 'italic' }}
-              onSubmitEditing={handleSearch}
-              returnKeyType="search"
-            />
-            <TouchableOpacity onPress={handleSearch}>
-              <Image source={require("../assets/images/search.png")} className="w-8 h-8" />
+   
+        <View className={`${isDarkMode ? 'bg-[#1e1e1e]' : 'bg-[#F1E8FF]'} rounded-b-[25px] pt-6 pb-3 shadow-md mt-[-20] items-center z-5`}>
+          <View className="flex-row justify-between mb-4 px-5 mx-5">
+            <TouchableOpacity
+              onPress={handleGetACall}
+              className="flex-row bg-[#6B3BCF] px-4 py-2 rounded-full items-center mt-5 mx-4"
+            >
+              <Image source={require("../assets/images/call.png")} className="w-5 h-5 mr-2" />
+              <Text className="text-white font-bold">Get a Call</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SelectOrderType" as any, { id })}
+              className="flex-row bg-[#6B3BCF] px-4 py-2 rounded-full items-center mt-5 mx-4"
+            >
+              <Image source={require("../assets/images/newOrder.png")} className="w-5 h-5 mr-2" />
+              <Text className="text-white font-bold">New Order</Text>
             </TouchableOpacity>
           </View>
-          
-          {/* Search Error Message */}
-          {searchError && (
-            <View className="bg-red-50 px-4 py-2 mt-2 rounded-lg border border-red-200">
-              <Text className="text-red-600 text-center">{searchError}</Text>
-            </View>
-          )}
         </View>
-<View className="mt-4">
-        <ScrollView 
-  horizontal 
-  showsHorizontalScrollIndicator={false}
-  className="flex-row flex-wrap  mt-[2%] mb-[1%] mx-[2%]"
-  contentContainerStyle={{ paddingHorizontal: wp('1%') }}
->
-  {filters.map((filter) => (
-    <TouchableOpacity
-      key={filter}
-      className={`px-4 py-2 rounded-full border mr-2 ${selectedFilter === filter ? " px-4 py-2 rounded-full border mr-2 bg-[#6B3BCF] border-[#6B3BCF]" : "border-[#6B3BCF]"}`}
-      onPress={() => setSelectedFilter(filter)}
-    >
-      <Text className={`text-center text-sm ${selectedFilter === filter ? "text-white font-bold" : "text-[#6B3BCF]"}`}>
-        {filter}
-      </Text>
-    </TouchableOpacity>
-  ))}
-</ScrollView>
-</View>
+      </View>
 
+     
+      <View className="mx-5">
+        <View className={`flex-row items-center px-8 py-2 border rounded-full mt-4 shadow-sm ${isDarkMode ? 'bg-[#2a2a2a] border-gray-600' : 'bg-[#F5F1FC] border-[#6B3BCF]'}`}>
+          <TextInput
+            placeholder="Search By Order Number"
+            placeholderTextColor={isDarkMode ? '#CCCCCC' : '#000000'}
+            className={`flex-1 text-sm ${isDarkMode ? 'text-white' : 'text-black'}`}
+            onChangeText={setSearchText}
+            value={searchText}
+            style={{ fontStyle: 'italic' }}
+            onSubmitEditing={handleSearch}
+            returnKeyType="search"
+          />
+          <TouchableOpacity onPress={handleSearch}>
+            <Image source={require("../assets/images/search.png")} className="w-8 h-8" />
+          </TouchableOpacity>
+        </View>
 
-<View className="mt-3 mb-[100%]">
-        {/* Orders List */}
+        {searchError && (
+          <View className="bg-red-50 px-4 py-2 mt-2 rounded-lg border border-red-200">
+            <Text className="text-red-600 text-center">{searchError}</Text>
+          </View>
+        )}
+      </View>
+
+      <View className="mt-4">
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          className="flex-row flex-wrap mt-[2%] mb-[1%] mx-[2%]"
+          contentContainerStyle={{ paddingHorizontal: 5 }}
+        >
+          {filters.map((filter) => (
+            <TouchableOpacity
+              key={filter}
+              className={`px-4 py-2 rounded-full border mr-2 ${selectedFilter === filter ? "bg-[#6B3BCF] border-[#6B3BCF]" : `${isDarkMode ? 'border-gray-500' : 'border-[#6B3BCF]'}`}`}
+              onPress={() => setSelectedFilter(filter)}
+            >
+              <Text className={`text-center text-sm ${selectedFilter === filter ? "text-white font-bold" : `${isDarkMode ? 'text-gray-300' : 'text-[#6B3BCF]'}`}`}>
+                {filter}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      <View className="mt-3 mb-[100%]">
         {loading ? (
           <View className="flex-1 justify-center items-center">
             {/* <ActivityIndicator size="large" color="#6B3BCF" /> */}
@@ -263,7 +441,7 @@ const ViewCustomerScreen: React.FC<ViewCustomerScreenProps> = ({ route, navigati
         ) : error ? (
           <View className="flex-1 justify-center items-center px-4">
             <Text className="text-red-500 text-center">{error}</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               className="mt-4 bg-[#6B3BCF] px-4 py-2 rounded-full"
               onPress={() => {
                 setLoading(true);
@@ -278,42 +456,41 @@ const ViewCustomerScreen: React.FC<ViewCustomerScreenProps> = ({ route, navigati
             data={filteredOrders}
             keyExtractor={(item) => item.orderId.toString()}
             renderItem={({ item }) => (
-              <TouchableOpacity 
-                onPress={() => navigation.navigate("View_CancelOrderScreen" as any, { 
+              <TouchableOpacity
+                onPress={() => navigation.navigate("View_CancelOrderScreen" as any, {
                   orderId: item.orderId
                 })}
               >
-                <View className="bg-white rounded-2xl p-4 mb-4 border border-gray-200 mx-4 shadow-sm mt-4">
+                <View className={`rounded-2xl p-4 mb-4 border mx-4 shadow-sm mt-4 ${isDarkMode ? 'bg-[#1e1e1e] border-gray-600' : 'bg-white border-gray-200'}`}>
                   <View className="flex-row justify-between items-center">
-                    <Text className="text-lg font-semibold text-gray-900">
+                    <Text className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                       Order: #{item.InvNo || "N/A"}
                     </Text>
                     <View className={`px-3 py-1 rounded-full ${
-                      item.orderStatus === "Ordered" ? "bg-[#E0E0E0]" 
-                      : item.orderStatus === "On the way" ? "bg-[#FFFD99]" 
-                      : item.orderStatus === "Processing" ? "bg-[#CFE1FF]"
-                      : item.orderStatus === "Cancelled" ? "bg-[#FFE4E1]"
-                      : "bg-[#EAEAEA]"
+                      item.orderStatus === "Ordered" ? "bg-[#E0E0E0]"
+                        : item.orderStatus === "On the way" ? "bg-[#FFFD99]"
+                        : item.orderStatus === "Processing" ? "bg-[#CFE1FF]"
+                        : item.orderStatus === "Cancelled" ? "bg-[#FFE4E1]"
+                        : "bg-[#EAEAEA]"
                     }`}>
                       <Text className={`text-xs font-semibold ${
                         item.orderStatus === "Ordered" ? "text-[#3F3F3F]"
-                        : item.orderStatus === "On the way" ? "text-[#A6A100]"
-                        : item.orderStatus === "Processing" ? "text-[#3B82F6]"
-                        : item.orderStatus === "Cancelled" ? "text-[#FF0000]"
-                        : "text-[#393939]"
+                          : item.orderStatus === "On the way" ? "text-[#A6A100]"
+                          : item.orderStatus === "Processing" ? "text-[#3B82F6]"
+                          : item.orderStatus === "Cancelled" ? "text-[#FF0000]"
+                          : "text-[#393939]"
                       }`}>
                         {item.orderStatus}
                       </Text>
                     </View>
                   </View>
-                  
-                  <Text className="text-sm text-[#808FA2] mt-1">
+
+                  <Text className={`text-sm mt-1 ${isDarkMode ? 'text-gray-400' : 'text-[#808FA2]'}`}>
                     Scheduled to : {formatScheduleDate(item.scheduleDate)}
                   </Text>
-                  <Text className="text-sm text-[#808FA2]">
-                     {item.scheduleTimeSlot}
+                  <Text className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-[#808FA2]'}`}>
+                    {item.scheduleTimeSlot}
                   </Text>
-                 
                 </View>
               </TouchableOpacity>
             )}
@@ -321,15 +498,17 @@ const ViewCustomerScreen: React.FC<ViewCustomerScreenProps> = ({ route, navigati
           />
         ) : (
           <View className="flex-1 justify-center items-center">
-            <Text className="text-center text-gray-500">
+            <Text className={`text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
               {searchText ? "No matching orders found" : "No orders found for this status"}
             </Text>
           </View>
         )}
       </View>
-      </View>
-    </KeyboardAvoidingView>
-  );
+    </View>
+  </KeyboardAvoidingView>
+);
+
+
 };
 
 export default ViewCustomerScreen;

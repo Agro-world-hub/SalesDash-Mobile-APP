@@ -11,6 +11,7 @@ import environment from "@/environment/environment";
 import DropDownPicker from "react-native-dropdown-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SelectList } from "react-native-dropdown-select-list";
+import { useTheme } from '../ThemeContext';
 
 type EditCustomerScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -52,6 +53,8 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
     { label: "House", value: "House" },
     { label: "Apartment", value: "Apartment" },
   ]);
+
+  const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
     const getToken = async () => {
@@ -367,17 +370,17 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className={`flex-1 ${isDarkMode ? 'bg-[#353935]' : 'bg-white'}`}>
       <KeyboardAvoidingView 
                    behavior={Platform.OS === "ios" ? "padding" : "height"}
                    enabled 
                    className="flex-1"
                  >
-        <View className="flex-1 bg-white py-4 p-2">
+        <View className={`flex-1 ${isDarkMode ? 'bg-[#353935]' : 'bg-white'} py-4 p-2`}>
           <View className="p-[-4]">
-            <View className="bg-white flex-row items-center h-17 shadow-lg px-1 ">
-              <BackButton navigation={navigation} />
-              <Text style={{ fontSize: 18 }} className="font-bold text-center text-purple-600 flex-grow mr-9">
+          <View className={`flex-row items-center h-17 shadow-lg px-1 ${isDarkMode ? 'bg-[#1a1a1a]' : 'bg-white'}`}>
+            <BackButton navigation={navigation} />
+            <Text style={{ fontSize: 18 }} className={`font-bold text-center flex-grow mr-9 ${isDarkMode ? 'text-white' : 'text-purple-600'}`}>
                 Edit Customer Details 
               </Text>
             </View>
@@ -389,7 +392,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
             <View className="p-3 px-6">
               <View className="mb-4 mt-4 flex-row justify-between">
                 <View className="flex-[1]">
-                  <Text className="text-gray-700 mb-1">Title</Text>
+                  <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Title</Text>
                 
                   <View className="mb-2">
   
@@ -419,8 +422,8 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
     borderRadius: 10,
     zIndex: 1000,
   }}
-  listMode="SCROLLVIEW"          // <-- ADD this
-  scrollViewProps={{             // <-- ADD this
+  listMode="SCROLLVIEW"          
+  scrollViewProps={{             
     nestedScrollEnabled: true,
   }}
 />
@@ -430,7 +433,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
                 </View>
 
                 <View className="flex-[2] ml-2">
-                  <Text className="text-gray-700 mb-1">First Name</Text>
+                 <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>First Name</Text>
                   <TextInput
                     className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                     placeholder="First Name"
@@ -441,7 +444,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
               </View>
 
               <View className="mb-4 ">
-                <Text className="text-gray-700 mb-1">Last Name</Text>
+                <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Last Name</Text>
                 <TextInput
                   className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                   placeholder="Last Name"
@@ -451,7 +454,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
               </View>
 
               <View className="mb-4">
-                <Text className="text-gray-700 mb-1">Phone Number</Text>
+                <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Phone Number</Text>
                 <TextInput
                   className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                   placeholder="ex: 077 XXXXXXX"
@@ -462,7 +465,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
               </View>
 
               <View className="mb-4">
-                <Text className="text-gray-700 mb-1">Email Address</Text>
+               <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Email Address</Text>
                 <TextInput
                   className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                   placeholder="Email Address"
@@ -473,7 +476,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
               </View>
 
               <View className="mb-4 z-10">
-                <Text className="text-gray-700 mb-1">Building Type</Text>
+                <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Building Type</Text>
                 <DropDownPicker
                   open={buildingTypeOpen}
                   value={buildingType}
@@ -521,7 +524,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
               {buildingType === "House" && (
                 <>
                   <View className="mb-4">
-                    <Text className="text-gray-700 mb-1">Building / House No</Text>
+                   <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Building / House No</Text>
                     <TextInput
                       className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                       placeholder="Building / House No (e.g., 14/B)"
@@ -530,7 +533,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
                     />
                   </View>
                   <View className="mb-4">
-                    <Text className="text-gray-700 mb-1">Street Name</Text>
+                    <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Street Name</Text>
                     <TextInput
                       className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                       placeholder="Street Name"
@@ -539,7 +542,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
                     />
                   </View>
                   <View className="mb-4">
-                    <Text className="text-gray-700 mb-1">City</Text>
+                    <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>City</Text>
                     <TextInput
                       className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                       placeholder="City"
@@ -553,7 +556,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
               {buildingType === "Apartment" && (
                 <>
                   <View className="mb-4">
-                   <Text className="text-gray-700 mb-1">Apartment / Building No</Text>
+                   <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Apartment / Building No</Text>
                     <TextInput
                       className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                       placeholder="Apartment / Building No"
@@ -563,7 +566,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
                   </View>
 
                   <View className="mb-4">
-                    <Text className="text-gray-700 mb-1">Apartment / Building Name</Text>
+                    <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Apartment / Building Name</Text>
                     <TextInput
                       className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                       placeholder="Apartment / Building Name"
@@ -572,7 +575,8 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
                     />
                   </View>
                   <View className="mb-4">
-                    <Text className="text-gray-700 mb-1">Flat / Unit Number</Text>
+                    {/* <Text className="text-gray-700 mb-1">Flat / Unit Number</Text> */}
+                    <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Flat / Unit Number</Text>
                     <TextInput
                       className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                       placeholder="ex : Building B"
@@ -581,7 +585,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
                     />
                   </View>
                   <View className="mb-4">
-                    <Text className="text-gray-700 mb-1">Floor Number</Text>
+                  <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Floor Number</Text>
                     <TextInput
                       className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                       placeholder="ex : 3rd Floor"
@@ -591,7 +595,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
                   </View>
 
                   <View className="mb-4">
-                    <Text className="text-gray-700 mb-1">House No</Text>
+                  <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>House No</Text>
                     <TextInput
                       className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                       placeholder="Building / House No (e.g., 14/B)"
@@ -600,7 +604,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
                     />
                   </View>
                   <View className="mb-4">
-                    <Text className="text-gray-700 mb-1">Street Name</Text>
+                  <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Street Name</Text>
                     <TextInput
                       className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                       placeholder="Street Name"
@@ -609,7 +613,7 @@ const EditCustomerScreen: React.FC<EditCustomerScreenProps> = ({ navigation, rou
                     />
                   </View>
                   <View className="mb-4">
-                    <Text className="text-gray-700 mb-1">City</Text>
+                  <Text className={`mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>City</Text>
                     <TextInput
                       className="bg-[#F6F6F6] border border-[#F6F6F6] rounded-full px-6 h-10"
                       placeholder="City"

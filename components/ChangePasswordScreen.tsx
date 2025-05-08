@@ -18,6 +18,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import environment from '@/environment/environment';
+import { useTheme } from '../ThemeContext';
 
 
 type ChangePasswordScreenNavigationProp = StackNavigationProp<
@@ -37,6 +38,8 @@ const ChangePasswordScreen: React.FC<ChangePasswordScreenProps> = ({ navigation 
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const { isDarkMode, toggleTheme } = useTheme();
 
 
   const handleChangePassword = async () => {
@@ -86,88 +89,205 @@ const ChangePasswordScreen: React.FC<ChangePasswordScreenProps> = ({ navigation 
     }
   };
 
+  // return (
+  //   <KeyboardAvoidingView 
+  //     behavior={Platform.OS === "ios" ? "padding" : "height"}
+  //     enabled 
+  //     className="flex-1"
+  //   >
+  //     <ScrollView 
+  //       contentContainerStyle={{ flexGrow: 1 }}
+  //       keyboardShouldPersistTaps="handled"
+  //     >
+  //       {/* Top Section with Background Vector Image */}
+  //       <ImageBackground
+  //         source={require('../assets/images/g16.png')}
+  //         className="h-64 items-center"
+  //         resizeMode="cover"
+  //       >
+  //         <Image
+  //           source={require('../assets/images/updatepsw.png')}
+  //           className="w-64 h-64"
+  //           resizeMode="contain"
+  //         />
+  //       </ImageBackground>
+  
+  //       {/* Form Section */}
+  //       <View className="flex-1">
+  //         <LinearGradient colors={['#854BDA', '#6E3DD1']} className="flex-1 rounded-t-3xl px-7 pt-6 pb-14">
+  //           <Text className="text-white text-lg font-bold text-center mb-6 mt-[12%]">
+  //             Change Your Password
+  //           </Text>
+  
+  //           {/* Current Password */}
+  //           <View className="bg-[#FFFFFF66] rounded-full flex-row items-center px-4 mb-4">
+  //             <TextInput
+  //               placeholder="Current Password"
+  //               placeholderTextColor="#E5E5E5"
+  //               className="flex-1 text-white py-3"
+  //               secureTextEntry={!showCurrentPassword}
+  //               value={currentPassword}
+  //               onChangeText={setCurrentPassword}
+  //             />
+  //             <TouchableOpacity onPress={() => setShowCurrentPassword(!showCurrentPassword)}>
+  //               <Icon name={showCurrentPassword ? 'eye-off' : 'eye'} size={20} color="#E5E5E5" />
+  //             </TouchableOpacity>
+  //           </View>
+  
+  //           {/* New Password */}
+  //           <View className="bg-[#FFFFFF66] rounded-full flex-row items-center px-4 mb-4">
+  //             <TextInput
+  //               placeholder="New Password"
+  //               placeholderTextColor="#E5E5E5"
+  //               className="flex-1 text-white py-3"
+  //               secureTextEntry={!showNewPassword}
+  //               value={newPassword}
+  //               onChangeText={setNewPassword}
+  //             />
+  //             <TouchableOpacity onPress={() => setShowNewPassword(!showNewPassword)}>
+  //               <Icon name={showNewPassword ? 'eye-off' : 'eye'} size={20} color="#E5E5E5" />
+  //             </TouchableOpacity>
+  //           </View>
+  
+  //           {/* Confirm New Password */}
+  //           <View className="bg-[#FFFFFF66] rounded-full flex-row items-center px-4 mb-6">
+  //             <TextInput
+  //               placeholder="Confirm New Password"
+  //               placeholderTextColor="#E5E5E5"
+  //               className="flex-1 text-white py-3"
+  //               secureTextEntry={!showConfirmPassword}
+  //               value={confirmNewPassword}
+  //               onChangeText={setConfirmNewPassword}
+  //             />
+  //             <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+  //               <Icon name={showConfirmPassword ? 'eye-off' : 'eye'} size={20} color="#E5E5E5" />
+  //             </TouchableOpacity>
+  //           </View>
+  
+  //           {/* Update Button */}
+  //           <TouchableOpacity
+  //             className="bg-white rounded-full py-3 px-10 self-center"
+  //             onPress={handleChangePassword}
+  //             disabled={loading}
+  //           >
+  //             <Text className="text-purple-600 font-bold text-lg">
+  //               {loading ? 'Updating...' : 'Update'}
+  //             </Text>
+  //           </TouchableOpacity>
+  //         </LinearGradient>
+  //       </View>
+  //     </ScrollView>
+  //   </KeyboardAvoidingView>
+  // );
   return (
     <KeyboardAvoidingView 
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       enabled 
-      className="flex-1"
+      className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}
     >
       <ScrollView 
         contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
       >
-        {/* Top Section with Background Vector Image */}
+        
         <ImageBackground
           source={require('../assets/images/g16.png')}
           className="h-64 items-center"
           resizeMode="cover"
+        //  style={{ opacity: isDarkMode ? 0.8 : 1 }}
         >
           <Image
             source={require('../assets/images/updatepsw.png')}
             className="w-64 h-64"
             resizeMode="contain"
+            //style={{ tintColor: isDarkMode ? '#a67dff' : undefined }}
           />
         </ImageBackground>
   
         {/* Form Section */}
         <View className="flex-1">
-          <LinearGradient colors={['#854BDA', '#6E3DD1']} className="flex-1 rounded-t-3xl px-7 pt-6 pb-14">
+          <LinearGradient 
+            colors={isDarkMode ? ['#5A2DB2', '#6A3AD0'] : ['#854BDA', '#6E3DD1']} 
+            className="flex-1 rounded-t-3xl px-7 pt-6 pb-14"
+          >
             <Text className="text-white text-lg font-bold text-center mb-6 mt-[12%]">
               Change Your Password
             </Text>
   
             {/* Current Password */}
-            <View className="bg-[#FFFFFF66] rounded-full flex-row items-center px-4 mb-4">
+            <View className={`rounded-full flex-row items-center px-4 mb-4 ${
+              isDarkMode ? 'bg-[#FFFFFF33]' : 'bg-[#FFFFFF66]'
+            }`}>
               <TextInput
                 placeholder="Current Password"
-                placeholderTextColor="#E5E5E5"
-                className="flex-1 text-white py-3"
+                placeholderTextColor={isDarkMode ? '#D1D5DB' : '#E5E5E5'}
+                className={`flex-1 py-3 ${isDarkMode ? 'text-gray-200' : 'text-white'}`}
                 secureTextEntry={!showCurrentPassword}
                 value={currentPassword}
                 onChangeText={setCurrentPassword}
               />
               <TouchableOpacity onPress={() => setShowCurrentPassword(!showCurrentPassword)}>
-                <Icon name={showCurrentPassword ? 'eye-off' : 'eye'} size={20} color="#E5E5E5" />
+                <Icon 
+                  name={showCurrentPassword ? 'eye-off' : 'eye'} 
+                  size={20} 
+                  color={isDarkMode ? '#D1D5DB' : '#E5E5E5'} 
+                />
               </TouchableOpacity>
             </View>
   
             {/* New Password */}
-            <View className="bg-[#FFFFFF66] rounded-full flex-row items-center px-4 mb-4">
+            <View className={`rounded-full flex-row items-center px-4 mb-4 ${
+              isDarkMode ? 'bg-[#FFFFFF33]' : 'bg-[#FFFFFF66]'
+            }`}>
               <TextInput
                 placeholder="New Password"
-                placeholderTextColor="#E5E5E5"
-                className="flex-1 text-white py-3"
+                placeholderTextColor={isDarkMode ? '#D1D5DB' : '#E5E5E5'}
+                className={`flex-1 py-3 ${isDarkMode ? 'text-gray-200' : 'text-white'}`}
                 secureTextEntry={!showNewPassword}
                 value={newPassword}
                 onChangeText={setNewPassword}
               />
               <TouchableOpacity onPress={() => setShowNewPassword(!showNewPassword)}>
-                <Icon name={showNewPassword ? 'eye-off' : 'eye'} size={20} color="#E5E5E5" />
+                <Icon 
+                  name={showNewPassword ? 'eye-off' : 'eye'} 
+                  size={20} 
+                  color={isDarkMode ? '#D1D5DB' : '#E5E5E5'} 
+                />
               </TouchableOpacity>
             </View>
   
             {/* Confirm New Password */}
-            <View className="bg-[#FFFFFF66] rounded-full flex-row items-center px-4 mb-6">
+            <View className={`rounded-full flex-row items-center px-4 mb-6 ${
+              isDarkMode ? 'bg-[#FFFFFF33]' : 'bg-[#FFFFFF66]'
+            }`}>
               <TextInput
                 placeholder="Confirm New Password"
-                placeholderTextColor="#E5E5E5"
-                className="flex-1 text-white py-3"
+                placeholderTextColor={isDarkMode ? '#D1D5DB' : '#E5E5E5'}
+                className={`flex-1 py-3 ${isDarkMode ? 'text-gray-200' : 'text-white'}`}
                 secureTextEntry={!showConfirmPassword}
                 value={confirmNewPassword}
                 onChangeText={setConfirmNewPassword}
               />
               <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
-                <Icon name={showConfirmPassword ? 'eye-off' : 'eye'} size={20} color="#E5E5E5" />
+                <Icon 
+                  name={showConfirmPassword ? 'eye-off' : 'eye'} 
+                  size={20} 
+                  color={isDarkMode ? '#D1D5DB' : '#E5E5E5'} 
+                />
               </TouchableOpacity>
             </View>
   
             {/* Update Button */}
             <TouchableOpacity
-              className="bg-white rounded-full py-3 px-10 self-center"
+              className={`rounded-full py-3 px-10 self-center ${
+                isDarkMode ? 'bg-purple-700' : 'bg-white'
+              }`}
               onPress={handleChangePassword}
               disabled={loading}
             >
-              <Text className="text-purple-600 font-bold text-lg">
+              <Text className={`font-bold text-lg ${
+                isDarkMode ? 'text-white' : 'text-purple-600'
+              }`}>
                 {loading ? 'Updating...' : 'Update'}
               </Text>
             </TouchableOpacity>

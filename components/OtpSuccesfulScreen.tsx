@@ -10,6 +10,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "./types";
 import { ScrollView } from "react-native-gesture-handler";
 import { RouteProp } from '@react-navigation/native';
+import { useTheme } from '../ThemeContext';
 
 type OtpSuccesfulScreenNavigationProp = StackNavigationProp<RootStackParamList, "OtpSuccesfulScreen">;
 
@@ -21,29 +22,87 @@ interface OtpSuccesfulScreenProps {
 const OtpSuccesfulScreen: React.FC<OtpSuccesfulScreenProps> = ({ route, navigation }) => {
 
   const { customerId} = route.params || {};
+  const { isDarkMode, toggleTheme } = useTheme();
   
   console.log("Received customer ID:", customerId);
 
 
-  return (
-    <KeyboardAvoidingView 
-                                                        behavior={Platform.OS === "ios" ? "padding" : "height"}
-                                                        enabled 
-                                                        className="flex-1"
-                                                      >
-    <View
+//   return (
+//     <KeyboardAvoidingView 
+//                                                         behavior={Platform.OS === "ios" ? "padding" : "height"}
+//                                                         enabled 
+//                                                         className="flex-1"
+//                                                       >
+//     <View
      
-      className="flex-1 bg-white"
-    >
-      <ScrollView className="flex-1 bg-white px-3"
-      keyboardShouldPersistTaps="handled"
+//       className="flex-1 bg-white"
+//     >
+//       <ScrollView className="flex-1 bg-white px-3"
+//       keyboardShouldPersistTaps="handled"
+//       >
+//         {/* Header */}
+//         <View className="bg-white flex-row items-center h-17 shadow-lg px-1">
+//           {/* Back Button */}
+//           <BackButton navigation={navigation} />
+//           {/* Title */}
+        
+//         </View>
+
+//         {/* Main Content */}
+//         <View style={{ paddingHorizontal: wp(5), paddingVertical: hp(1) }} className="flex-1">
+//           {/* Illustration */}
+//           <View className="flex items-center justify-center w-50 h-40 mb-10 pt-24 mx-12">
+//             <Image
+//               source={require("../assets/images/sucsse.png")}
+//               className="w-30 h-30"
+//               resizeMode="contain"
+//             />
+//           </View>
+
+// <View className="px-2">
+// <Text 
+// style={{ fontSize: 20}}
+// className="text-black text-center mt-12 font-bold ">
+// Successfully Verified!
+//       </Text>
+//       <Text 
+//       style={{ fontSize: 17}}
+//       className="text-[#747474] text-center mt-2 ">
+//   Customer Phone number has been verified!
+// </Text>
+// </View>
+
+//           <LinearGradient
+//             colors={["#6839CF", "#874DDB"]}
+//             className="py-2 px-10 rounded-lg items-center mt-[55%] mb-[5%] mr-[20%] ml-[20%] rounded-3xl h-15"
+//           >
+// <TouchableOpacity onPress={() => navigation.navigate("SelectOrderType" as any, {
+//   id: customerId // Pass customerId as id parameter
+// })}>
+//   <Text className="text-center text-white font-bold text-lg">Order Now</Text>
+// </TouchableOpacity>
+//           </LinearGradient>
+//         </View>
+
+//         </ScrollView>
+//       </View>
+//       </KeyboardAvoidingView>
+   
+//   );
+return (
+  <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    enabled
+    className="flex-1"
+  >
+    <View className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
+      <ScrollView
+        className={`flex-1 px-3 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}
+        keyboardShouldPersistTaps="handled"
       >
         {/* Header */}
-        <View className="bg-white flex-row items-center h-17 shadow-lg px-1">
-          {/* Back Button */}
+        <View className={`${isDarkMode ? 'bg-gray-900' : 'bg-white'} flex-row items-center h-17 shadow-lg px-1`}>
           <BackButton navigation={navigation} />
-          {/* Title */}
-        
         </View>
 
         {/* Main Content */}
@@ -54,39 +113,47 @@ const OtpSuccesfulScreen: React.FC<OtpSuccesfulScreenProps> = ({ route, navigati
               source={require("../assets/images/sucsse.png")}
               className="w-30 h-30"
               resizeMode="contain"
+             // style={{ tintColor: isDarkMode ? "#ccc" : undefined }}
             />
           </View>
 
-<View className="px-2">
-<Text 
-style={{ fontSize: 20}}
-className="text-black text-center mt-12 font-bold ">
-Successfully Verified!
-      </Text>
-      <Text 
-      style={{ fontSize: 17}}
-      className="text-[#747474] text-center mt-2 ">
-  Customer Phone number has been verified!
-</Text>
-</View>
+          {/* Text */}
+          <View className="px-2">
+            <Text
+              style={{ fontSize: 20 }}
+              className={`text-center mt-12 font-bold ${isDarkMode ? 'text-white' : 'text-black'}`}
+            >
+              Successfully Verified!
+            </Text>
+            <Text
+              style={{ fontSize: 17 }}
+              className={`text-center mt-2 ${isDarkMode ? 'text-gray-400' : 'text-[#747474]'}`}
+            >
+              Customer Phone number has been verified!
+            </Text>
+          </View>
 
+          {/* Button */}
           <LinearGradient
             colors={["#6839CF", "#874DDB"]}
             className="py-2 px-10 rounded-lg items-center mt-[55%] mb-[5%] mr-[20%] ml-[20%] rounded-3xl h-15"
           >
-<TouchableOpacity onPress={() => navigation.navigate("SelectOrderType" as any, {
-  id: customerId // Pass customerId as id parameter
-})}>
-  <Text className="text-center text-white font-bold text-lg">Order Now</Text>
-</TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("SelectOrderType" as any, {
+                  id: customerId,
+                })
+              }
+            >
+              <Text className="text-center text-white font-bold text-lg">Order Now</Text>
+            </TouchableOpacity>
           </LinearGradient>
         </View>
+      </ScrollView>
+    </View>
+  </KeyboardAvoidingView>
+);
 
-        </ScrollView>
-      </View>
-      </KeyboardAvoidingView>
-   
-  );
 };
 
 export default OtpSuccesfulScreen;

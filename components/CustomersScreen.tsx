@@ -19,6 +19,7 @@ import axios from "axios";
 import environment from "@/environment/environment";
 import CustomersScreenSkeleton from "../components/Skeleton/CustomerScreenSkeleton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTheme } from '../ThemeContext';
 
 
 type CustomersScreenNavigationProp = StackNavigationProp<RootStackParamList, "CustomersScreen">;
@@ -45,6 +46,7 @@ const CustomersScreen: React.FC<CustomersScreenProps> = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
+  const { isDarkMode, toggleTheme } = useTheme();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => setKeyboardVisible(true));
@@ -168,37 +170,128 @@ const CustomersScreen: React.FC<CustomersScreenProps> = ({ navigation }) => {
   
   const isEmpty = filteredCustomers.length === 0;
 
+  // return (
+  //  <KeyboardAvoidingView 
+  //        behavior={Platform.OS === "ios" ? "padding" : "height"}
+  //        enabled 
+  //        className="flex-1"
+  //      >
+        
+  //     <View className={`flex-1 ${isDarkMode ? 'bg-black' : 'bg-white'}`}>
+        
+  //       {/* Show Skeleton while loading */}
+  //       {loading ? (
+  //         <>
+  //           <CustomersScreenSkeleton />
+  //         </>
+  //       ) : (
+  //         <>
+  //           {/* Header */}
+  //           <LinearGradient colors={["#854BDA", "#6E3DD1"]} className="h-20 shadow-md px-4 pt-17 items-center justify-center">
+  //             <Text className="text-white text-lg font-bold">
+  //               Total Customers: <Text className="font-bold">{filteredCustomers.length}</Text>
+  //             </Text>
+  //           </LinearGradient>
+
+  //           {/* Search Bar */}
+  //          <View className={`flex-row items-center px-6 py-3 rounded-full mx-auto w-[90%] shadow-md mt-[-22] 
+  //                        ${isDarkMode ? 'bg-gray-800' : 'bg-[#F5F1FC]'}`}>
+  //             <TextInput 
+  //               value={searchQuery}
+  //               onChangeText={handleSearch} 
+  //               placeholder="Search By Name, Phone Number" 
+  //               placeholderTextColor="#6839CF" 
+  //               className="flex-1 text-sm text-gray-700" 
+  //               style={{ fontStyle: 'italic' }}
+  //             />
+  //             <Image source={require("../assets/images/search.png")} className="w-6 h-6" resizeMode="contain" />
+  //           </View>
+
+  //           {/* Floating Button */}
+  //           <TouchableOpacity
+  //             style={{ zIndex: 1000 }}
+  //             className="absolute bottom-20 right-6 bg-[#7743D4] w-14 h-14 rounded-full items-center justify-center shadow-lg mb-1"
+  //             onPress={() => navigation.navigate("AddCustomersScreen")}
+  //           >
+  //             <Image source={require("../assets/images/plus.png")} className="w-6 h-6" resizeMode="contain" />
+  //           </TouchableOpacity>
+
+  //           <View style={{ paddingHorizontal: wp(6), paddingVertical: hp(2) }} className="flex-1">
+  //             {error ? (
+  //               <View className="flex-1 justify-center items-center px-4">
+  //                 <Text className="text-red-500 text-center mt-4">{error}</Text>
+  //               </View>
+  //             ) : isEmpty ? (
+  //               <View className="flex-1 justify-center items-center px-4">
+  //                 <Image source={require("../assets/images/searchr.png")} style={{ width: wp("60%"), height: hp("30%"), resizeMode: "contain" }} />
+  //               </View>
+  //             ) : (
+  //               <FlatList
+  //                 data={filteredCustomers}
+  //                 keyExtractor={(item) => item.id.toString()}
+  //                 showsVerticalScrollIndicator={true}
+  //                 contentContainerStyle={{ paddingBottom: 120 }}
+  //                 refreshing={refreshing}
+  //                 onRefresh={handleRefresh}
+  //                 scrollEventThrottle={16}
+  //                 renderItem={({ item }: { item: Customer }) => (
+  //                   <TouchableOpacity
+  //                     onPress={() =>
+  //                       navigation.navigate("ViewCustomerScreen", {
+  //                         name: item.firstName,
+  //                         title: item.title,
+  //                         number: item.phoneNumber,
+  //                         customerId: item.cusId,
+  //                         id: item.id,
+  //                       })
+  //                     }
+  //                   >
+  //                     <View className="bg-white shadow-md p-4 mb-3 mx-3 flex-row justify-between items-center rounded-lg border border-gray-200">
+  //                       <View>
+  //                         <Text className="text-gray-700 font-semibold">{item.title}.{item.firstName} {item.lastName}</Text>
+  //                         <Text className="text-gray-500 text-sm">{formatPhoneNumber(item.phoneNumber)}</Text>
+  //                       </View>
+  //                       <Text className="text-gray-700 font-bold">#{item.order}</Text>
+  //                     </View>
+  //                   </TouchableOpacity>
+  //                 )}
+  //               />
+  //             )}
+  //           </View>
+  //         </>
+  //       )}
+  //     </View>
+  //   </KeyboardAvoidingView>
+  // );
   return (
-   <KeyboardAvoidingView 
-         behavior={Platform.OS === "ios" ? "padding" : "height"}
-         enabled 
-         className="flex-1"
-       >
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      enabled 
+      className="flex-1"
+    >
+      <View className={`flex-1 ${isDarkMode ? 'bg-gray-900' : 'bg-white'}`}>
         
-      <View className="bg-white flex-1">
-        
-        {/* Show Skeleton while loading */}
+      
         {loading ? (
-          <>
-            <CustomersScreenSkeleton />
-          </>
+          <CustomersScreenSkeleton />
         ) : (
           <>
-            {/* Header */}
+           
             <LinearGradient colors={["#854BDA", "#6E3DD1"]} className="h-20 shadow-md px-4 pt-17 items-center justify-center">
               <Text className="text-white text-lg font-bold">
                 Total Customers: <Text className="font-bold">{filteredCustomers.length}</Text>
               </Text>
             </LinearGradient>
 
-            {/* Search Bar */}
-            <View className="flex-row items-center bg-[#F5F1FC] px-6 py-3 rounded-full mt-[-22px] mx-auto w-[90%] shadow-md">
+         
+            <View className={`flex-row items-center px-6 py-3 rounded-full mx-auto w-[90%] shadow-md mt-[-22] 
+                            ${isDarkMode ? 'bg-gray-800' : 'bg-[#F5F1FC]'}`}>
               <TextInput 
                 value={searchQuery}
                 onChangeText={handleSearch} 
                 placeholder="Search By Name, Phone Number" 
-                placeholderTextColor="#6839CF" 
-                className="flex-1 text-sm text-gray-700" 
+                placeholderTextColor={isDarkMode ? '#C3B6F7' : '#6839CF'}
+                className={`flex-1 text-sm ${isDarkMode ? 'text-white' : 'text-gray-700'}`}
                 style={{ fontStyle: 'italic' }}
               />
               <Image source={require("../assets/images/search.png")} className="w-6 h-6" resizeMode="contain" />
@@ -231,7 +324,7 @@ const CustomersScreen: React.FC<CustomersScreenProps> = ({ navigation }) => {
                   refreshing={refreshing}
                   onRefresh={handleRefresh}
                   scrollEventThrottle={16}
-                  renderItem={({ item }: { item: Customer }) => (
+                  renderItem={({ item }) => (
                     <TouchableOpacity
                       onPress={() =>
                         navigation.navigate("ViewCustomerScreen", {
@@ -243,12 +336,19 @@ const CustomersScreen: React.FC<CustomersScreenProps> = ({ navigation }) => {
                         })
                       }
                     >
-                      <View className="bg-white shadow-md p-4 mb-3 mx-3 flex-row justify-between items-center rounded-lg border border-gray-200">
+                      <View className={`p-4 mb-3 mx-3 flex-row justify-between items-center rounded-lg border shadow-md
+                        ${isDarkMode ? 'bg-[#1E1E1E] border-gray-700' : 'bg-white border-gray-200'}`}>
                         <View>
-                          <Text className="text-gray-700 font-semibold">{item.title}.{item.firstName} {item.lastName}</Text>
-                          <Text className="text-gray-500 text-sm">{formatPhoneNumber(item.phoneNumber)}</Text>
+                          <Text className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>
+                            {item.title}.{item.firstName} {item.lastName}
+                          </Text>
+                          <Text className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+                            {formatPhoneNumber(item.phoneNumber)}
+                          </Text>
                         </View>
-                        <Text className="text-gray-700 font-bold">#{item.order}</Text>
+                        <Text className={`font-bold ${isDarkMode ? 'text-white' : 'text-gray-700'}`}>
+                          #{item.order}
+                        </Text>
                       </View>
                     </TouchableOpacity>
                   )}
